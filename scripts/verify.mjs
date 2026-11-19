@@ -11,8 +11,10 @@
 //     for is really in the build.
 //  2. It loads nothing from anyone else. Fonts, scripts, styles and pictures
 //     all come from the site itself. Links to other sites are fine; fetching
-//     from them when a page opens is not. The few outside addresses the
-//     site's own code may talk to are listed in ALLOWED_HOSTS below.
+//     from them when a page opens is not. Every page carries a
+//     Content-Security-Policy that has the browser enforce this, and this
+//     script checks that policy: the few outside addresses a page's scripts
+//     may talk to are listed in MAY_TALK_TO below, and nothing else is let in.
 //  3. Every page has what a page needs: a language, a title, a description,
 //     one main heading - and the line that says Walka is not Blizzard's.
 //  4. The download buttons are the links Walka's README uses.
@@ -27,23 +29,26 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../build', import.meta.url));
 
-// Outside addresses that may appear in the site's scripts. A new one here is
-// a decision: it means visitors' browsers will talk to that host.
-const ALLOWED_HOSTS = new Set([
-	'github.com', // links to Walka's repository and its downloads
-	'api.github.com', // the downloads page asks which version is the latest
-	'svelte.dev', // links inside error messages of the framework
-	'www.w3.org', // the names of SVG and XML, not a request
-	'www.sitemaps.org' // the name of the sitemap format, not a request
+// Outside addresses the site's scripts may talk to (the policy's connect-src).
+// A new one here is a decision: it means visitors' browsers will talk to
+// that host. It has to be added in vite.config.ts as well.
+const MAY_TALK_TO = new Set([
+	'https://api.github.com' // the downloads page asks which version is the latest
 ]);
-// The site's own address, when the build was told it (see src/env.ts).
-if (process.env.SITE_URL) {
-	try {
-		ALLOWED_HOSTS.add(new URL(process.env.SITE_URL).host.toLowerCase());
-	} catch {
-		// not an address: the build will have complained already
-	}
-}
+
+// What each part of the policy may name besides the site itself.
+const POLICY = {
+	'default-src': [],
+	'script-src': [], // plus the hashes of SvelteKit's own start-up script
+	'style-src': ["'unsafe-inline'"],
+	'img-src': ['data:'],
+	'font-src': [],
+	'connect-src': [...MAY_TALK_TO],
+	'manifest-src': [],
+	'object-src': [],
+	'base-uri': [],
+	'form-action': []
+};
 
 const DISCLAIMER = 'not affiliated with or endorsed by Blizzard Entertainment';
 
@@ -193,7 +198,36 @@ async function checkHtml(file) {
 		if (!description) problem(file, 'no meta description');
 		else if (description.length > 200) problem(file, `meta description is ${description.length} characters (keep it under 200)`);
 	}
+	if (file !== '404.html') checkPolicy(file, full);
 	return { title };
+}
+
+/** The page's Content-Security-Policy: there, complete, and letting in nothing that is not listed. */
+function checkPolicy(file, html) {
+	const content = html.match(/<meta\s+http-equiv="content-security-policy"\s+content="([^"]*)"/i)?.[1];
+	if (!content) return problem(file, 'no Content-Security-Policy');
+	const policy = new Map(
+		decode(content)
+			.split(';')
+			.map((part) => part.trim().split(/\s+/))
+			.filter((words) => words[0])
+			.map(([name, ...sources]) => [name, sources])
+	);
+	for (const [name, extra] of Object.entries(POLICY)) {
+		const sources = policy.get(name);
+		if (!sources) {
+			problem(file, `the Content-Security-Policy has no ${name}`);
+			continue;
+		}
+		for (const source of sources) {
+			const fine =
+				source === "'self'" ||
+				source === "'none'" ||
+				extra.includes(source) ||
+				(name === 'script-src' && /^'sha(256|384|512)-[A-Za-z0-9+/=]+'$/.test(source));
+			if (!fine) problem(file, `the Content-Security-Policy lets in ${source} for ${name}. If that is meant, list it in scripts/verify.mjs`);
+		}
+	}
 }
 
 async function checkCss(file) {
@@ -209,15 +243,6 @@ async function checkCss(file) {
 		}
 	}
 	if (/@import\s+(?:url\()?["']?https?:/i.test(css)) problem(file, 'stylesheet imports from another site');
-}
-
-async function checkScript(file) {
-	const code = await readFile(join(root, file), 'utf8');
-	for (const [, host] of code.matchAll(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/gi)) {
-		if (!ALLOWED_HOSTS.has(host.toLowerCase())) {
-			problem(file, `names the outside address "${host}". If visitors' browsers are meant to talk to it, add it to ALLOWED_HOSTS in scripts/verify.mjs`);
-		}
-	}
 }
 
 async function main() {
@@ -236,7 +261,6 @@ async function main() {
 			const { title } = await checkHtml(file);
 			if (title) titles.set(title, [...(titles.get(title) ?? []), file]);
 		} else if (kind === '.css') await checkCss(file);
-		else if (kind === '.js' || kind === '.mjs') await checkScript(file);
 
 		if (['.html', '.css', '.js', '.mjs', '.json', '.txt', '.xml', '.webmanifest', '.svg'].includes(kind)) {
 			const text = await readFile(join(root, file), 'utf8');
