@@ -1,0 +1,20 @@
+node_modules
+
+# Made by the build
+/.svelte-kit
+/build
+/static/img
+/src/lib/generated
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local settings and secrets: nothing secret belongs in this repository
+.env
+.env.*
+!.env.example
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

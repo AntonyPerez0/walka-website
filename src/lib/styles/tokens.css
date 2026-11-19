@@ -1,0 +1,147 @@
+/* Walka website: the design tokens.
+ *
+ * One system, in two lights. They are Walka's own: the dark side is the
+ * Sapphire theme of the Share picture, the light side is its Parchment
+ * theme (companion/src/walka/static/card.js in Walka's repository), and the
+ * blue is the blue of the dashboard and of the logo.
+ *
+ *   - a deep ground, one blue for what you can act on, gold for the frame
+ *     around what matters - and only there;
+ *   - Spectral for headings (a serif, as on the Share picture's title),
+ *     Inter for everything else (as on the dashboard);
+ *   - space on a 4px grid, type on one fluid scale.
+ *
+ * Every colour is written once, as light-dark(light, dark). The page follows
+ * the system; <html data-theme="light|dark"> (set by the switch in the
+ * header) overrides it. The build lowers light-dark() for older browsers.
+ */
+
+:root {
+	color-scheme: dark light;
+
+	/* ---- ground and surfaces ------------------------------------------ */
+	--bg: light-dark(#faf6ea, #05071a);
+	--bg-raised: light-dark(#f4ecd8, #080b24); /* a band that sets a section apart */
+	--surface: light-dark(#fffdf5, #0c1030); /* panels */
+	--surface-2: light-dark(#f8f1de, #121841);
+	--line: light-dark(rgba(92, 64, 20, 0.16), rgba(150, 172, 255, 0.14));
+	--line-strong: light-dark(rgba(92, 64, 20, 0.3), rgba(150, 172, 255, 0.28));
+
+	/* ---- ink ----------------------------------------------------------- */
+	--ink: light-dark(#231a10, #f4f6ff);
+	--ink-2: light-dark(#4d3f2d, #c3caee); /* running text */
+	--ink-3: light-dark(#6c5c45, #909aca); /* small print: still 4.5:1 on the ground */
+
+	/* ---- what you can act on: the dashboard's blue ---------------------- */
+	--accent: light-dark(#256abf, #7db3f2);
+	--accent-hover: light-dark(#1c5cab, #a3cbf8);
+	--ring: light-dark(#2a78d6, #8ec0ff);
+
+	/* ---- labels: the small tracked capitals above a heading -------------- */
+	--label: light-dark(#8f2a2a, #7ed4ff);
+
+	/* ---- gold: frames, rules, the one primary button --------------------- */
+	--gold: light-dark(#85560f, #f1c75a); /* gold you can read */
+	--gold-soft: light-dark(rgba(133, 86, 15, 0.42), rgba(241, 199, 90, 0.42));
+	--gold-faint: light-dark(rgba(133, 86, 15, 0.2), rgba(241, 199, 90, 0.18));
+	--metal-1: light-dark(#d9b56a, #fff4c7);
+	--metal-2: light-dark(#96702c, #f1c75a);
+	--metal-3: light-dark(#5d4014, #a8721b);
+	--metal-4: light-dark(#b8904a, #f8de8a);
+	--metal-5: light-dark(#6b4a17, #8a5a14);
+	--metal: linear-gradient(
+		135deg,
+		var(--metal-1) 0%,
+		var(--metal-2) 24%,
+		var(--metal-3) 50%,
+		var(--metal-4) 76%,
+		var(--metal-5) 100%
+	);
+
+	--gem: light-dark(#a5262b, #3f8cf0); /* the small cut stone in a rule */
+
+	/* The primary button is the other realm's colour: gold on sapphire,
+	   sapphire on parchment. */
+	--primary: light-dark(#17286e, #efc55c);
+	--primary-hi: light-dark(#22399a, #fbe39a);
+	--primary-lo: light-dark(#101c52, #cf9a31);
+	--primary-ink: light-dark(#fff8e6, #1b1304);
+	--primary-edge: light-dark(#b8904a, #fff4c7);
+
+	/* ---- state (the dashboard's lamps) ----------------------------------- */
+	--ok: light-dark(#0a7a0a, #5fce5f);
+	--warn: light-dark(#8a5a00, #fab219);
+	--warn-tint: light-dark(#fbf0cf, #2a2110);
+	--bad: light-dark(#a52424, #ee8080);
+	--bad-tint: light-dark(#fae9e4, #2c1418);
+	--note-tint: light-dark(#eef3fb, #0f1838);
+	--stop: #d03b3b; /* the red of the dashboard's STOP */
+
+	/* ---- atmosphere: the soft lights behind a hero ------------------------ */
+	--glow-1: light-dark(rgba(255, 255, 244, 0.9), rgba(70, 120, 255, 0.4));
+	--glow-2: light-dark(rgba(176, 128, 60, 0.14), rgba(132, 70, 235, 0.26));
+	--glow-3: light-dark(rgba(150, 96, 40, 0.12), rgba(30, 160, 255, 0.2));
+	--star: light-dark(rgba(133, 86, 15, 0.34), rgba(214, 228, 255, 0.8));
+	--arc: light-dark(rgba(104, 72, 34, 0.1), rgba(214, 228, 255, 0.07));
+	--shadow: light-dark(rgba(96, 62, 20, 0.2), rgba(0, 0, 8, 0.6));
+	--shadow-glow: light-dark(rgba(150, 110, 40, 0.16), rgba(70, 120, 255, 0.24));
+	--scrim: light-dark(rgba(250, 246, 234, 0.82), rgba(5, 7, 26, 0.78)); /* behind the header once the page has moved */
+
+	/* ---- type -------------------------------------------------------------- */
+	--font-display: 'Spectral', 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+	--font-text:
+		'Inter Variable', Inter, 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto,
+		'Helvetica Neue', Arial, sans-serif;
+	--font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+	--text-display: clamp(2.75rem, 1.45rem + 5.8vw, 5.75rem); /* the home page's heading */
+	--text-h1: clamp(2.375rem, 1.6rem + 3.4vw, 4rem);
+	--text-h2: clamp(1.875rem, 1.4rem + 2.1vw, 3rem);
+	--text-h3: clamp(1.3125rem, 1.2rem + 0.5vw, 1.5rem);
+	--text-lede: clamp(1.125rem, 1.03rem + 0.42vw, 1.3125rem);
+	--text-body: 1.0625rem;
+	--text-small: 0.9375rem;
+	--text-fine: 0.8125rem;
+	--text-label: 0.75rem;
+
+	/* ---- space ------------------------------------------------------------- */
+	--gutter: clamp(1.25rem, 0.5rem + 3.6vw, 3rem);
+	--page: 75rem; /* the widest the content gets */
+	--page-wide: 82.5rem; /* the hero's picture may go a little wider */
+	--measure: 42.5rem; /* a comfortable line of text */
+	--section: clamp(4.5rem, 2.6rem + 8vw, 9rem); /* above and below a section */
+	--header-h: 4.5rem;
+
+	--radius: 10px;
+	--radius-s: 6px;
+	--cut: 22px; /* the cut corner of a frame */
+
+	--ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:root[data-theme='light'] {
+	color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+}
+
+/* Shown in one light only (a screenshot of the dark dashboard, say). */
+.only-light {
+	display: none !important;
+}
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme='dark']) .only-light {
+		display: revert !important;
+	}
+	:root:not([data-theme='dark']) .only-dark {
+		display: none !important;
+	}
+}
+:root[data-theme='light'] .only-light {
+	display: revert !important;
+}
+:root[data-theme='light'] .only-dark {
+	display: none !important;
+}

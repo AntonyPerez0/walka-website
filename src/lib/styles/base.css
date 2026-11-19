@@ -1,0 +1,667 @@
+/* Walka website: what every page starts from.
+ *
+ * Elements first (so that plain HTML in a page already looks right), then a
+ * handful of classes that pages share: .container, .label, .lede, .prose,
+ * .button. Components keep their own styles next to their markup.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	scroll-padding-top: calc(var(--header-h) + 1.5rem);
+	background: var(--bg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	min-height: 100dvh;
+	background: var(--bg);
+	color: var(--ink-2);
+	font: 400 var(--text-body) / 1.65 var(--font-text);
+	font-feature-settings: 'cv11', 'ss03'; /* Inter: single-storey a off, round quotes */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote,
+fieldset {
+	margin: 0;
+	padding: 0;
+}
+
+h1,
+h2,
+h3 {
+	color: var(--ink);
+	font-family: var(--font-display);
+	font-weight: 600;
+	text-wrap: balance;
+}
+
+h1 {
+	font-size: var(--text-h1);
+	line-height: 1.04;
+	letter-spacing: -0.02em;
+}
+
+h2 {
+	font-size: var(--text-h2);
+	line-height: 1.1;
+	letter-spacing: -0.015em;
+}
+
+h3 {
+	font-size: var(--text-h3);
+	line-height: 1.25;
+	letter-spacing: -0.005em;
+}
+
+h4 {
+	color: var(--ink);
+	font: 600 1rem/1.4 var(--font-text);
+}
+
+p {
+	text-wrap: pretty;
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+img,
+svg,
+picture,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+img {
+	height: auto;
+}
+
+strong,
+b {
+	color: var(--ink);
+	font-weight: 600;
+}
+
+a {
+	color: var(--accent);
+	text-decoration-line: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+	text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+	transition:
+		color 0.15s,
+		text-decoration-color 0.15s;
+}
+
+a:hover {
+	color: var(--accent-hover);
+	text-decoration-color: currentColor;
+}
+
+:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 3px;
+	border-radius: 3px;
+}
+
+::selection {
+	background: color-mix(in srgb, var(--accent) 36%, transparent);
+	color: var(--ink);
+}
+
+button {
+	font: inherit;
+	color: inherit;
+}
+
+code,
+kbd,
+samp {
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+
+code {
+	padding: 0.12em 0.36em;
+	border-radius: 4px;
+	background: color-mix(in srgb, var(--ink) 8%, transparent);
+	color: var(--ink);
+	overflow-wrap: anywhere;
+}
+
+/* A key on the keyboard: Ctrl+Alt+X */
+kbd {
+	display: inline-block;
+	padding: 0.1em 0.5em;
+	border: 1px solid var(--line-strong);
+	border-bottom-width: 2px;
+	border-radius: 6px;
+	background: var(--surface);
+	color: var(--ink);
+	font-weight: 600;
+	line-height: 1.5;
+	white-space: nowrap;
+}
+
+hr {
+	height: 1px;
+	margin: 0;
+	border: 0;
+	background: var(--line);
+}
+
+/* ---------------------------------------------------------------- shared */
+
+.container {
+	width: 100%;
+	max-width: calc(var(--page) + 2 * var(--gutter));
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+.container--wide {
+	max-width: calc(var(--page-wide) + 2 * var(--gutter));
+}
+
+.container--text {
+	max-width: calc(var(--measure) + 2 * var(--gutter));
+}
+
+/* The small tracked capitals above a heading - as on the Share picture. */
+.label {
+	display: block;
+	color: var(--label);
+	font: 600 var(--text-label) / 1.4 var(--font-text);
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	text-wrap: balance;
+}
+
+.label--gold {
+	color: var(--gold);
+}
+
+.lede {
+	color: var(--ink-2);
+	font-size: var(--text-lede);
+	line-height: 1.55;
+}
+
+.fine {
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+	line-height: 1.55;
+}
+
+.num {
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum', 'cv11';
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ------------------------------------------------------------- the button
+ *
+ * <a class="button">, <a class="button button--ghost">, <button class="button">.
+ * The shape (corners cut at 45 degrees, as on the Share picture's frames) is
+ * drawn by ::before, so that the focus ring around the button is not cut.
+ */
+
+.button {
+	--c: 9px;
+	position: relative;
+	isolation: isolate;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6em;
+	min-height: 3.25rem;
+	padding: 0.75rem 1.6rem;
+	border: 0;
+	background: none;
+	color: var(--primary-ink);
+	font: 600 1rem/1.2 var(--font-text);
+	letter-spacing: 0.005em;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition:
+		transform 0.2s var(--ease),
+		color 0.2s;
+}
+
+.button::before,
+.button::after {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	clip-path: polygon(
+		var(--c) 0,
+		calc(100% - var(--c)) 0,
+		100% var(--c),
+		100% calc(100% - var(--c)),
+		calc(100% - var(--c)) 100%,
+		var(--c) 100%,
+		0 calc(100% - var(--c)),
+		0 var(--c)
+	);
+	transition:
+		background 0.2s,
+		opacity 0.2s;
+}
+
+/* the edge */
+.button::before {
+	inset: 0;
+	background: linear-gradient(180deg, var(--primary-edge), var(--primary-lo));
+}
+
+/* the face */
+.button::after {
+	--c: 8.4px;
+	inset: 1px;
+	background: linear-gradient(180deg, var(--primary-hi) 0%, var(--primary) 46%, var(--primary-lo) 100%);
+}
+
+.button:hover {
+	color: var(--primary-ink);
+	transform: translateY(-1px);
+}
+
+.button:hover::after {
+	background: linear-gradient(180deg, var(--primary-hi) 0%, var(--primary-hi) 30%, var(--primary) 100%);
+}
+
+.button:active {
+	transform: translateY(0);
+}
+
+.button svg {
+	flex: none;
+	width: 1.15em;
+	height: 1.15em;
+}
+
+/* The second button: a gold line around the ground. */
+.button--ghost {
+	color: var(--ink);
+}
+
+.button--ghost::before {
+	background: var(--gold-soft);
+}
+
+.button--ghost::after {
+	background: var(--bg);
+}
+
+.button--ghost:hover {
+	color: var(--ink);
+}
+
+.button--ghost:hover::before {
+	background: var(--gold);
+}
+
+.button--ghost:hover::after {
+	background: var(--surface);
+}
+
+.button--small {
+	--c: 7px;
+	min-height: 2.75rem;
+	padding: 0.5rem 1.1rem;
+	font-size: 0.9375rem;
+}
+
+.button--small::after {
+	--c: 6.4px;
+}
+
+.button--block {
+	display: flex;
+	width: 100%;
+}
+
+/* A link that reads as "go on": text and a small arrow. */
+.more {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45em;
+	min-height: 2.75rem;
+	color: var(--accent);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.more::after {
+	content: '';
+	width: 0.5em;
+	height: 0.5em;
+	border-top: 2px solid currentColor;
+	border-right: 2px solid currentColor;
+	transform: rotate(45deg);
+	transition: transform 0.2s var(--ease);
+}
+
+.more:hover::after {
+	transform: translateX(3px) rotate(45deg);
+}
+
+/* ---------------------------------------------------------------- .prose
+ *
+ * Long text: the legal pages, the FAQ's answers, the long sections of "How
+ * it works". Wrap plain HTML in <div class="prose"> and it is set.
+ */
+
+.prose {
+	max-width: var(--measure);
+}
+
+.prose > * + * {
+	margin-top: 1.15em;
+}
+
+.prose h2 {
+	margin-top: 2.4em;
+	font-size: clamp(1.625rem, 1.4rem + 1vw, 2.125rem);
+}
+
+.prose h3 {
+	margin-top: 2em;
+}
+
+.prose h2 + *,
+.prose h3 + * {
+	margin-top: 0.7em;
+}
+
+.prose > :first-child {
+	margin-top: 0;
+}
+
+.prose ul,
+.prose ol {
+	padding-left: 1.4em;
+}
+
+.prose ul {
+	list-style: none;
+}
+
+.prose ul > li {
+	position: relative;
+}
+
+/* a small diamond, as on the Share picture's rules */
+.prose ul > li::before {
+	content: '';
+	position: absolute;
+	left: -1.15em;
+	top: 0.68em;
+	width: 0.36em;
+	height: 0.36em;
+	background: var(--gold);
+	transform: rotate(45deg);
+}
+
+.prose ol {
+	list-style: decimal;
+}
+
+.prose ol > li::marker {
+	color: var(--gold);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.prose li + li {
+	margin-top: 0.5em;
+}
+
+.prose li > ul,
+.prose li > ol {
+	margin-top: 0.5em;
+}
+
+.prose blockquote {
+	padding-left: 1.2em;
+	border-left: 2px solid var(--gold-soft);
+	color: var(--ink);
+	font: italic 500 1.25rem/1.5 var(--font-display);
+}
+
+/* A table scrolls sideways inside its own box on a narrow screen:
+   <div class="table"><table>...</table></div> */
+.table {
+	max-width: 100%;
+	overflow-x: auto;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--surface);
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--text-small);
+	line-height: 1.5;
+}
+
+th,
+td {
+	padding: 0.8rem 1rem;
+	text-align: left;
+	vertical-align: top;
+	border-bottom: 1px solid var(--line);
+}
+
+thead th {
+	color: var(--ink-3);
+	font: 600 var(--text-label) / 1.4 var(--font-text);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+tbody th {
+	color: var(--ink);
+	font-weight: 600;
+}
+
+tbody tr:last-child > * {
+	border-bottom: 0;
+}
+
+/* ------------------------------------------------------------- reveal
+ *
+ * Something that comes up softly when it is scrolled into view (see
+ * src/lib/reveal.ts, which sets the attribute). Nothing is hidden unless a
+ * script has run and found the thing below the screen - and nothing moves
+ * for someone who asked for less motion.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+	[data-reveal='wait'] {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+
+	[data-reveal='in'] {
+		animation: reveal 0.8s var(--ease) both;
+		animation-delay: var(--reveal-delay, 0ms);
+	}
+}
+
+@keyframes reveal {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+}
+
+@media print {
+	html {
+		color-scheme: light;
+	}
+	body {
+		background: #fff;
+	}
+}
+
+/* ---------------------------------------------------------------- .steps
+ *
+ * Things to do in order, each with a short heading:
+ *
+ *   <ol class="steps">
+ *     <li><h3>Download Walka.exe</h3><p>It goes to your Downloads folder.</p></li>
+ *   </ol>
+ */
+
+.steps {
+	display: grid;
+	gap: 0;
+	padding: 0 !important;
+	list-style: none !important;
+	counter-reset: step;
+}
+
+.steps > li {
+	position: relative;
+	display: grid;
+	gap: 0.5em;
+	margin: 0 !important;
+	padding: 1.4rem 0 1.4rem 4rem;
+	border-top: 1px solid var(--line);
+	counter-increment: step;
+}
+
+.steps > li:last-child {
+	border-bottom: 1px solid var(--line);
+}
+
+.steps > li::before {
+	content: counter(step);
+	position: absolute;
+	left: 0;
+	top: 1.15rem;
+	color: var(--gold);
+	font: 600 2.25rem/1 var(--font-display);
+	font-variant-numeric: lining-nums;
+}
+
+.steps > li > h3 {
+	margin: 0;
+	font: 600 1.125rem/1.4 var(--font-text);
+	letter-spacing: -0.005em;
+}
+
+@media (max-width: 30rem) {
+	.steps > li {
+		padding-left: 2.75rem;
+	}
+
+	.steps > li::before {
+		font-size: 1.875rem;
+	}
+}
+
+/* ---------------------------------------------------------------- .facts
+ *
+ * A short list of name and value:
+ *
+ *   <dl class="facts">
+ *     <div><dt>Standing still</dt><dd>0.8 mph</dd></div>
+ *   </dl>
+ */
+
+.facts {
+	display: grid;
+	border-top: 1px solid var(--line);
+}
+
+.facts > div {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 1rem;
+	padding: 0.7rem 0;
+	border-bottom: 1px solid var(--line);
+}
+
+.facts dt {
+	color: var(--ink-2);
+}
+
+.facts dd {
+	color: var(--ink);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+/* ---------------------------------------------------------------- .panel
+ *
+ * A quiet box for something set apart from the running text.
+ */
+
+.panel {
+	padding: clamp(1.25rem, 3vw, 2rem);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--surface);
+}
+
+/* A picture with a line of words under it:
+ *   <figure class="figure"> <Picture ... /> <figcaption>...</figcaption> </figure> */
+.figure figcaption {
+	margin-top: 0.9rem;
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+	text-align: center;
+}

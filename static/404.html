@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+	<!--
+		The page GitHub Pages shows for an address that is not on the site.
+
+		It is written by hand and stands alone - no stylesheet, no script file,
+		no font, no picture of its own - because it can be shown at any address,
+		however deep, and so cannot ask for anything by a relative path. The one
+		thing it has to work out is where the site's front page is: at the root
+		of a domain of its own, or one folder down on github.io.
+	-->
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="color-scheme" content="dark light" />
+		<meta name="robots" content="noindex" />
+		<title>This road ends here - Walka</title>
+		<script>
+			try {
+				var theme = localStorage.getItem('walka-theme');
+				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+			} catch (e) {}
+		</script>
+		<link
+			rel="icon"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23256abf'/%3E%3Cpath d='M8.2 15.6 12.4 8l3.6 5.600L19.600 9l4.200 6.600' fill='none' stroke='%23fff' stroke-width='2.500' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='6' y='20' width='20' height='4.600' rx='2.300' fill='%23fff' fill-opacity='.55'/%3E%3C/svg%3E"
+		/>
+		<style>
+			:root {
+				color-scheme: dark light;
+				--bg: #05071a;
+				--ink: #f4f6ff;
+				--ink-2: #c3caee;
+				--ink-3: #909aca;
+				--label: #7ed4ff;
+				--gold: #f1c75a;
+				--line: rgba(150, 172, 255, 0.16);
+				--glow: rgba(70, 120, 255, 0.38);
+				--button: #efc55c;
+				--button-ink: #1b1304;
+			}
+			@media (prefers-color-scheme: light) {
+				:root:not([data-theme='dark']) {
+					--bg: #faf6ea;
+					--ink: #231a10;
+					--ink-2: #4d3f2d;
+					--ink-3: #6c5c45;
+					--label: #8f2a2a;
+					--gold: #85560f;
+					--line: rgba(92, 64, 20, 0.18);
+					--glow: rgba(255, 255, 244, 0.9);
+					--button: #17286e;
+					--button-ink: #fff8e6;
+				}
+			}
+			:root[data-theme='light'] {
+				color-scheme: light;
+				--bg: #faf6ea;
+				--ink: #231a10;
+				--ink-2: #4d3f2d;
+				--ink-3: #6c5c45;
+				--label: #8f2a2a;
+				--gold: #85560f;
+				--line: rgba(92, 64, 20, 0.18);
+				--glow: rgba(255, 255, 244, 0.9);
+				--button: #17286e;
+				--button-ink: #fff8e6;
+			}
+			:root[data-theme='dark'] {
+				color-scheme: dark;
+			}
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				display: grid;
+				grid-template-rows: auto 1fr auto;
+				min-height: 100vh;
+				min-height: 100dvh;
+				margin: 0;
+				background:
+					radial-gradient(70% 55% at 50% 0%, var(--glow), transparent 70%),
+					var(--bg);
+				color: var(--ink-2);
+				font:
+					400 1.0625rem/1.65 Inter,
+					'Segoe UI Variable Text',
+					'Segoe UI',
+					system-ui,
+					-apple-system,
+					Roboto,
+					'Helvetica Neue',
+					Arial,
+					sans-serif;
+				-webkit-font-smoothing: antialiased;
+			}
+			header,
+			main,
+			footer {
+				width: 100%;
+				max-width: 46rem;
+				margin: 0 auto;
+				padding: 0 1.5rem;
+			}
+			header {
+				padding-top: 1.25rem;
+			}
+			.brand {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.7rem;
+				min-height: 2.75rem;
+				color: var(--ink);
+				font-size: 1.3125rem;
+				font-weight: 650;
+				letter-spacing: -0.015em;
+				text-decoration: none;
+			}
+			main {
+				align-self: center;
+				padding-top: 3rem;
+				padding-bottom: 3rem;
+				text-align: center;
+			}
+			main .label {
+				margin: 0 auto;
+				color: var(--label);
+				font-size: 0.75rem;
+				font-weight: 600;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+			}
+			h1 {
+				margin: 1rem 0 0;
+				color: var(--ink);
+				font:
+					600 clamp(2.5rem, 1.6rem + 4.6vw, 4.25rem) / 1.04 Spectral,
+					'Iowan Old Style',
+					'Palatino Linotype',
+					Palatino,
+					'Book Antiqua',
+					Georgia,
+					serif;
+				letter-spacing: -0.02em;
+			}
+			main p {
+				max-width: 30rem;
+				margin: 1.25rem auto 0;
+				font-size: 1.1875rem;
+				line-height: 1.55;
+			}
+			.rule {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.75rem;
+				margin: 0 auto 2rem;
+				width: 12rem;
+			}
+			.rule::before,
+			.rule::after {
+				content: '';
+				flex: 1;
+				height: 1px;
+				background: linear-gradient(90deg, transparent, var(--gold));
+				opacity: 0.6;
+			}
+			.rule::after {
+				background: linear-gradient(270deg, transparent, var(--gold));
+			}
+			.rule span {
+				width: 9px;
+				height: 9px;
+				background: var(--gold);
+				transform: rotate(45deg);
+			}
+			.button {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				min-height: 3.25rem;
+				margin-top: 2.25rem;
+				padding: 0.75rem 1.75rem;
+				background: var(--button);
+				color: var(--button-ink);
+				font-weight: 600;
+				text-decoration: none;
+				clip-path: polygon(9px 0, calc(100% - 9px) 0, 100% 9px, 100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%, 0 calc(100% - 9px), 0 9px);
+			}
+			a:focus-visible {
+				outline: 2px solid var(--label);
+				outline-offset: 4px;
+			}
+			footer {
+				padding-top: 1.5rem;
+				padding-bottom: 2rem;
+				border-top: 1px solid var(--line);
+				color: var(--ink-3);
+				font-size: 0.8125rem;
+				line-height: 1.6;
+				text-align: center;
+			}
+			footer p {
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<a class="brand" data-home href="/" aria-label="Walka - home">
+				<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+					<rect width="32" height="32" rx="8" fill="#256abf" />
+					<path d="M8.2 15.6 12.4 8l3.6 5.6L19.6 9l4.2 6.6" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+					<rect x="6" y="20" width="20" height="4.6" rx="2.3" fill="#fff" fill-opacity="0.55" />
+				</svg>
+				<span>Walka</span>
+			</a>
+		</header>
+
+		<main>
+			<div class="rule" aria-hidden="true"><span></span></div>
+			<p class="label">Page not found</p>
+			<h1>This road ends here.</h1>
+			<p>There is no page at this address. It may have moved, or the address may have a slip in it.</p>
+			<a class="button" data-home href="/">Back to the front page</a>
+		</main>
+
+		<footer>
+			<p>
+				Walka is a fan-made tool. It is not affiliated with or endorsed by Blizzard Entertainment, UREVO, WELLFIT or any
+				other maker of treadmills.
+			</p>
+		</footer>
+
+		<script>
+			// Where the front page is. On a domain of its own the site is at the
+			// root; on github.io it is one folder down, under the repository's name.
+			(function () {
+				var onGitHub = /\.github\.io$/i.test(location.hostname);
+				var first = location.pathname.split('/')[1] || '';
+				var home = onGitHub && first ? '/' + first + '/' : '/';
+				var links = document.querySelectorAll('a[data-home]');
+				for (var i = 0; i < links.length; i++) links[i].setAttribute('href', home);
+			})();
+		</script>
+	</body>
+</html>

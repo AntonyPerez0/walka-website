@@ -1,0 +1,276 @@
+// Checks the built site (the build folder) before it is published.
+//
+//   npm run build && npm run verify
+//
+// What it holds the site to:
+//
+//  1. It works from any address. No page, stylesheet or picture is asked for
+//     by a path that starts at the root of the domain ("/img/x.png"), because
+//     on GitHub Pages the site lives under /walka-website/ until it has a
+//     domain of its own. Everything is relative - and everything a page asks
+//     for is really in the build.
+//  2. It loads nothing from anyone else. Fonts, scripts, styles and pictures
+//     all come from the site itself. Links to other sites are fine; fetching
+//     from them when a page opens is not. The few outside addresses the
+//     site's own code may talk to are listed in ALLOWED_HOSTS below.
+//  3. Every page has what a page needs: a language, a title, a description,
+//     one main heading - and the line that says Walka is not Blizzard's.
+//  4. The download buttons are the links Walka's README uses.
+//  5. Nothing that looks like a secret key is in what gets published.
+//
+// It reads files only: no browser, nothing to install.
+
+import { readdir, readFile, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { dirname, extname, join, posix, relative, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = fileURLToPath(new URL('../build', import.meta.url));
+
+// Outside addresses that may appear in the site's scripts. A new one here is
+// a decision: it means visitors' browsers will talk to that host.
+const ALLOWED_HOSTS = new Set([
+	'github.com', // links to Walka's repository and its downloads
+	'api.github.com', // the downloads page asks which version is the latest
+	'svelte.dev', // links inside error messages of the framework
+	'www.w3.org', // the names of SVG and XML, not a request
+	'www.sitemaps.org' // the name of the sitemap format, not a request
+]);
+// The site's own address, when the build was told it (see src/env.ts).
+if (process.env.SITE_URL) {
+	try {
+		ALLOWED_HOSTS.add(new URL(process.env.SITE_URL).host.toLowerCase());
+	} catch {
+		// not an address: the build will have complained already
+	}
+}
+
+const DISCLAIMER = 'not affiliated with or endorsed by Blizzard Entertainment';
+
+const DOWNLOADS = [
+	'https://github.com/AntonyPerez0/walka-addon/releases/latest/download/Walka.exe',
+	'https://github.com/AntonyPerez0/walka-addon/releases/latest/download/Walka-mac-apple-silicon.zip',
+	'https://github.com/AntonyPerez0/walka-addon/releases/latest/download/Walka-mac-intel.zip',
+	'https://github.com/AntonyPerez0/walka-addon/releases/latest/download/Walka-addon.zip'
+];
+const PAGES_WITH_DOWNLOADS = ['index.html', 'downloads/index.html'];
+
+// Things that would be a secret if they were real. The public "anon" key of
+// the database is not one of them; a "service_role" key is.
+const SECRETS = [
+	[/service_role/, 'a Supabase service_role key (or its name)'],
+	[/sb_secret_[A-Za-z0-9_-]{8,}/, 'a Supabase secret key'],
+	[/-----BEGIN [A-Z ]*PRIVATE KEY-----/, 'a private key'],
+	[/gh[pousr]_[A-Za-z0-9]{30,}/, 'a GitHub token']
+];
+
+// Tags that fetch what their address names as soon as the page opens.
+const FETCHING = new Set(['script', 'img', 'source', 'iframe', 'video', 'audio', 'embed', 'object', 'track', 'input']);
+const FETCHING_LINKS = /\b(stylesheet|preload|modulepreload|prefetch|icon|apple-touch-icon|manifest)\b/i;
+
+const problems = [];
+const problem = (file, message) => problems.push(`${file}: ${message}`);
+
+async function walk(dir) {
+	const files = [];
+	for (const entry of await readdir(dir, { withFileTypes: true })) {
+		const path = join(dir, entry.name);
+		if (entry.isDirectory()) files.push(...(await walk(path)));
+		else files.push(path);
+	}
+	return files;
+}
+
+const toUrlPath = (file) => relative(root, file).split(sep).join('/');
+
+/** The page a relative address points at, as a path inside the build - or null if it leaves the site. */
+function resolveInSite(fromFile, address) {
+	const [path] = address.split(/[?#]/);
+	const from = posix.dirname('/' + fromFile);
+	const target = posix.normalize(posix.join(from, path));
+	if (posix.join(from, path).startsWith('..') || target.startsWith('/..')) return null;
+	return target.replace(/^\//, '');
+}
+
+function existsInSite(target) {
+	const file = join(root, target);
+	if (!existsSync(file)) return null;
+	if (target === '' || target.endsWith('/')) return existsSync(join(file, 'index.html')) ? posix.join(target, 'index.html') : null;
+	return target;
+}
+
+const idsOf = new Map();
+async function ids(htmlFile) {
+	if (!idsOf.has(htmlFile)) {
+		const html = await readFile(join(root, htmlFile), 'utf8');
+		idsOf.set(htmlFile, new Set([...html.matchAll(/\sid=(?:"([^"]*)"|'([^']*)')/g)].map((m) => m[1] ?? m[2])));
+	}
+	return idsOf.get(htmlFile);
+}
+
+const decode = (text) =>
+	text.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+async function checkAddress(file, tag, attribute, raw, rel) {
+	const address = decode(raw.trim());
+	if (address === '' || /^(mailto:|tel:|data:|blob:|javascript:void)/i.test(address)) return;
+
+	const fetches = FETCHING.has(tag) || (tag === 'link' && FETCHING_LINKS.test(rel ?? ''));
+
+	if (/^[a-z][a-z0-9+.-]*:\/\//i.test(address) || address.startsWith('//')) {
+		if (fetches) problem(file, `<${tag} ${attribute}> loads from another site: ${address}`);
+		else if (!/^https:\/\//i.test(address)) problem(file, `link without https: ${address}`);
+		return;
+	}
+
+	if (address.startsWith('/')) {
+		if (file === '404.html' && address === '/') return; // the one link that page cannot know better
+		problem(file, `<${tag} ${attribute}="${address}"> starts at the root of the domain; it breaks under /walka-website/`);
+		return;
+	}
+
+	if (address.startsWith('#')) {
+		const id = decodeURIComponent(address.slice(1));
+		if (id && !(await ids(file)).has(id)) problem(file, `link to #${id}, which is not on the page`);
+		return;
+	}
+
+	const target = resolveInSite(file, address);
+	if (target === null) return problem(file, `<${tag} ${attribute}="${address}"> points outside the site`);
+	const found = existsInSite(target);
+	if (!found) return problem(file, `<${tag} ${attribute}="${address}"> points at nothing in the build`);
+
+	const fragment = address.includes('#') ? decodeURIComponent(address.split('#')[1]) : '';
+	if (fragment && found.endsWith('.html') && !(await ids(found)).has(fragment)) {
+		problem(file, `link to ${address}: there is no #${fragment} on that page`);
+	}
+}
+
+async function checkHtml(file) {
+	const full = await readFile(join(root, file), 'utf8');
+	const text = full
+		.replace(/<!--[\s\S]*?-->/g, '')
+		.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, (tag) => tag.match(/^<script\b[^>]*>/i)[0] + '</script>')
+		.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+
+	for (const [, tagName, attributes] of text.matchAll(/<([a-zA-Z][\w:-]*)\b([^>]*)>/g)) {
+		const tag = tagName.toLowerCase();
+		const read = (name) => {
+			const m = attributes.match(new RegExp(`\\s${name}=(?:"([^"]*)"|'([^']*)')`, 'i'));
+			return m ? (m[1] ?? m[2]) : undefined;
+		};
+		const rel = read('rel');
+		for (const attribute of ['href', 'src', 'poster', 'action', 'data']) {
+			const value = read(attribute);
+			if (value !== undefined) await checkAddress(file, tag, attribute, value, rel);
+		}
+		for (const attribute of ['srcset', 'imagesrcset']) {
+			const value = read(attribute);
+			if (value === undefined) continue;
+			for (const candidate of value.split(',')) {
+				const address = candidate.trim().split(/\s+/)[0];
+				if (address) await checkAddress(file, tag === 'link' ? 'img' : tag, attribute, address, rel);
+			}
+		}
+		if (tag === 'a' && read('target') === '_blank' && !/\bnoopener\b/.test(rel ?? '')) {
+			problem(file, `a link that opens a new tab without rel="noopener": ${read('href')}`);
+		}
+		if (tag === 'img' && read('alt') === undefined) problem(file, `a picture without alt text: ${read('src')}`);
+	}
+
+	// SvelteKit's start-up script names its files relative to the page, too.
+	if (/["'(]\/_app\//.test(full)) problem(file, 'names a file under /_app/ from the root of the domain');
+
+	if (!/<html[^>]*\slang="[a-z-]+"/i.test(full)) problem(file, 'no language on <html>');
+	const title = full.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim();
+	if (!title) problem(file, 'no <title>');
+	if (!/<meta\s+name="viewport"/i.test(full)) problem(file, 'no viewport meta');
+	const headings = [...text.matchAll(/<h1\b/gi)].length;
+	if (headings !== 1) problem(file, `${headings} <h1> headings (one is right)`);
+	if (!full.replace(/\s+/g, ' ').includes(DISCLAIMER)) problem(file, `the line "${DISCLAIMER}" is missing`);
+	if (file !== '404.html') {
+		const description = full.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1]?.trim();
+		if (!description) problem(file, 'no meta description');
+		else if (description.length > 200) problem(file, `meta description is ${description.length} characters (keep it under 200)`);
+	}
+	return { title };
+}
+
+async function checkCss(file) {
+	const css = await readFile(join(root, file), 'utf8');
+	for (const [, raw] of css.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/g).map((m) => [m[0], m[1] ?? m[2] ?? m[3]])) {
+		const address = raw.trim();
+		if (address === '' || address.startsWith('data:') || address.startsWith('#')) continue;
+		if (/^[a-z][a-z0-9+.-]*:\/\//i.test(address) || address.startsWith('//')) problem(file, `stylesheet loads from another site: ${address}`);
+		else if (address.startsWith('/')) problem(file, `stylesheet names ${address} from the root of the domain`);
+		else {
+			const target = resolveInSite(file, address);
+			if (target === null || !existsInSite(target)) problem(file, `stylesheet names ${address}, which is not in the build`);
+		}
+	}
+	if (/@import\s+(?:url\()?["']?https?:/i.test(css)) problem(file, 'stylesheet imports from another site');
+}
+
+async function checkScript(file) {
+	const code = await readFile(join(root, file), 'utf8');
+	for (const [, host] of code.matchAll(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/gi)) {
+		if (!ALLOWED_HOSTS.has(host.toLowerCase())) {
+			problem(file, `names the outside address "${host}". If visitors' browsers are meant to talk to it, add it to ALLOWED_HOSTS in scripts/verify.mjs`);
+		}
+	}
+}
+
+async function main() {
+	if (!existsSync(root)) {
+		console.error('verify: there is no build folder. Run `npm run build` first.');
+		process.exit(1);
+	}
+
+	const files = (await walk(root)).map(toUrlPath).sort();
+	const pages = files.filter((f) => f.endsWith('.html'));
+	const titles = new Map();
+
+	for (const file of files) {
+		const kind = extname(file);
+		if (kind === '.html') {
+			const { title } = await checkHtml(file);
+			if (title) titles.set(title, [...(titles.get(title) ?? []), file]);
+		} else if (kind === '.css') await checkCss(file);
+		else if (kind === '.js' || kind === '.mjs') await checkScript(file);
+
+		if (['.html', '.css', '.js', '.mjs', '.json', '.txt', '.xml', '.webmanifest', '.svg'].includes(kind)) {
+			const text = await readFile(join(root, file), 'utf8');
+			for (const [pattern, what] of SECRETS) if (pattern.test(text)) problem(file, `contains what looks like ${what}`);
+		}
+	}
+
+	for (const [title, where] of titles) {
+		if (where.length > 1) problem(where.join(', '), `share the title "${title}"`);
+	}
+
+	for (const page of PAGES_WITH_DOWNLOADS) {
+		if (!files.includes(page)) continue;
+		const html = await readFile(join(root, page), 'utf8');
+		for (const link of DOWNLOADS) if (!html.includes(`href="${link}"`)) problem(page, `the download link ${link} is missing`);
+	}
+
+	for (const needed of ['index.html', '404.html', 'favicon.svg', 'robots.txt']) {
+		if (!files.includes(needed)) problem(needed, 'is missing from the build');
+	}
+
+	const bytes = (await Promise.all(files.map((f) => stat(join(root, f))))).reduce((sum, s) => sum + s.size, 0);
+	console.log(`verify: ${pages.length} pages, ${files.length} files, ${(bytes / 1024 / 1024).toFixed(1)} MB`);
+
+	if (problems.length) {
+		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n`);
+		for (const line of problems) console.error(`  - ${line}`);
+		console.error('');
+		process.exit(1);
+	}
+	console.log('verify: all good - relative links, nothing loaded from other sites, every page complete.');
+}
+
+main().catch((error) => {
+	console.error(error);
+	process.exit(1);
+});

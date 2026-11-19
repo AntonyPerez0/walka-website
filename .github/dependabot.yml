@@ -1,0 +1,27 @@
+# The actions the build uses are pinned to exact commits (see
+# workflows/site.yml), and the npm packages to exact versions with checksums
+# (package-lock.json). This has GitHub propose newer versions of both, so
+# that the pins do not rot. Once a month, each kind in one pull request,
+# which builds and checks the site: green means merge.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "CI"
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      packages:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "Packages"
