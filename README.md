@@ -1,8 +1,9 @@
 # Walka website
 
-The website for [Walka](https://github.com/AntonyPerez0/walka-addon), the
-program that lets you walk on your walking pad while you play World of
-Warcraft. This repository holds only the website. Walka itself - the game
+The website for [Walka](https://github.com/AntonyPerez0/walka-addon), which
+counts your steps, miles and calories while you walk on your walking pad
+and play World of Warcraft, and draws your character's road on the map.
+This repository holds only the website. Walka itself - the game
 addon and the companion program - lives in
 [walka-addon](https://github.com/AntonyPerez0/walka-addon).
 
@@ -17,7 +18,7 @@ itself.
 |---|---|---|
 | Home | `/` | What Walka is, what you get, the downloads |
 | How it works | `/how-it-works/` | The two pieces, what Walka looks at, getting started, the numbers, the Share picture |
-| Safety | `/safety/` | Stopping the belt, what Walka is built to do, what it does not promise |
+| Safety | `/safety/` | Walka only listens to the treadmill; walking while you play is at your own risk; what Walka is and is not |
 | FAQ | `/faq/` | Short answers, with links to the long ones |
 | Downloads | `/downloads/` | The files, which treadmills work, is the download safe |
 | Privacy | `/privacy/` | What Walka and this site do with data: nothing is uploaded |
@@ -25,7 +26,9 @@ itself.
 
 Everything the site says about Walka is taken from Walka's own
 `README.md`, `DISCLAIMER.md` and `docs/`. When those change, the site
-follows them - not the other way round.
+follows them - not the other way round. (It was written for Walka 0.7,
+which only listens to a treadmill and cannot move its belt. The site must
+never say that Walka starts, stops or steers a belt.)
 
 ## Run it on your computer
 

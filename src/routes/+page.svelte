@@ -4,21 +4,21 @@
 	import GetWalka from '#lib/components/home/GetWalka.svelte';
 	import Hero from '#lib/components/home/Hero.svelte';
 	import HowBrief from '#lib/components/home/HowBrief.svelte';
+	import OnlyListens from '#lib/components/home/OnlyListens.svelte';
 	import PrivacyPromise from '#lib/components/home/PrivacyPromise.svelte';
 	import ShareShowcase from '#lib/components/home/ShareShowcase.svelte';
-	import Stopping from '#lib/components/home/Stopping.svelte';
 </script>
 
 <Seo
 	home
 	title="Walka - walk on your walking pad while you play"
-	description="Walka links an under-desk walking pad to World of Warcraft. The belt follows your character: faster when it runs, slower when it stands still. Free."
+	description="Walk on your walking pad while you play World of Warcraft. Walka counts your steps, miles and calories, and draws your character's road on the map. Free."
 />
 
 <Hero />
 <Features />
 <HowBrief />
 <ShareShowcase />
-<Stopping />
+<OnlyListens />
 <PrivacyPromise />
 <GetWalka />

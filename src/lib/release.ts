@@ -11,7 +11,7 @@ const KEY = 'walka-latest-release';
 const AN_HOUR = 60 * 60 * 1000;
 
 export type Release = {
-	/** "0.6.1" */
+	/** "0.7.0" */
 	version: string;
 	/** ISO date of publication */
 	published: string;

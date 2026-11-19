@@ -34,7 +34,7 @@
 				<h2 class="label">The project</h2>
 				<ul>
 					<li><a href={LINKS.repo}>Walka on GitHub</a></li>
-					<li><a href={LINKS.releases}>Every version</a></li>
+					<li><a href={LINKS.latestRelease}>The latest release</a></li>
 					<li><a href={LINKS.issues}>Report a bug</a></li>
 					<li><a href={LINKS.security}>Report a security problem</a></li>
 				</ul>

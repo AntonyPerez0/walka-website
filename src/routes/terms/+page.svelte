@@ -56,7 +56,10 @@
 <ShortVersion linksLabel="Disclaimer and licences" links={DOCUMENTS}>
 	<li>This site is free to read, and you need no account.</li>
 	<li>It is provided as is, with no warranty.</li>
-	<li>Nothing on it is medical advice, or a promise about how Walka behaves with your treadmill.</li>
+	<li>
+		Nothing on it is medical advice, a promise that Walka will work without fault, or a promise that walking while you
+		play is safe.
+	</li>
 	<li>
 		Walka is a fan-made tool, not Blizzard's, and you use it at your own risk: see the
 		<a href={LINKS.disclaimer}>disclaimer</a>.
@@ -72,9 +75,10 @@
 		</p>
 		<Callout kind="caution" title="You use Walka at your own risk">
 			<p>
-				By downloading, installing or using Walka you accept that. It is experimental and not yet tried on a real
-				walking pad, it comes with no warranty, and it is not a safety device or a medical device. Read the
-				<a href={LINKS.disclaimer}>disclaimer</a> before you download.
+				By downloading, installing or using Walka you accept that. Walka only listens to your treadmill - it cannot
+				start, stop or change the speed of the belt - but you still walk on a treadmill while you look at a game. Walka
+				is experimental and not yet tried on a real walking pad, it comes with no warranty, and it is not a safety
+				device or a medical device. Read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.
 			</p>
 		</Callout>
 		<p>Where this page and the disclaimer differ about Walka, the disclaimer counts.</p>
@@ -100,12 +104,18 @@
 		</p>
 		<p>
 			If you have a health condition, are pregnant or are in any doubt, ask a doctor first: see
-			<a href="{resolve('safety/')}#before-you-use-it">Before you use it</a>.
+			<a href="{resolve('safety/')}#before-you-use-it">Before you walk</a>.
 		</p>
 		<p>
-			Nothing on this site is a promise about how Walka behaves with your treadmill, your computer or your Bluetooth. It
-			describes <a href="{resolve('safety/')}#not-a-guarantee">a design, not a guarantee</a>, and Walka is not a safety
-			device: the treadmill's own stop button, remote and safety key are.
+			Nothing on this site is a promise that Walka will work without fault or without interruption with your treadmill,
+			your computer or your Bluetooth. Walka has not yet been tried on a real walking pad: see
+			<a href="{resolve('safety/')}#not-a-guarantee">what has and has not been verified</a>.
+		</p>
+		<p>
+			And nothing on this site is a promise that walking while you play is safe. Walka is not a safety device. It only
+			listens to your treadmill and cannot stop a belt: the treadmill's own stop button, remote and safety key are what
+			stops it. Whether walking at a desk while playing is safe for you, for your treadmill and for the room you do it
+			in is for you to decide.
 		</p>
 	</section>
 

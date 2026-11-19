@@ -20,11 +20,11 @@
 	<Sky />
 
 	<div class="container copy">
-		<p class="label">A walking pad companion for World of Warcraft</p>
+		<p class="label">A walking log for World of Warcraft</p>
 		<h1>Walk while you play.</h1>
 		<p class="lede">
-			Walka links your walking pad to World of Warcraft. The belt follows your character: faster when it runs, slower
-			when it stands still.
+			Walk on your walking pad while you play World&nbsp;of&nbsp;Warcraft. Walka counts your steps, miles and calories,
+			and draws your character's road on the map.
 		</p>
 
 		<div class="actions">
@@ -39,8 +39,12 @@
 		</div>
 
 		<p class="fine">
-			Free. For Windows and Mac. <strong>Experimental, and at your own risk</strong> - read the
-			<a href={LINKS.disclaimer}>disclaimer</a> before you download.
+			<strong>Walka only listens to your treadmill.</strong> It cannot start, stop or change the speed of the belt: you
+			do that at the treadmill itself.
+		</p>
+		<p class="fine">
+			Free. For Windows and Mac. <strong>Experimental:</strong> not yet tried on a real walking pad. Walking while you
+			play is at your own risk - read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.
 		</p>
 	</div>
 
@@ -52,11 +56,11 @@
 					narrow="dashboard-phone"
 					first
 					sizes="(min-width: 1420px) 1290px, calc(100vw - 2.5rem)"
-					alt="The Walka dashboard's Live view while the belt follows the character: the belt's speed, the state of the connections and the red STOP button. On a wide screen it also shows this session's time, distance, steps, calories and heart rate."
+					alt="The Walka dashboard's Live view: the belt's speed as the treadmill reports it, and what Walka is connected to. On a wide screen it also shows this walk's time, distance, steps, calories and heart rate."
 				/>
 			</div>
 		</Frame>
-		<p class="caption fine">The Walka dashboard, with the demo character.</p>
+		<p class="caption fine">The Walka dashboard, with a simulated treadmill.</p>
 	</div>
 </section>
 
@@ -100,6 +104,10 @@
 	.copy .fine {
 		max-width: 34rem;
 		margin-top: 1.25rem;
+	}
+
+	.copy .fine + .fine {
+		margin-top: 0.5rem;
 	}
 
 	.copy .fine strong {
@@ -153,6 +161,10 @@
 
 		.copy > :global(:nth-child(5)) {
 			animation-delay: 0.2s;
+		}
+
+		.copy > :global(:nth-child(6)) {
+			animation-delay: 0.25s;
 		}
 
 		.stage {

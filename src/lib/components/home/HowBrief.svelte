@@ -5,16 +5,16 @@
 
 	const STEPS = [
 		{
-			title: 'The addon watches your character.',
-			text: 'It draws what it sees as a thin strip of squares in the corner of the game window.'
+			title: 'The addon draws a strip.',
+			text: 'It marks your walking sessions and knows which character they belong to. It draws its state as a thin strip of black and white squares in the top-left corner of the game window.'
 		},
 		{
 			title: 'Walka reads the strip.',
 			text: 'A small program on your computer takes a tiny screenshot of that corner and decodes it.'
 		},
 		{
-			title: 'The belt follows.',
-			text: "Walka sets the belt's speed over Bluetooth, gently, and never above the cap you set."
+			title: 'Walka listens to the treadmill.',
+			text: 'Over Bluetooth it reads the speed, distance and steps the treadmill reports, and records your walk. It sends the treadmill no commands.'
 		}
 	];
 
@@ -24,7 +24,7 @@
 
 <section class="how">
 	<div class="container">
-		<SectionHead label="How it works" title="The game draws. Walka reads. The belt follows.">
+		<SectionHead label="How it works" title="The addon draws. Walka reads. The treadmill reports.">
 			<p>
 				An addon cannot use Bluetooth, files or the network. So it draws - and Walka never sends input to the game: no
 				key presses, no mouse input, no memory reading.
@@ -35,7 +35,7 @@
 			{#each STRIP as on, i (i)}<span class:on></span>{/each}
 		</div>
 
-		<ol class="steps">
+		<ol class="stages">
 			{#each STEPS as step, i (step.title)}
 				<li use:reveal={i * 110}>
 					<span class="stud" aria-hidden="true"><span>{i + 1}</span></span>
@@ -81,7 +81,9 @@
 		background: #f5f5f5;
 	}
 
-	.steps {
+	/* (Not called .steps: that name is the numbered list of base.css, which
+	   would add numerals and rules of its own to these three.) */
+	.stages {
 		position: relative;
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -92,8 +94,8 @@
 
 	/* The road between the studs, drawn as the Share picture draws a road:
 	   a full line for the stretch on the computer, dashes for the hop
-	   through the air to the belt. It ends at the third stud. */
-	.steps::before {
+	   through the air from the treadmill. It ends at the third stud. */
+	.stages::before {
 		content: '';
 		position: absolute;
 		top: calc(1.25rem - 1px);
@@ -148,20 +150,30 @@
 	}
 
 	@media (max-width: 52rem) {
-		.steps {
+		.stages {
 			grid-template-columns: 1fr;
 			gap: 2.25rem;
 		}
 
-		.steps::before {
+		/* Here the road runs down, from each stud to the next one - however
+		   many lines the words beside it take. */
+		.stages::before {
+			content: none;
+		}
+
+		li:not(:last-child)::before {
+			content: '';
+			position: absolute;
 			top: 1.25rem;
-			bottom: 5.5rem;
+			bottom: -3.5rem; /* the gap between two steps, and half a stud */
 			left: calc(1.25rem - 1px);
 			width: 2px;
-			height: auto;
-			background:
-				linear-gradient(180deg, var(--gold) 0 50%, transparent 50%),
-				repeating-linear-gradient(180deg, var(--gold) 0 5px, transparent 5px 11px);
+			background: var(--gold);
+			opacity: 0.6;
+		}
+
+		li:nth-child(2)::before {
+			background: repeating-linear-gradient(180deg, var(--gold) 0 5px, transparent 5px 11px);
 		}
 
 		li {

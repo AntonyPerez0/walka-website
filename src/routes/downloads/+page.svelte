@@ -54,9 +54,9 @@
 	<div class="container">
 		<h2 id="get-walka-title" class="visually-hidden">The downloads</h2>
 		<p class="intro">
-			Walka is two pieces: a program on your computer and an addon in the game. You need both: the addon watches your
-			character, and the program talks to your walking pad. One download is enough, though - the program carries a copy
-			of the addon and can put it in the game for you.
+			Walka is two pieces: a program on your computer and an addon in the game. You need both: the addon knows which
+			character you are playing, and the program listens to your walking pad. One download is enough, though - the
+			program carries a copy of the addon and can put it in the game for you.
 		</p>
 
 		{#if platform === 'other'}
@@ -68,10 +68,17 @@
 		<div class="in-short">
 			<h3 class="visually-hidden" id="in-short">In short</h3>
 			<p>
+				<span class="i"><Icon name="bluetooth" size={22} /></span>
+				<span>
+					<strong>Walka only listens to your treadmill.</strong> It cannot start, stop or change the speed of the belt:
+					you do that at the treadmill itself.
+				</span>
+			</p>
+			<p>
 				<span class="i warn"><Icon name="warning" size={22} /></span>
 				<span>
-					<strong>Experimental, and at your own risk:</strong> not yet tried on a real walking pad. Read the
-					<a href={LINKS.disclaimer}>disclaimer</a> before you download.
+					<strong>Experimental:</strong> not yet tried on a real walking pad. Walking while you play is at your own risk -
+					read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.
 				</span>
 			</p>
 			<p>
@@ -87,9 +94,8 @@
 			<p>
 				<span class="i"><Icon name="check" size={22} /></span>
 				<span>
-					<strong>Always the latest release.</strong> These links always give the latest release. Every version is on
-					the <a href={LINKS.releases}>Releases page</a>. A published release is never replaced: a fix is a new
-					version, and older versions are not fixed.
+					<strong>Always the latest release.</strong> These links always give the latest release. A published release
+					is never replaced: a fix is a new version, and older versions are not fixed.
 					<span class="release" aria-live="polite">
 						{#if release}
 							<a href={LINKS.latestRelease}>Latest release</a>: Walka {release.version}{#if published}, published {published}{/if}.
@@ -117,6 +123,12 @@
 				<code>/Applications/World of Warcraft/_forever_/Interface/AddOns/</code>), so that there is a
 				<code>Walka</code> folder in it. Then start the game and tick <em>Walka</em> in the AddOns list.
 			</p>
+			<p>
+				<strong>Have a version of Walka that moved the belt?</strong> The versions that could start a belt, change its
+				speed and stop it have been withdrawn, and their downloads removed: do not use one. Replace it with the current
+				one and delete the old <code>Walka.exe</code>. Your walks and settings are kept (the settings that were about
+				steering the belt are simply no longer read), and the addon is updated with <em>Install</em> on the dashboard.
+			</p>
 			<p class="fine">
 				To show the latest version's number and date, this page asks GitHub which Walka release is the latest. The buttons themselves are
 				links to files on GitHub. More on the <a href={resolve('privacy/')}>privacy page</a>.
@@ -129,61 +141,61 @@
 <section id="before-you-download" class="prose">
 <h2>Before you download</h2>
 <Callout kind="warning" title="Early version - not yet tried on a real walking pad">
-<p>Read <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> and keep the pad&#39;s remote in your hand the first time.</p>
+<p>The pad and the game have not been tested against this code. Read <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.</p>
 </Callout>
-<Callout kind="caution" title="You use Walka at your own risk">
-<p>It moves a motorised belt while you stand on it. It comes with no warranty, and it is not a safety device or a medical device. If you have a health condition, are pregnant or are in any doubt, ask a doctor first - and stop if you feel dizzy or unwell. The whole of it: <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/DISCLAIMER.md">the disclaimer</a>.</p>
+<Callout kind="caution" title="Walking while you play is at your own risk">
+<p>Your eyes are on a game, not on your feet. Walka comes with no warranty, and it is not a safety device or a medical device. If you have a health condition, are pregnant or are in any doubt, ask a doctor first - and stop if you feel dizzy or unwell. The whole of it: <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/DISCLAIMER.md">the disclaimer</a>.</p>
 </Callout>
 <Callout kind="warning" title="The Mac version is new">
-<p>GitHub&#39;s Macs build it, run its tests and check that the finished program starts, drives the simulated belt and stops it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. Do everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> - and if you do, <a href="https://github.com/AntonyPerez0/walka-addon/issues">say how it went</a>.</p>
+<p>GitHub&#39;s Macs build it, run its tests and check that the finished program starts, records a walk on a simulated pad and saves it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. Do everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> - and if you do, <a href="https://github.com/AntonyPerez0/walka-addon/issues">say how it went</a>.</p>
 </Callout>
 <h3 id="what-walka-is">What Walka is, and is not</h3>
 <ul>
+<li><strong>A notebook, not a remote control.</strong> Walka reads what your treadmill reports over Bluetooth - speed, distance, on some pads steps - and writes your walks down. It has no way to start or stop a belt or to change its speed, and it sends the treadmill no commands (the safety page says <a href="{resolve('safety/')}#made-sure">how that is made sure of</a>). Earlier versions did drive the belt. They have been withdrawn: do not use one.</li>
 <li><strong>A free hobby project, and an early one.</strong> Its author has not yet run it against a physical treadmill.</li>
-<li><strong>Not a guarantee.</strong> Its safety rules are what the software is designed to do, and what its automated tests check against a simulated treadmill. Software has bugs, Bluetooth drops, computers freeze.</li>
-<li><strong>Not a safety device.</strong> Nothing in Walka replaces the treadmill&#39;s own stop button, remote and safety key. Bluetooth is not an emergency stop.</li>
+<li><strong>Not a safety device.</strong> Walka cannot stop a belt. The treadmill&#39;s own stop button, remote and safety key are what stops it - keep them within reach.</li>
 <li><strong>Not a medical device, and not medical advice.</strong> Calories, steps, heart rate and everything worked out from them are estimates, for interest only. Do not use them to decide anything about your health, your diet, your medication or your training.</li>
-<li><strong>Not approved by Blizzard</strong>, and not made, tested or approved by the maker of your treadmill.</li>
-<li><strong>For adults.</strong></li>
+<li><strong>Not made, tested or approved by the maker of your treadmill.</strong> Walka connects to the treadmill the way a fitness app does, to read its numbers. Most treadmills accept one such connection at a time, so the maker&#39;s own app cannot be connected while Walka is.</li>
+<li><strong>Not approved by Blizzard.</strong> See <a href="{resolve('faq/')}#is-this-allowed">Is this allowed by Blizzard?</a></li>
+<li><strong>For adults.</strong> Keep children and pets away from the treadmill, and stop the belt when you step off.</li>
 </ul>
-<p>By downloading, installing or using Walka you accept that you do so at your own risk. Whether it is safe for you, for your treadmill and for the room you use it in is for you to decide.</p>
+<p>By downloading, installing or using Walka you accept that you do so at your own risk. Whether walking at a desk while playing is safe for you, for your treadmill and for the room you do it in is for you to decide - and so is whether to let anyone else do it on your equipment.</p>
 </section>
 
 <section id="what-you-need" class="prose">
 <h2>What you need</h2>
 <ul>
 <li><strong>A computer with Bluetooth.</strong> Windows 11 (Windows 10 generally works) with Bluetooth 4.0 / &quot;LE&quot; or newer - or a Mac, with an Apple chip or an Intel processor and a recent macOS.</li>
-<li><strong>A walking pad or treadmill that apps can control over Bluetooth:</strong> a UREVO Strol 2E, a WELLFIT TM029 Pro, or another Bluetooth FTMS treadmill - see <a href="#which-treadmills-work">which treadmills work</a>. It has to be switched on, <strong>not</strong> paired in the computer&#39;s Bluetooth settings, and with its own phone app <strong>closed</strong> (most accept one connection at a time).</li>
+<li><strong>A walking pad or treadmill that shows its numbers to apps over Bluetooth:</strong> a UREVO Strol 2E, a WELLFIT TM029 Pro, or another Bluetooth FTMS treadmill - see <a href="#which-treadmills-work">which treadmills work</a>. It has to be switched on, <strong>not</strong> paired in the computer&#39;s Bluetooth settings, and with its own phone app <strong>closed</strong> (most accept one connection at a time).</li>
 <li><strong>World of Warcraft: Forever</strong>, in <em>Windowed</em> or <em>Windowed (Fullscreen)</em> mode, with the top-left corner of the game visible.</li>
 </ul>
-<p>Playing another game, or none? Then you need the program only, not the addon: the dashboard has a manual session, with start, pause, stop and speed buttons.</p>
+<p>Playing another game, or none? Then you need the program only, not the addon, and there is nothing to set up: Walka records a walk whenever the belt moves. Start the belt with the treadmill&#39;s remote and play anything, or nothing. Such a walk is in the dashboard&#39;s history as <em>No game session</em>, and in your totals.</p>
 </section>
 
 <section id="which-treadmills-work" class="prose">
 <h2>Which treadmills work</h2>
-<p>Walka speaks <strong>Bluetooth FTMS</strong>, the standard that fitness apps use to control a treadmill. If an app other than the maker&#39;s own can <em>set the speed</em> of your treadmill, Walka very likely can too.</p>
+<p>Walka reads <strong>Bluetooth FTMS</strong>, the standard that fitness apps use to show a treadmill&#39;s speed and distance. If an app other than the maker&#39;s own can <em>show the speed</em> of your treadmill, Walka very likely can too. The treadmill does not have to be one that apps can control: Walka controls nothing.</p>
 <div class="table">
 <table>
 	<thead><tr><th scope="col">Treadmill</th><th scope="col">How Walka finds it</th><th scope="col">What is known</th></tr></thead>
 	<tbody>
-		<tr><th scope="row"><strong>UREVO Strol 2E</strong> and other UREVO pads</th><td>By name (<code>URTM...</code>), at once</td><td>Other open-source projects drive it with the same commands.</td></tr>
-		<tr><th scope="row"><strong>WELLFIT TM029 Pro</strong> and other WELLFIT treadmills</th><td>By name (<code>WELLFIT TM Linker</code>), at once</td><td>Another open-source project drives a WELLFIT this way; Walka copies what it needed.</td></tr>
-		<tr><th scope="row"><strong>Any other FTMS treadmill</strong></th><td>By what it advertises, after a 15-second scan - or pick it yourself: dashboard → <em>Treadmill → Scan</em></td><td>Depends on the treadmill. Try it as in <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.</td></tr>
+		<tr><th scope="row"><strong>UREVO Strol 2E</strong> and other UREVO pads</th><td>By name (<code>URTM...</code>), at once</td><td>Other open-source projects read it the same way.</td></tr>
+		<tr><th scope="row"><strong>WELLFIT TM029 Pro</strong> and other WELLFIT treadmills</th><td>By name (<code>WELLFIT TM Linker</code>), at once</td><td>Another open-source project works with a WELLFIT over FTMS.</td></tr>
+		<tr><th scope="row"><strong>Any other FTMS treadmill</strong></th><td>By what it advertises, after a 15-second scan - or pick it yourself: dashboard → <em>Treadmill → Scan</em></td><td>Depends on the treadmill. Check its numbers as in <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.</td></tr>
 	</tbody>
 </table>
 </div>
 <p><strong>None of these has been tried by Walka&#39;s author on the real machine yet</strong> - the warning at the top of this page is for all of them. Details and sources: <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/docs/HARDWARE.md">the hardware notes</a>.</p>
-<h3 id="full-size-treadmills">With a treadmill that is not a walking pad</h3>
+<h3 id="things-to-know">Things to know</h3>
 <ul>
-<li><strong>Walka stays at walking pace.</strong> Whatever the treadmill can do, the speed cap cannot be set above 6.5 km/h (4.0 mph), and starts at 3.0 mph.</li>
-<li><strong>Incline is left alone.</strong> Set it on the treadmill.</li>
-<li><strong>The safety key and the treadmill&#39;s own buttons come first.</strong> Walka is built to treat a stop at the treadmill as final until you resume.</li>
-<li>If the dashboard says the treadmill <em>does not take speed commands</em>, it shows its numbers to apps but cannot be driven by them. Walka then still counts your walk, with you setting the speed on the treadmill.</li>
+<li><strong>The speed is yours.</strong> Walka sets none and limits none. How fast you walk is between you and the treadmill. That goes for the incline too, on any treadmill: Walka does not touch it.</li>
+<li><strong>One connection at a time.</strong> Most treadmills talk to one app. While Walka is connected, the maker&#39;s phone app cannot be - and the other way round.</li>
+<li><strong>Walka remembers your treadmill.</strong> After the first connection it only reconnects to that one, so that a neighbour&#39;s walk is never counted as yours. <em>Forget this treadmill</em> on the dashboard lets you move to another.</li>
 </ul>
 <h3 id="what-will-not-work">What will not work</h3>
-<p>Treadmills that only talk to their maker&#39;s app in a private language (many NordicTrack / iFIT machines, the older KingSmith WalkingPads), and bikes or rowers - Walka only connects to treadmills.</p>
+<p>Treadmills that only talk to their maker&#39;s app in a private language (many NordicTrack / iFIT machines, the older KingSmith WalkingPads), and bikes or rowers - Walka only reads treadmills.</p>
 <h3 id="probe">Is yours not listed, or not behaving?</h3>
-<p>Run <code>Walka.exe probe</code> (on a Mac: <code>Walka probe</code>) with the treadmill on. It only listens: it sends the treadmill no commands, so it cannot move the belt. The one thing it writes is the switch that turns notifications on. It listens while you operate the treadmill with its remote, and saves a small text report - the window says where.</p>
+<p>Run <code>Walka.exe probe</code> (on a Mac: <code>Walka probe</code>) with the treadmill on. Like Walka itself it only listens: it sends the treadmill no commands. The one thing it writes is the switch that turns notifications on. It listens while you operate the treadmill with its remote, and saves a small text report - the window says where.</p>
 <p>On a Mac a command is typed in Terminal: drag the <code>Walka</code> file into a Terminal window, type a space and <code>probe</code>, press Return.</p>
 <p><a href="https://github.com/AntonyPerez0/walka-addon/issues">Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added.</p>
 <p>The saved report is made to be posted in public.</p>
@@ -193,7 +205,7 @@
 <li><strong>The window the probe runs in shows everything:</strong> that is for your eyes. Post the file, not a screenshot of the window.</li>
 </ul>
 <Callout kind="note" title="The maker of your treadmill has not made, tested or approved Walka">
-<p>Driving a treadmill from software other than its maker&#39;s own may be something the maker does not support, and may affect its warranty. That is yours to check.</p>
+<p>Walka connects to the treadmill the way a fitness app does, to read its numbers. It is a fan-made tool, not affiliated with or endorsed by UREVO, WELLFIT or any other maker of treadmills.</p>
 </Callout>
 </section>
 
@@ -205,18 +217,18 @@
 <ol>
 <li><strong>Download <code>Walka.exe</code>.</strong> It goes to your <em>Downloads</em> folder. If the browser says it &quot;isn&#39;t commonly downloaded&quot;, choose <strong>Keep</strong> (in Edge: <strong>...</strong> → <strong>Keep</strong> → <strong>Show more</strong> → <strong>Keep anyway</strong>).</li>
 <li><strong>Double-click it.</strong> The first time, Windows may say <em>&quot;Windows protected your PC&quot;</em>. Click <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
-<li><strong>A black window opens: that is Walka.</strong> Leave it open while you walk - closing it stops Walka. The <em>dashboard</em> page opens in your browser (if not, go to <code>127.0.0.1:8787</code>).</li>
+<li><strong>A black window opens: that is Walka.</strong> Leave it open while you walk - closing it ends the recording (the belt is not touched). The <em>dashboard</em> page opens in your browser (if not, go to <code>127.0.0.1:8787</code>).</li>
 </ol>
 <h3 id="first-time-mac">On a Mac</h3>
 <ol>
 <li><strong>Download the zip for your Mac</strong> - Apple chip or Intel, <a href="#mac">as above</a>.</li>
 <li><strong>Open the zip</strong> (double-click it in <em>Downloads</em>). Inside is one file, <code>Walka</code>.</li>
 <li><strong>Double-click <code>Walka</code>.</strong> The first time, macOS refuses: <em>&quot;Apple could not verify Walka is free of malware&quot;</em>. Click <strong>Done</strong>, open <strong>System Settings → Privacy &amp; Security</strong>, scroll down to <em>Security</em> and click <strong>Open Anyway</strong> next to Walka. (On macOS 14 and older: hold Control, click <code>Walka</code>, choose <strong>Open</strong>, then <strong>Open</strong>.)</li>
-<li><strong>A Terminal window opens: that is Walka.</strong> Leave it open while you walk. Closing it stops the belt and Walka. The dashboard opens in your browser.</li>
+<li><strong>A Terminal window opens: that is Walka.</strong> Leave it open while you walk. Closing it ends the recording (the belt is not touched). The dashboard opens in your browser.</li>
 </ol>
 <p>macOS asks before a program may use Bluetooth or look at the screen. Walka runs inside Terminal, so it asks about <strong>Terminal</strong>.</p>
 <ul>
-<li><strong>Bluetooth</strong> - to talk to the walking pad. Click <strong>Allow</strong>.</li>
+<li><strong>Bluetooth</strong> - to listen to the walking pad. Click <strong>Allow</strong>.</li>
 <li><strong>Screen Recording</strong> - to see the strip the addon draws in the corner of the game. The dashboard says when this is what is missing. Open <strong>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</strong> (<em>Screen Recording</em> on older versions), switch on <strong>Terminal</strong>, then close Walka and open it again. Recent versions of macOS ask again every few weeks whether Terminal may still do this: choose <strong>Allow</strong>.</li>
 </ul>
 <p>Both can be changed later in the same place in System Settings. Walka reads the top-left corner of the game window - and, until it has found the game for the first time, searches the screen for it. No picture is saved or sent anywhere. Nothing leaves your computer.</p>
@@ -226,16 +238,16 @@
 		name="dashboard"
 		narrow="dashboard-phone"
 		sizes="(min-width: 60rem) 46rem, calc(100vw - 2.5rem)"
-		alt="The Walka dashboard: the belt's speed, this session's time, distance, steps and calories, the state of the connections, and a red STOP button"
+		alt="The Walka dashboard's Live view: the belt's speed as the treadmill reports it, and the state of the connections. On a wide screen it also shows the numbers of the walk: time, distance, steps, calories and heart rate."
 	/>
 	<figcaption>The dashboard's Live view, with the demo character.</figcaption>
 </figure>
-<p>The dashboard shows the disclaimer the first time. Until you tick the box and press <em>I accept</em>, Walka does not start or steer the belt. <em>Getting started</em> on the dashboard then takes you through the rest and ticks each step off as you do it: connect the treadmill, install the game addon, let Walka see the game, enter your weight and height.</p>
+<p><em>Getting started</em> on the dashboard takes you through the rest and ticks each step off as you do it: connect the treadmill, install the game addon, let Walka see the game, enter your weight and height.</p>
 <ul>
 <li><strong>The rest, step by step:</strong> <a href="{resolve('how-it-works/')}#get-started">Get started</a>.</li>
-<li><strong>Before you ever stand on the belt:</strong> the checks under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>, standing beside it. The pad and the game have not been tested against this code.</li>
+<li><strong>Before your first walk:</strong> the pad and the game have not been tested against this code. Nothing in Walka can move the belt, so what there is to check is whether your walk is counted right. The checks are under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.</li>
 </ul>
-<p><strong>To stop the belt at any time:</strong> the pad&#39;s own remote, <strong>Ctrl+Alt+X</strong> on the keyboard (<strong>Control+Option+X</strong> on a Mac), or the red <strong>STOP</strong> on the dashboard. Bluetooth is not an emergency stop: keep the remote within reach. More under <a href="{resolve('safety/')}#stopping">Stopping the belt</a>.</p>
+<p><strong>The belt is yours.</strong> Start it, stop it and change its speed at the treadmill - its remote, its buttons, its safety key. Walka has no button for any of that. Start slow, and keep the remote where your hand finds it without looking. Closing Walka ends the recording and leaves the belt as it is: when you step off, stop the belt. Nothing else will. More under <a href="{resolve('safety/')}#only-listens">Walka only listens</a>.</p>
 </section>
 
 <section id="is-the-download-safe" class="prose">
@@ -308,7 +320,7 @@
 
 	.in-short {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1.5rem clamp(1.5rem, 4vw, 3rem);
 		margin-top: clamp(1.5rem, 4vw, 2.5rem);
 		font-size: var(--text-small);

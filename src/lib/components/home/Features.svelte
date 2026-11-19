@@ -3,22 +3,32 @@
 	import SectionHead from '#lib/components/SectionHead.svelte';
 	import { reveal } from '#lib/reveal.ts';
 
+	// Two icons that only this section needs, drawn in the manner of
+	// Icon.svelte: lines on a 24-unit grid. An ear, and a figure in a hat.
+	const OWN = {
+		ear: '<path d="M6.5 9.5a5.5 5.5 0 0 1 11 0c0 2.600-1.700 3.700-3 5-.9.9-1.300 1.700-1.500 3a3 3 0 0 1-5.600 1"/><path d="M9.500 10a2.500 2.500 0 0 1 5-.5c0 1.400-1 1.900-1.800 2.600"/>',
+		character:
+			'<path d="M6 9.500h12"/><path d="M8.500 9.500 12.800 3l2.700 6.500"/><path d="M9 12.300a3 3 0 0 0 6 0"/><path d="M5.500 20.500c.5-2.600 2.600-4 6.500-4s6 1.400 6.500 4"/>'
+	} as const;
+
+	type Feature = { title: string; text: string } & ({ icon: IconName } | { own: keyof typeof OWN });
+
 	// The six of Walka's README, in its words.
-	const FEATURES: { icon: IconName; title: string; text: string }[] = [
+	const FEATURES: Feature[] = [
 		{
-			icon: 'stride',
-			title: 'Follows your character.',
-			text: 'Run in the game and the belt speeds up. Stand still and it eases off. You choose every speed.'
-		},
-		{
-			icon: 'stop',
-			title: 'Built around stopping.',
-			text: 'A hard speed cap, a STOP key that works from inside the game, and rules written so that a lost signal slows the belt down.'
+			own: 'ear',
+			title: 'Only listens.',
+			text: 'Walka reads what your treadmill reports. It sends it no commands: the belt does what you tell it at the treadmill, and nothing else.'
 		},
 		{
 			icon: 'count',
 			title: 'Counts every walk.',
-			text: 'Time, distance, steps and calories - live on the dashboard, and in the game while you play.'
+			text: 'Time, distance, steps and calories - live on the dashboard, and in the game while you play. A walk is recorded whenever the belt moves, with a game or without.'
+		},
+		{
+			own: 'character',
+			title: 'Your walks, per character.',
+			text: 'Start a session in the game and the walk counts for the character you are playing.'
 		},
 		{
 			icon: 'road',
@@ -33,7 +43,7 @@
 		{
 			icon: 'home',
 			title: 'Stays on your computer.',
-			text: "Nothing is uploaded. Walka never presses keys, moves the mouse or reads the game's memory."
+			text: "Nothing is uploaded. Walka never presses keys, moves the mouse or reads the game's memory - it looks at the top-left corner of the game window."
 		}
 	];
 </script>
@@ -45,7 +55,26 @@
 		<ul class="grid">
 			{#each FEATURES as feature, i (feature.title)}
 				<li use:reveal={(i % 3) * 90}>
-					<span class="icon"><Icon name={feature.icon} size={26} stroke={1.6} /></span>
+					<span class="icon">
+						{#if 'own' in feature}
+							<svg
+								width="26"
+								height="26"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.6"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+								focusable="false"
+							>
+								{@html OWN[feature.own]}
+							</svg>
+						{:else}
+							<Icon name={feature.icon} size={26} stroke={1.6} />
+						{/if}
+					</span>
 					<h3>{feature.title}</h3>
 					<p>{feature.text}</p>
 				</li>

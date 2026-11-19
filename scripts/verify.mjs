@@ -19,6 +19,11 @@
 //     one main heading - and the line that says Walka is not Blizzard's.
 //  4. The download buttons are the links Walka's README uses.
 //  5. Nothing that looks like a secret key is in what gets published.
+//  6. Nothing says that Walka moves a belt. Since version 0.7 Walka only
+//     listens to the treadmill; the words of the Walka that drove one (the
+//     belt that follows the character, the STOP key, the speed cap) must
+//     not come back, in a page's text, its descriptions or its pictures'
+//     alt text. Nor may a page link to a withdrawn version.
 //
 // It reads files only: no browser, nothing to install.
 
@@ -59,6 +64,27 @@ const DOWNLOADS = [
 	'https://github.com/AntonyPerez0/walka-addon/releases/latest/download/Walka-addon.zip'
 ];
 const PAGES_WITH_DOWNLOADS = ['index.html', 'downloads/index.html'];
+
+// What the site said about the Walka that drove the belt (up to 0.6.1).
+// None of it is true any more. Each is looked for in everything a visitor
+// can read on a page: its text, its title and description, alt text, labels.
+const GONE = [
+	[/the belt follows/i, '"the belt follows"'],
+	[/follows? your character/i, '"follows your character"'],
+	[/faster when it runs/i, '"faster when it runs"'],
+	[/links your walking pad/i, '"links your walking pad"'],
+	[/ctrl\s*\+\s*alt\s*\+\s*x/i, 'the STOP key Ctrl+Alt+X'],
+	[/control\s*\+\s*option\s*\+\s*x/i, 'the STOP key Control+Option+X'],
+	[/red stop\b/i, 'the red STOP button'],
+	[/speed cap/i, 'the speed cap'],
+	[/safety limits/i, 'the "Safety limits" settings'],
+	[/keep ?walking/i, '"keep walking"'],
+	[/built around stopping/i, '"built around stopping"'],
+	[/stopping the belt/i, '"Stopping the belt"'],
+	[/walka (version )?v?0\.[0-6]\.\d/i, 'a version of Walka that has been withdrawn']
+];
+// A link to a release or a tag from before 0.7.
+const WITHDRAWN = /walka-addon\/(releases\/(tag|download)|tree|blob)\/v0\.[0-6]\.\d/i;
 
 // Things that would be a secret if they were real. The public "anon" key of
 // the database is not one of them; a "service_role" key is.
@@ -199,6 +225,26 @@ async function checkHtml(file) {
 		else if (description.length > 200) problem(file, `meta description is ${description.length} characters (keep it under 200)`);
 	}
 	if (file !== '404.html') checkPolicy(file, full);
+
+	// Everything a visitor can read: the words between the tags, and the
+	// words inside them that are read out or shown (alt, title, labels, the
+	// descriptions for search engines and link previews).
+	const said = [...full.matchAll(/\s(?:alt|title|aria-label|content|placeholder)="([^"]*)"/gi)].map((m) => m[1]);
+	const read = decode(
+		`${said.join(' | ')} | ${full
+			.replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+			.replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+			.replace(/<[^>]+>/g, '')}`
+	).replace(/\s+/g, ' ');
+	for (const [pattern, what] of GONE) {
+		const found = read.match(pattern);
+		if (found) {
+			const at = Math.max(0, found.index - 50);
+			problem(file, `says something about ${what}, which Walka no longer has: "...${read.slice(at, found.index + found[0].length + 40).trim()}..."`);
+		}
+	}
+	if (WITHDRAWN.test(full)) problem(file, 'links to a version of Walka that has been withdrawn');
+
 	return { title };
 }
 

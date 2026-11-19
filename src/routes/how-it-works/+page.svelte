@@ -14,6 +14,7 @@
 
 	const SECTIONS = [
 		{ id: 'two-pieces', label: 'Two pieces' },
+		{ id: 'only-listens', label: 'Walka only listens' },
 		{ id: 'signal', label: 'How the signal travels' },
 		{ id: 'what-walka-looks-at', label: 'What Walka looks at' },
 		{ id: 'get-started', label: 'Get started' },
@@ -29,7 +30,7 @@
 	const COLUMN = '(min-width: 60rem) 54.5rem, calc(100vw - 2.5rem)';
 </script>
 
-<!-- The play button of the HUD and of the dashboard, drawn: Walka's README shows it as a symbol. -->
+<!-- The play button of the HUD, drawn: Walka's README shows it as a symbol. -->
 {#snippet play()}
 	<svg class="play" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
 		<circle cx="8" cy="8" r="7.25" />
@@ -39,19 +40,20 @@
 
 <Seo
 	title="How Walka works"
-	description="What Walka is, what it looks at on your screen, and how to get from download to first walk. Experimental, and at your own risk."
+	description="What Walka is, what it looks at, and how to get from download to first walk. It only listens to your treadmill. Experimental, and at your own risk."
 />
 
 <PageHero label="The long version" title="How Walka works">
 	<p>
-		An addon in the game watches your character, and a small program on your computer talks to your walking pad. This
-		page says what each one does, what Walka looks at, and how to get from download to your first walk.
+		An addon in the game knows which character you are playing, and a small program on your computer listens to your
+		walking pad. This page says what each one does, what Walka looks at, and how to get from download to your first
+		walk.
 	</p>
 	<p class="risk">
 		<span class="risk-icon"><Icon name="warning" size={20} /></span>
 		<span>
-			<strong>Experimental, and at your own risk.</strong> Walka has not yet been tried on a real walking pad. Read the
-			<a href={LINKS.disclaimer}>disclaimer</a> before you download.
+			<strong>Experimental.</strong> Walka has not yet been tried on a real walking pad. Walking while you play is at
+			your own risk: read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.
 		</span>
 	</p>
 </PageHero>
@@ -60,9 +62,10 @@
 	<section id="two-pieces" class="prose">
 		<h2>Two pieces</h2>
 		<p>
-			Walka links an under-desk walking pad to <strong>World of Warcraft: Forever</strong>. The belt speeds up when your
-			character runs and eases off when it stands. An in-game HUD counts your speed, steps, distance and calories - for
-			this session and every one before it.
+			Walka is a walking log for people who walk on an under-desk pad while they play
+			<strong>World of Warcraft: Forever</strong>. You walk at the speed you set on the pad; Walka counts your time,
+			steps, distance and calories - for this walk and every one before it - shows them in an in-game HUD, and keeps
+			them per character.
 		</p>
 		<p>It is two pieces, and you need both:</p>
 		<ul class="pieces">
@@ -71,8 +74,8 @@
 				<p class="label">In the game</p>
 				<h3>The addon</h3>
 				<p>
-					Reads your character's movement, decides how fast the belt should go, and shows the HUD, history and settings
-					in game.
+					Marks your walking sessions, knows which character they belong to, and shows the HUD, history, journey and
+					road map in game.
 				</p>
 			</li>
 			<li>
@@ -81,20 +84,25 @@
 				<h3>The companion</h3>
 				<p>
 					<code>Walka.exe</code>, or <code>Walka</code> on a Mac - a small app that reads the addon's signal off the
-					screen, drives the treadmill over Bluetooth with a set of safety rules, records your walks, and shows a live
-					dashboard in your browser.
+					screen, listens to the treadmill over Bluetooth, records your walks, and shows a live dashboard in your
+					browser.
 				</p>
 			</li>
 		</ul>
 		<p>
-			Walka is built around the <strong>UREVO Strol 2E (URTM030)</strong>, and made to drive any treadmill that speaks
-			standard Bluetooth FTMS with speed control. None of them has been tried by Walka's author on the real machine yet.
-			See <a href="{resolve('downloads/')}#which-treadmills-work">which treadmills work</a>; the
+			Neither of them moves the belt. You start it, stop it and set its speed at the treadmill itself: see
+			<a href="#only-listens">Walka only listens</a>.
+		</p>
+		<p>
+			Walka is built around the <strong>UREVO Strol 2E (URTM030)</strong>, and made to read any treadmill that reports
+			its data over standard Bluetooth FTMS. The treadmill does not have to be one that apps can control: Walka controls
+			nothing. None of them has been tried by Walka's author on the real machine yet. See
+			<a href="{resolve('downloads/')}#which-treadmills-work">which treadmills work</a>; the
 			<a href={LINKS.hardware}>hardware notes</a> say what is known, and where it comes from.
 		</p>
 		<p>
-			The companion also works without any game: it has manual sessions, and it logs walks you do with just the remote.
-			See <a href="#no-game">Other games, or no game</a>.
+			The companion also works without any game: a walk is recorded whenever the belt moves. See
+			<a href="#no-game">Other games, or no game</a>.
 		</p>
 		<p>
 			Walka is a fan-made tool. It is not affiliated with or endorsed by Blizzard Entertainment, UREVO, WELLFIT or any
@@ -102,11 +110,61 @@
 		</p>
 	</section>
 
+	<section id="only-listens" class="prose">
+		<h2>Walka only listens</h2>
+		<p class="pledge">
+			<strong>Walka does not start, stop, pause or steer the belt.</strong> Not from the game, not from the dashboard,
+			not when something goes wrong.
+		</p>
+		<ul>
+			<li>
+				<strong>You start the belt</strong> with the treadmill's remote or buttons, and <strong>you stop it</strong> the
+				same way - or with its safety key. Keep the remote where your hand finds it without looking.
+			</li>
+			<li><strong>The speed is the one you set</strong> at the treadmill. Walka reads it; it cannot change it.</li>
+			<li>
+				<strong>Closing Walka, or pressing <em>Disconnect</em>,</strong> ends the recording and lets go of the
+				treadmill. The belt goes on doing what it was doing.
+			</li>
+			<li><strong>When you step off, stop the belt.</strong> Nothing else will.</li>
+		</ul>
+		<p>
+			What Walka does to a treadmill is this, and no more: it connects, reads the speed range the treadmill says it has,
+			and switches on the notifications through which the treadmill reports its speed, distance and status. The channel
+			through which an app could control the belt (the <em>Fitness Machine Control Point</em>) is never written to, and
+			the code that once did has been deleted - there is no setting that brings it back. How that is checked:
+			<a href={LINKS.safety}>docs/SAFETY.md</a>.
+		</p>
+		<p>
+			So the belt is entirely yours - and so is stopping it. Walka is not a safety device and cannot stop a belt: the
+			treadmill's own stop button, remote and safety key are what does. You are walking while you look at a game, and
+			that is at your own risk: see <a href={resolve('safety/')}>Safety</a> and the
+			<a href={LINKS.disclaimer}>disclaimer</a>.
+		</p>
+
+		<h3 id="older-versions">Older versions</h3>
+		<p>
+			Versions before 0.7 were different: the belt followed your character, and the companion started, stopped and
+			steered it. That has been taken out, not switched off. A motorised belt under someone who is looking at a game was
+			not worth the risk of a program getting it wrong. Those versions have been withdrawn: do not use one.
+		</p>
+		<p>
+			<strong>If you have one,</strong> it could move the belt. Those downloads have been removed; replace it with
+			<a href={resolve('downloads/')}>the current one</a> and delete the old <code>Walka.exe</code>. Your walks and
+			settings are kept (the settings that were about steering the belt are simply no longer read), and the addon is
+			updated with <em>Install</em> on the dashboard.
+		</p>
+		<p>
+			The current one is experimental: it has not yet been tried on a real walking pad, and walking while you play is at
+			your own risk. Read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.
+		</p>
+	</section>
+
 	<section id="signal" class="prose">
 		<h2>How the signal travels</h2>
 		<p>
 			An addon cannot use Bluetooth, files or the network. The one thing it can do that the outside world can see is
-			draw. So the signal goes round like this:
+			draw. So the signal goes like this:
 		</p>
 		<div class="wide">
 			<SignalDiagram />
@@ -117,8 +175,10 @@
 				white squares in the top-left corner of the game window, ten times a second. The companion takes a tiny
 				screenshot of that corner and decodes it.
 			</li>
-			<li><strong>Bluetooth to the pad.</strong> The companion sends the walking pad the belt speed.</li>
-			<li><strong>Numbers back from the pad.</strong> The pad reports its speed and distance to the companion.</li>
+			<li>
+				<strong>The pad reports, the companion listens.</strong> Over Bluetooth the walking pad reports its speed, its
+				distance and, on some pads, its steps. That goes one way only: the companion sends the pad no commands.
+			</li>
 			<li>
 				<strong>A file back to the game.</strong> An addon cannot receive live data either. So the companion writes its
 				<em>measured</em> numbers to a file that the game loads at login or on <code>/reload</code>.
@@ -132,17 +192,18 @@
 			high.
 		</p>
 		<p>
-			What the addon asks for is a request. The companion is built to keep it under your speed cap and to change the
-			belt's speed gently.
+			Nothing on the strip reaches the treadmill. The one thing on it that the companion acts on is which walking
+			session a walk belongs to, and so which character. The rest is for display.
 		</p>
 		<p>
-			Because nothing live comes back into the game, the HUD shows the addon's own estimate of the belt. The dashboard
-			always shows the measured numbers live. More under <a href="#numbers">The numbers</a>.
+			Because nothing live comes back into the game, the HUD shows the addon's own estimate, counted from the pace you
+			tell it. The dashboard always shows the measured numbers live. More under <a href="#your-pace">Your pace</a> and
+			<a href="#numbers">The numbers</a>.
 		</p>
 		<p>
 			If the companion cannot see the strip - a loading screen, the game minimised, another window on top of that corner
-			- Walka is built to hold the belt's speed, then slow it, then pause it. It is built not to speed up on a lost
-			signal. That is a design, not a guarantee: see <a href={resolve('safety/')}>Safety</a>.
+			- that is expected, and nothing depends on it but the filing: the walk is recorded all the same. In the middle of
+			a session the walk stays with that session; when the game is closed, the session is over.
 		</p>
 		<p>
 			None of this is the same as permission. Walka is not approved by Blizzard, and you use it at your own risk. The
@@ -178,14 +239,14 @@
 				your character's <a href="#share">journey</a>.
 			</li>
 			<li>
-				<strong>What the strip does not say:</strong> whether your character is fighting, dead or resting. The belt does
-				not need to know, so the addon does not say.
+				<strong>What the strip does not say:</strong> whether your character is fighting, dead or resting. The
+				companion does not need to know, so the addon does not say.
 			</li>
 		</ul>
 		<p>
-			<a href={LINKS.protocol}>The protocol</a> lists every field of the strip. Two are worth knowing about here: the
-			belt speed the addon asks for and, among the journey numbers, your character's name without the realm. The realm
-			is never drawn on screen: the companion is only sent a number that tells your characters apart.
+			<a href={LINKS.protocol}>The protocol</a> lists every field of the strip. One is worth knowing about here: among
+			the journey numbers is your character's name, without the realm. The realm is never drawn on screen: the companion
+			is only sent a number that tells your characters apart.
 		</p>
 		<p>
 			Of the game's files the companion touches only Walka's own: the addon folder (it installs the addon and writes
@@ -194,8 +255,9 @@
 		</p>
 		<p>
 			Nothing is uploaded. Your settings and walks are kept on your own computer, in <code>%APPDATA%\Walka</code> on
-			Windows and <code class="long">~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. The dashboard is only reachable from the
-			computer itself: it can start and stop the belt, so it is not offered to other devices on your network.
+			Windows and <code class="long">~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. The dashboard
+			is only reachable from the computer itself: it shows your walks, weight and height and has no password, so it is
+			not offered to other devices on your network.
 		</p>
 	</section>
 
@@ -203,22 +265,24 @@
 		<h2>Get started</h2>
 		<Callout kind="warning" title="Early version - not yet tried on a real walking pad">
 			<p>
-				The pad and the game have not been tested against this code. Do the checks under
-				<a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>, standing beside the belt,
-				before you ever stand on it. Keep the pad's remote in your hand the first time.
+				The pad and the game have not been tested against this code. Nothing in Walka can move the belt, so what there
+				is to check is whether your walk is <em>counted right</em>: see
+				<a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>. And for you, not for Walka:
+				start slow, and know where the remote is.
 			</p>
 		</Callout>
-		<Callout kind="caution" title="You use Walka at your own risk">
+		<Callout kind="caution" title="Walking while you play is at your own risk">
 			<p>
-				It moves a motorised belt while you stand on it. It comes with no warranty, and it is not a safety device or a
+				Your eyes are on a game, not on your feet. Walka comes with no warranty, and it is not a safety device or a
 				medical device. If you have a health condition, are pregnant or are in any doubt, ask a doctor first - and stop
 				if you feel dizzy or unwell. The whole of it: the <a href={LINKS.disclaimer}>disclaimer</a>.
 			</p>
 		</Callout>
 		<p>
 			<strong>You need:</strong> a Windows 10 or 11 PC or a Mac (Apple silicon or Intel), with Bluetooth; a walking pad
-			or treadmill that apps can control over Bluetooth (a UREVO Strol 2E, a WELLFIT TM029 Pro, or another Bluetooth
-			FTMS treadmill); and World of Warcraft: Forever.
+			or treadmill that shows its numbers to apps over Bluetooth (a UREVO Strol 2E, a WELLFIT TM029 Pro, or another
+			Bluetooth FTMS treadmill - see <a href="{resolve('downloads/')}#which-treadmills-work">which treadmills work</a>);
+			and World of Warcraft: Forever.
 		</p>
 		<p>
 			<em>
@@ -239,8 +303,8 @@
 				<h3>Double-click it</h3>
 				<p>
 					There is nothing to install: it is one file, and you just open it. A black window opens: that is Walka.
-					<strong>Leave it open while you walk</strong> - closing it stops Walka. The <em>dashboard</em> page opens in
-					your browser (if not, go to <code>127.0.0.1:8787</code>).
+					<strong>Leave it open while you walk</strong> - closing it ends the recording (the belt is not touched). The
+					<em>dashboard</em> page opens in your browser (if not, go to <code>127.0.0.1:8787</code>).
 				</p>
 				<p>
 					The first time, Windows may say <em>"Windows protected your PC"</em>. Click <strong>More info</strong>, then
@@ -250,17 +314,9 @@
 				</p>
 			</li>
 			<li>
-				<h3>Follow the dashboard</h3>
-				<p>
-					The first time, it shows the disclaimer at the top of the page, and a <em>Getting started</em> list that ticks
-					each step off as you do it:
-				</p>
+				<h3>Follow <em>Getting started</em> on the dashboard</h3>
+				<p>It is a list that ticks each step off as you do it:</p>
 				<ul>
-					<li>
-						<strong>Accept the disclaimer.</strong> It is on a card of its own, headed
-						<em>Before Walka moves your treadmill</em>. Until you tick the box and press <em>I accept</em>, Walka does
-						not start or steer the belt.
-					</li>
 					<li>
 						<strong>Connect the treadmill.</strong> Switch it on and close its own phone app (UREVO, WELLFIT Fitness,
 						...): most treadmills accept only one Bluetooth connection. Don't pair it in Windows Bluetooth settings -
@@ -286,44 +342,24 @@
 			<li>
 				<h3>Walk</h3>
 				<p>
-					Step onto the pad and, in the game, click the play button {@render play()} on the small Walka box, the HUD (or
-					type <code>/walka start</code>).
+					In the game, click the play button {@render play()} on the small Walka box, the HUD (or type
+					<code>/walka start</code>): that says "this walk is for this character". Then step onto the pad and start the
+					belt <strong>with the treadmill's own remote</strong>, at the speed you like.
 				</p>
 			</li>
 		</ol>
-
-		<h3 id="stopping">Stopping the belt</h3>
-		<p>
-			<strong>To stop the belt at any time:</strong> the pad's own remote,
-			<span class="keys"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>X</kbd></span> on the keyboard
-			<span class="keys">(<kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>X</kbd></span> on a Mac), or the red <strong class="stop">STOP</strong> on the dashboard.
-		</p>
-		<p>All the ways, fastest first:</p>
-		<ol>
-			<li>
-				the treadmill's <strong>remote</strong>, stop button or safety key - Walka is built to leave the belt stopped
-				then;
-			</li>
-			<li>
-				<span class="keys"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>X</kbd></span> anywhere on the computer, even inside the
-				game <span class="keys">(<kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>X</kbd></span> on a Mac; change it under
-				<em>Settings → Safety limits</em>);
-			</li>
-			<li>the red <strong class="stop">STOP</strong> on the dashboard;</li>
-			<li><em>Stop</em> on the HUD, or <code>/walka stop</code>.</li>
-		</ol>
-		<p>
-			Bluetooth is not an emergency stop: keep the remote within reach. Walka is not a safety device - the treadmill's
-			own stop button, remote and safety key are. More under <a href="{resolve('safety/')}#stopping">Safety</a>.
+		<p class="pledge">
+			<strong>The belt is yours.</strong> Start it, stop it and change its speed at the treadmill - its remote, its
+			buttons, its safety key. Walka has no button for any of that.
 		</p>
 
 		<h3 id="on-a-mac">On a Mac</h3>
 		<Callout kind="warning" title="The Mac version is new">
 			<p>
-				GitHub's Macs build it, run its tests and check that the finished program starts, drives the simulated belt and
-				stops it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. Do everything
-				under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> - and if you do,
-				<a href={LINKS.issues}>say how it went</a>.
+				GitHub's Macs build it, run its tests and check that the finished program starts, records a walk on a simulated
+				pad and saves it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. Do
+				everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> - and if you
+				do, <a href={LINKS.issues}>say how it went</a>.
 			</p>
 		</Callout>
 		<p>
@@ -332,23 +368,16 @@
 			<a href="{resolve('downloads/')}#first-time-mac">downloads page</a> has those first-run steps.
 		</p>
 		<p>
-			A Terminal window then opens: that is Walka. Leave it open while you walk - closing it stops Walka, which is built
-			to stop the belt first. From there it is step 3 above.
+			A Terminal window then opens: that is Walka. Leave it open while you walk - closing it ends the recording (the
+			belt is not touched). From there it is step 3 above.
 		</p>
 		<p>
 			macOS asks before a program may use Bluetooth or look at the screen. Walka runs inside Terminal, so it asks about
-			<strong>Terminal</strong>: <em>Bluetooth</em>, to talk to the walking pad, and <em>Screen Recording</em>, to see
+			<strong>Terminal</strong>: <em>Bluetooth</em>, to listen to the walking pad, and <em>Screen Recording</em>, to see
 			the strip the addon draws.
 		</p>
 		<p>What is different from Windows:</p>
 		<ul>
-			<li>
-				<strong
-					>The STOP key is <span class="keys"><kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>X</kbd></span></strong
-				>
-				- the same setting as <span class="keys"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>X</kbd></span>, under the names a
-				Mac keyboard has for those keys. Walka needs no permission for it.
-			</li>
 			<li>
 				<strong>The game</strong> is looked for in <code class="long">/Applications/<wbr />World of Warcraft</code>. If yours is somewhere
 				else, choose the addon folder yourself under <em>Settings → Game addon</em>.
@@ -364,70 +393,59 @@
 	<section id="using-it" class="prose">
 		<h2>Using it</h2>
 		<p>
-			You use Walka at your own risk, and it has not yet been tried on a real walking pad. Read the
-			<a href={LINKS.disclaimer}>disclaimer</a> and do the checks under
-			<a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> before you stand on the belt.
+			Walking while you look at a game is at your own risk, and Walka has not yet been tried on a real walking pad. Read
+			the <a href={LINKS.disclaimer}>disclaimer</a> first, and do the checks under
+			<a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.
 		</p>
 		<p>
-			In game, step onto the pad and press the play button {@render play()} on the HUD (or type
-			<code>/walka start</code>). <code>/walka</code> shows or hides the HUD. The treadmill counts down and the belt
-			starts slowly; from then on it follows your character:
+			In game, press the play button {@render play()} on the HUD (or type <code>/walka start</code>): a walking session
+			starts for the character you are playing. Step onto the pad and start the belt with the treadmill's remote, at
+			whatever speed you like. <code>/walka</code> shows or hides the HUD.
 		</p>
-		<div class="table speeds">
-			<table>
-				<thead>
-					<tr><th scope="col">Your character is...</th><th scope="col">Belt (defaults)</th></tr>
-				</thead>
-				<tbody>
-					<tr><th scope="row">standing still</th><td class="num">0.8 mph</td></tr>
-					<tr><th scope="row">walking</th><td class="num">1.2 mph</td></tr>
-					<tr><th scope="row">running</th><td class="num">1.6 mph</td></tr>
-					<tr><th scope="row">on a fast mount</th><td class="num">2.0 mph</td></tr>
-					<tr><th scope="row">on a flight path</th><td>running pace</td></tr>
-					<tr><th scope="row">anything faster or slower</th><td>in between - Sprint really does speed you up</td></tr>
-				</tbody>
-			</table>
-		</div>
-		<p>
-			A real run speed (14 mph) is not something to match under a desk, so every one of those numbers is yours to set in
-			<code>/walka options</code>. The defaults sit where people settle on treadmill desks (1-2 mph); raise them as you
-			get used to it. Start slowly, and keep the treadmill's remote within reach.
-		</p>
+		<p>The companion records the walk from what the treadmill reports. A walk is whatever the belt does:</p>
+		<ul>
+			<li>it is counted while the belt moves, and not while it stands still;</li>
+			<li>with a session running in the game it is filed under that session, and so under your character;</li>
+			<li>
+				with no session - another game, no game at all - it is recorded all the same, as a walk of its own
+				(<em>No game session</em> in the dashboard's history).
+			</li>
+		</ul>
 		<figure class="figure wide">
 			<ThemedPicture
 				name="dashboard"
 				narrow="dashboard-phone"
 				sizes={COLUMN}
-				alt="The dashboard's Live view while the belt follows the character: the belt's speed, the state of the connections and the red STOP button. On a wide screen it also shows this session's time, distance, steps, calories and heart rate."
+				alt="The dashboard's Live view while a walk is recorded: the belt's speed as the treadmill reports it. On a wide screen it also shows this walk's time, distance, steps, calories and heart rate, and the state of the connections."
 			/>
 			<figcaption>The dashboard's Live view, with the demo character.</figcaption>
 		</figure>
-		<p>By default the belt keeps moving when your character stands still: it drops to the standing pace. Also in the options:</p>
-		<ul>
-			<li>how quickly the belt reacts: <em>Steady</em>, <em>Balanced</em> or <em>Responsive</em>;</li>
-			<li>
-				a maximum, 2.5 mph by default. The companion has its own hard cap, 3.0 mph by default. That one is changed on
-				the dashboard, under <em>Settings → Safety limits</em>, and cannot be set above 6.5 km/h (4.0 mph);
-			</li>
-			<li>
-				<strong>Keep walking when my character stands still</strong> - the belt holds your walking pace through stops
-				(looting, casting, reading a quest), so they cost no steps. Also on the HUD's right-click menu and as
-				<code>/walka keepwalking</code>;
-			</li>
-			<li>
-				or the opposite: <strong>Stop the belt when my character stands still</strong>. Every restart then costs the
-				treadmill's countdown.
-			</li>
-		</ul>
+
+		<h3 id="your-pace">Your pace</h3>
+		<p>
+			<strong>Tell the addon your pace.</strong> An addon cannot be told what the treadmill is doing while the game
+			runs, so the HUD counts with the speed you say the belt is set to: <code>/walka pace 1.5</code>, the
+			<strong>-</strong> and <strong>+</strong> buttons on the HUD, or <em>Your pace</em> in <code>/walka options</code>.
+		</p>
+		<p>
+			It starts at 1.5 mph - people settle at 1-2 mph on a treadmill desk. The speed on the HUD is that pace: it is
+			yours, not your character's, and it is not read from the belt.
+		</p>
+		<p>
+			Your pace only feeds the HUD's estimate; it changes nothing at the treadmill, and the measured numbers replace the
+			estimate later: see <a href="#estimated">Estimated now, measured later</a>.
+		</p>
 
 		<h3 id="pause">Pause, stop and going AFK</h3>
 		<p>
-			<strong>Pause</strong> and <strong>Stop</strong> are on the HUD too. Going AFK pauses automatically; the session
-			resumes when your character next moves - if that is within ten minutes. Typing a chat line does not start a belt.
+			<strong>Pause</strong> and <strong>Stop</strong> are on the HUD too. They pause and end the <em>session</em> - the
+			addon's count - and nothing else: stop the belt yourself, at the treadmill, when you step off. The companion
+			records for as long as the belt moves, paused in the game or not.
 		</p>
 		<p>
-			After a longer break the session stays paused until you press the play button {@render play()} (or type
-			<code>/walka resume</code>): by then nobody can say what stands on the belt.
+			Going AFK pauses the session automatically (you can turn that off); it carries on when your character next moves.
+			A pause you asked for yourself lasts until you press the play button {@render play()} (or type
+			<code>/walka resume</code>).
 		</p>
 
 		<h3 id="commands">Commands</h3>
@@ -440,11 +458,11 @@
 					<tr><th scope="row"><code>/walka</code></th><td>show or hide the HUD</td></tr>
 					<tr>
 						<th scope="row"><code>/walka start</code>, <code>pause</code>, <code>resume</code>, <code>stop</code></th>
-						<td>control the session</td>
+						<td>mark the walking session</td>
 					</tr>
 					<tr>
-						<th scope="row"><code>/walka keepwalking on</code> or <code>off</code></th>
-						<td>hold the walking pace when your character stops</td>
+						<th scope="row"><code>/walka pace 1.5</code></th>
+						<td>the speed your treadmill is set to, for the HUD's estimate</td>
 					</tr>
 					<tr><th scope="row"><code>/walka history</code></th><td>past sessions, totals, 7-day chart</td></tr>
 					<tr><th scope="row"><code>/walka journey</code></th><td>your character's journey so far</td></tr>
@@ -454,6 +472,10 @@
 					</tr>
 					<tr><th scope="row"><code>/walka options</code></th><td>settings</td></tr>
 					<tr><th scope="row"><code>/walka status</code></th><td>what the addon is doing right now</td></tr>
+					<tr>
+						<th scope="row"><code>/walka weight 180lb</code>, <code>/walka height 5'11</code></th>
+						<td>your body, if you do not run the companion</td>
+					</tr>
 					<tr><th scope="row"><code>/walka units mph</code> or <code>kmh</code></th><td>display units</td></tr>
 					<tr>
 						<th scope="row"><code>/walka beacon on</code>, <code>off</code> or <code>size 2-8</code></th>
@@ -474,17 +496,19 @@
 
 		<h3 id="estimated">Estimated now, measured later</h3>
 		<p>
-			The HUD's live numbers are marked <code>~</code>: they are the addon's estimate. After a walk, press
-			<strong>Sync</strong> in the history window (it reloads the interface; a session in progress carries on) or just
-			log in next time. The history then switches that session to what the treadmill measured.
+			The HUD's live numbers are marked <code>~</code>: they are the addon's estimate, counted from
+			<a href="#your-pace">your pace</a>. After a walk, press <strong>Sync</strong> in the history window (it reloads
+			the interface; a session in progress carries on) or just log in next time. The history then switches that session
+			to what the treadmill measured.
 		</p>
 		<p>The dashboard shows measured values the whole time - put it on a second monitor.</p>
 
 		<h3 id="in-combat">In combat</h3>
 		<p>
 			WoW: Forever hides your character's exact speed from addons during combat, and Walka does not work around that.
-			While it is hidden the addon estimates: moving or not, at your last known run speed. The HUD tooltip tells you when
-			this is happening.
+			While it is hidden the addon estimates: moving or not, at your last known run speed. That only matters for the
+			road and the journey's "character steps" - your own walk is counted from the treadmill, not from the character.
+			The HUD tooltip tells you when this is happening.
 		</p>
 
 		<h3 id="calories-and-steps">Calories and steps</h3>
@@ -614,9 +638,10 @@
 		<div class="wide road">
 			<ul>
 				<li>
-					The stretches you walked <strong>on the treadmill</strong> are a bright line; what the character travelled
-					while the belt stood still is the same line in a quieter colour; flight paths are fine dashes. A key under the
-					map shows a piece of each kind of line with what it means - and how much of the road you walked for real.
+					The stretches you walked <strong>on the treadmill</strong> - a walking session was running in the game - are a
+					bright line; what the character travelled without one is the same line in a quieter colour; flight paths are
+					fine dashes. A key under the map shows a piece of each kind of line with what it means - and how much of the
+					road you walked for real.
 				</li>
 				<li>
 					<em>START</em> marks where the road begins, a gem marked <em>NOW</em> with the character's level where it is,
@@ -683,8 +708,8 @@
 		<ul>
 			<li>the road is coloured by level, a colour for every ten levels;</li>
 			<li>
-				the stretches you walked <strong>on the treadmill</strong> are bright, with a soft glow; what your character
-				travelled while the belt stood still is dimmer;
+				the stretches you walked <strong>on the treadmill</strong> - a walking session was running - are bright, with a
+				soft glow; what your character travelled without one is dimmer;
 			</li>
 			<li>flight paths are thin and pale;</li>
 			<li>
@@ -753,20 +778,20 @@
 			<ThemedPicture
 				name="history"
 				sizes={COLUMN}
-				alt="The dashboard's History view: steps today, in the last 7 days and all time, a chart of steps per day, and a list of walks - one manual, one with World of Warcraft"
+				alt="The dashboard's History view: steps today, in the last 7 days and all time, a chart of steps per day, and the list of walks"
 			/>
-			<figcaption>The dashboard's History view after one day of walks, with the demo character.</figcaption>
+			<figcaption>The dashboard's History view, with the demo character.</figcaption>
 		</figure>
 
 		<h3 id="no-game">Other games, or no game</h3>
 		<p>
-			The dashboard has a <strong>manual session</strong>: start, pause, stop and speed buttons. Use it with any game,
-			or for a plain walk. And if you just walk with the treadmill's remote while the companion is running, that walk is
-			recorded too.
+			Nothing to set up: the companion records a walk whenever the belt moves. Start the belt with the treadmill's
+			remote and play anything, or nothing. Such a walk is in the dashboard's history as <em>No game session</em>, and
+			in your totals.
 		</p>
 		<p>
-			A manual session moves the belt too. It is at your own risk like the rest of Walka, which has not yet been tried
-			on a real walking pad: see the <a href={LINKS.disclaimer}>disclaimer</a>.
+			Such a walk is at your own risk like any other, and Walka has not yet been tried on a real walking pad: see the
+			<a href={LINKS.disclaimer}>disclaimer</a>.
 		</p>
 	</section>
 
@@ -778,18 +803,22 @@
 				<span>Everything on this page and more, with troubleshooting.</span>
 			</li>
 			<li>
+				<a href={LINKS.safety}>docs/SAFETY.md</a>
+				<span>What Walka does to a treadmill, all of it, and how that is made sure of.</span>
+			</li>
+			<li>
 				<a href={LINKS.protocol}>docs/PROTOCOL.md</a>
 				<span>The strip, bit by bit, and when the companion believes what it reads.</span>
 			</li>
 			<li>
 				<a href={LINKS.hardware}>docs/HARDWARE.md</a>
 				<span>
-					What is known about the Strol 2E and other treadmills, and what still needs confirming on a real unit.
+					What is known about reading the Strol 2E and other treadmills, and what still needs confirming on a real unit.
 				</span>
 			</li>
 			<li>
 				<a href={resolve('safety/')}>Safety</a>
-				<span>The rules the belt is built to follow, how to stop it, and what has and has not been verified.</span>
+				<span>What Walka is and is not, what to do before you walk, and what has and has not been verified.</span>
 			</li>
 			<li>
 				<a href={resolve('faq/')}>FAQ</a>
@@ -888,7 +917,7 @@
 		line-height: 1.6;
 	}
 
-	/* ---- the four steps of the signal: numbered as the drawing numbers them -- */
+	/* ---- the three steps of the signal: numbered as the drawing numbers them - */
 	.round {
 		padding-left: 2.5rem;
 		list-style: none;
@@ -926,7 +955,7 @@
 		text-align: center;
 	}
 
-	/* the one sentence of this section to remember */
+	/* the one sentence of a section to remember */
 	.pledge {
 		margin-block: 1.6em;
 		padding: 0.15rem 0 0.15rem 1.15rem;
@@ -942,10 +971,6 @@
 	}
 
 	/* ---- small things inside the text ---------------------------------------- */
-	.keys {
-		white-space: nowrap;
-	}
-
 	/* A command stays in one piece; a long file name may break. */
 	code {
 		white-space: nowrap;
@@ -953,22 +978,6 @@
 
 	code.long {
 		white-space: normal;
-	}
-
-	kbd {
-		font-size: 0.8em;
-	}
-
-	/* the dashboard's own red button, in small (as on the home page) */
-	.stop {
-		display: inline-block;
-		padding: 0.08em 0.6em;
-		border-radius: 6px;
-		background: var(--stop);
-		color: #fff;
-		font-size: 0.8em;
-		font-weight: 700;
-		letter-spacing: 0.08em;
 	}
 
 	.play {
@@ -990,16 +999,6 @@
 	}
 
 	/* ---- tables ---------------------------------------------------------------- */
-	@media (min-width: 36.01rem) {
-		.speeds tbody th {
-			width: 44%;
-		}
-	}
-
-	.speeds td {
-		color: var(--ink);
-	}
-
 	.commands tbody th {
 		font-weight: 400;
 		line-height: 1.9;

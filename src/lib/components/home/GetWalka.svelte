@@ -18,8 +18,12 @@
 			<div class="options"><DownloadOptions /></div>
 
 			<p class="risk">
-				<strong>Experimental, and at your own risk:</strong> not yet tried on a real walking pad. Read the
-				<a href={LINKS.disclaimer}>disclaimer</a> before you download.
+				<strong>Walka only listens to your treadmill.</strong> It cannot start, stop or change the speed of the belt:
+				you do that at the treadmill itself.
+			</p>
+			<p class="risk">
+				<strong>Experimental:</strong> not yet tried on a real walking pad. Walking while you play is at your own risk -
+				read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.
 			</p>
 
 			<ul class="more-info">
@@ -33,8 +37,8 @@
 				<li>
 					<span class="i"><Icon name="bluetooth" size={22} /></span>
 					<p>
-						You need a Windows 10 or 11 PC or a Mac, with Bluetooth; a walking pad or treadmill that apps can control
-						over Bluetooth; and World of Warcraft: Forever.
+						You need a Windows 10 or 11 PC or a Mac, with Bluetooth; a walking pad or treadmill that shows its numbers
+						to apps over Bluetooth; and World of Warcraft: Forever.
 						<a href="{resolve('downloads/')}#which-treadmills-work">Which treadmills work</a>
 					</p>
 				</li>
@@ -74,6 +78,10 @@
 		color: var(--ink-2);
 		font-size: var(--text-small);
 		text-align: center;
+	}
+
+	.risk + .risk {
+		margin-top: 0.6rem;
 	}
 
 	.more-info {

@@ -1,8 +1,11 @@
 <script lang="ts">
 	// How the signal travels, as a drawing: the flowchart of Walka's README,
-	// with its three boxes, its four arrows and their labels word for word.
-	// The arrows carry the numbers of the four steps that the page lists
+	// with its three boxes, its three arrows and their labels word for word.
+	// The arrows carry the numbers of the three steps that the page lists
 	// under the drawing.
+	//
+	// Between Walka and the walking pad there is one arrow, and it points at
+	// Walka: the pad reports, Walka listens. No arrow points at the pad.
 	//
 	// It is drawn twice: lying down for a wide column, and standing up for a
 	// narrow one (text inside an SVG cannot wrap, so one drawing cannot do
@@ -12,12 +15,11 @@
 	import type { IconName } from '#lib/components/Icon.svelte';
 
 	const ALT =
-		'A drawing with three boxes and four numbered arrows. ' +
+		'A drawing with three boxes and three numbered arrows. ' +
 		'1, from the Walka addon, in the game, to Walka.exe (Walka on a Mac), on your computer: draws a strip of squares; Walka reads it off the screen. ' +
-		'2, from Walka.exe to the walking pad: Bluetooth: belt speed. ' +
-		'3, from the walking pad to Walka.exe: speed, distance. ' +
-		'4, a dotted line from Walka.exe to the addon: a file the game loads at login. ' +
-		'No other arrow points at the game.';
+		'2, from the walking pad to Walka.exe: Bluetooth: speed, distance, steps (one way: Walka only listens). ' +
+		'3, a dotted line from Walka.exe to the addon: a file the game loads at login. ' +
+		'No arrow points at the walking pad, and no other arrow points at the game.';
 
 	type Box = {
 		x: number;
@@ -61,8 +63,8 @@
 			.join(' ');
 
 	// ---- lying down: 820 by 284 -------------------------------------------
-	// The way out runs over the top, left to right; the way back runs under
-	// the boxes, right to left.
+	// What comes in to Walka runs over the top, from either side; the file
+	// that goes back to the game runs under the boxes.
 	const WIDE_BOXES: Box[] = [
 		{
 			x: 1, y: 92, w: 198, h: 120, walka: true, icon: 'addon', at: [87, 116],
@@ -84,21 +86,18 @@
 			label: { x: 255, y: 18, lines: ['draws a strip of squares;', 'Walka reads it off the screen'] }
 		},
 		{
-			n: 2, d: 'M455 92V72l10-10h200l10 10v13', head: 'M675 92l-5-9h10z', stud: [565, 62],
-			label: { x: 565, y: 36, lines: ['Bluetooth: belt speed'] }
+			n: 2, d: 'M675 92V72l-10-10H465l-10 10v13', head: 'M455 92l-5-9h10z', stud: [565, 62],
+			label: { x: 565, y: 18, lines: ['Bluetooth: speed, distance, steps', '(one way: Walka only listens)'] }
 		},
 		{
-			n: 3, d: 'M675 212v20l-10 10H465l-10-10v-13', head: 'M455 212l-5 9h10z', stud: [565, 242],
-			label: { x: 565, y: 274, lines: ['speed, distance'] }
-		},
-		{
-			n: 4, d: 'M365 212v20l-10 10H155l-10-10v-13', head: 'M145 212l-5 9h10z', dotted: true, stud: [255, 242],
+			n: 3, d: 'M365 212v20l-10 10H155l-10-10v-13', head: 'M145 212l-5 9h10z', dotted: true, stud: [255, 242],
 			label: { x: 255, y: 274, lines: ['a file the game loads at login'] }
 		}
 	];
 
 	// ---- standing up: 350 by 446 --------------------------------------------
-	// The way down runs along the left, the way back up along the right.
+	// What comes in to Walka runs along the left, from above and from below;
+	// the file that goes back to the game runs along the right.
 	const TALL_BOXES: Box[] = [
 		{
 			x: 1, y: 1, w: 348, h: 76, walka: true, icon: 'addon', at: [22, 26],
@@ -120,16 +119,12 @@
 			label: { x: 67, y: 118, lines: ['draws a strip of', 'squares; Walka', 'reads it off the', 'screen'] }
 		},
 		{
-			n: 4, d: 'M214 201V84', head: 'M214 77l-5 9h10z', dotted: true, stud: [214, 139],
+			n: 3, d: 'M214 201V84', head: 'M214 77l-5 9h10z', dotted: true, stud: [214, 139],
 			label: { x: 237, y: 135, lines: ['a file the game', 'loads at login'] }
 		},
 		{
-			n: 2, d: 'M44 277v85', head: 'M44 369l-5-9h10z', stud: [44, 323],
-			label: { x: 67, y: 319, lines: ['Bluetooth:', 'belt speed'] }
-		},
-		{
-			n: 3, d: 'M214 369v-85', head: 'M214 277l-5 9h10z', stud: [214, 323],
-			label: { x: 237, y: 327.5, lines: ['speed, distance'] }
+			n: 2, d: 'M44 369v-85', head: 'M44 277l-5 9h10z', stud: [44, 323],
+			label: { x: 67, y: 319, lines: ['Bluetooth: speed, distance, steps', '(one way: Walka only listens)'] }
 		}
 	];
 
@@ -190,7 +185,7 @@
 			</svg>
 		{/each}
 	</div>
-	<figcaption>The numbers are the four steps below. The dotted line is the file.</figcaption>
+	<figcaption>The numbers are the three steps below. The dotted line is the file.</figcaption>
 </figure>
 
 <style>

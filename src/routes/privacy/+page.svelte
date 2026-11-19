@@ -101,8 +101,8 @@
 		<h2>Walka, the program</h2>
 		<p class="lead">
 			Walka runs on your computer, in two pieces: the program you download and open, and the addon in the game. The
-			program talks to your walking pad over Bluetooth, and to a heart-rate sensor if you add one. Nothing is uploaded -
-			not to Walka's maker, not to anyone else.
+			program listens to your walking pad over Bluetooth, and to a heart-rate sensor if you add one. Nothing is
+			uploaded - not to Walka's maker, not to anyone else.
 		</p>
 		<p>
 			Walka is experimental, and you use it at your own risk. It is not a safety device or a medical device. That is the
@@ -122,11 +122,11 @@
 				<dd>
 					<p>
 						<strong>Your settings</strong>, among them the weight and height you entered (your age and sex too, if you
-						entered them), which treadmill and heart-rate sensor are yours, and when you accepted the disclaimer.
+						entered them), and which treadmill and heart-rate sensor are yours.
 					</p>
 					<p>
 						<strong>Your walks:</strong> when and how long, distance, steps, calories, speed, and heart rate if you use a
-						sensor.
+						sensor. A walk is recorded whenever the belt moves, with a game or without. Closing Walka ends the recording.
 					</p>
 					<p><strong>Your characters' journey numbers,</strong> with each character's name but not its realm.</p>
 					<p>And a few small working files.</p>
@@ -138,7 +138,7 @@
 					<p>
 						In the Walka addon's folder: the addon, and <code>CompanionData.lua</code>, a file the program writes so
 						that the numbers in the game agree - your measured walks (with average and highest heart rate), your weight
-						and height, the treadmill's limits.
+						and height, the treadmill's name.
 					</p>
 					<p>
 						And what the addon itself records: its settings and history, each character's journey and its road. The game
@@ -180,8 +180,8 @@
 		<h3 id="dashboard">The dashboard</h3>
 		<p>
 			The dashboard is a page that Walka itself serves on your computer, at <code>127.0.0.1:8787</code>. It is only
-			reachable from the computer itself: it can start and stop the belt, so it is not offered to other devices on your
-			network.
+			reachable from the computer itself: it shows your walks, weight and height and has no password, so it is not
+			offered to other devices on your network.
 		</p>
 		<p>
 			The page loads nothing from anywhere else. In its own words: &quot;Runs on this computer. Nothing is
@@ -190,8 +190,8 @@
 
 		<h3 id="screen">What it looks at on your screen</h3>
 		<p>
-			To follow your character, Walka reads a thin strip of black and white squares that the addon draws in the top-left
-			corner of the game window. The long version is under
+			To count a walk for your character, Walka reads a thin strip of black and white squares that the addon draws in
+			the top-left corner of the game window. The long version is under
 			<a href="{resolve('how-it-works/')}#what-walka-looks-at">What Walka looks at, exactly</a>.
 		</p>
 		<ul>
@@ -380,8 +380,8 @@
 	<section id="children" class="prose">
 		<h2>Children</h2>
 		<p>
-			Walka is for adults only. The dashboard asks you to confirm that you are an adult before Walka starts or steers a
-			belt, and its body profile does not take an age under 18.
+			Walka is for adults only. Its <a href={LINKS.disclaimer}>disclaimer</a> says so, and the dashboard's body profile
+			does not take an age under 18.
 		</p>
 		<p>This website is not directed at children, and the site itself collects nothing from anyone.</p>
 	</section>

@@ -2,7 +2,7 @@
 	// Questions and answers, in ten groups. Every answer is folded until it is
 	// asked - a <details>, so it opens without scripts, and a link to the page
 	// with #<question> opens that one. Two things are never folded: the
-	// caution at the top, and "How do I stop the belt?".
+	// caution at the top, and "Can Walka start or stop my belt?".
 	import { resolve } from '$app/paths';
 	import Article from '#lib/components/Article.svelte';
 	import Callout from '#lib/components/Callout.svelte';
@@ -31,19 +31,19 @@
 
 <Seo
 	title="Questions and answers"
-	description="Short, honest answers about Walka - which treadmills work, how to stop the belt, what it looks at on your screen and what stays on your computer."
+	description="Short, honest answers about Walka - which treadmills work, why it cannot move the belt, what it looks at on your screen and what stays on your computer."
 />
 
 <PageHero label="Short answers first" title="Questions and answers">
 	<p>
-		A few sentences each, with a link to the long version. Walka is experimental, and you use it at your own risk.
+		A few sentences each, with a link to the long version. Walka is experimental, and walking while you play is at your own risk.
 	</p>
 </PageHero>
 
 <Article sections={SECTIONS}>
 	<div class="caution">
 		<Callout kind="caution" title="Experimental, and at your own risk">
-			<p>Walka moves a motorised belt while you stand on it, and it has not yet been tried on a real walking pad. It comes with no warranty, and it is not a safety device or a medical device. Read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.</p>
+			<p>Walka has not yet been tried on a real walking pad. Walking while you play is at your own risk: your eyes are on a game, not on your feet. Walka comes with no warranty, and it is not a safety device or a medical device. Read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.</p>
 		</Callout>
 	</div>
 
@@ -52,8 +52,8 @@
 			<h2>The basics</h2>
 			<div class="questions">
 				<Question id="what-is-walka" q="What is Walka?">
-					<p>Walka lets you walk on your walking pad while you play World of Warcraft: Forever. The belt follows your character: faster when it runs, slower when it stands still.</p>
-					<p>It is two pieces, and you need both - an addon in the game that watches your character, and a small program on your computer (<code>Walka.exe</code>, or <code>Walka</code> on a Mac) that talks to the walking pad over Bluetooth. It is a fan-made hobby project, and an early version.</p>
+					<p>Walka is a walking log for people who walk on an under-desk pad while they play World of Warcraft: Forever. You walk at the speed you set on the pad; Walka counts your time, steps, distance and calories, shows them in the game, keeps them per character, and draws your character&#39;s road on the map.</p>
+					<p>It is two pieces, and you need both - an addon in the game that marks your walking sessions and knows which character they belong to, and a small program on your computer (<code>Walka.exe</code>, or <code>Walka</code> on a Mac) that listens to the walking pad over Bluetooth and records your walks. Neither of them moves the belt. It is a fan-made hobby project, and an early version.</p>
 					<p class="further">The long version: <a href="{resolve('how-it-works/')}">How Walka works</a>.</p>
 				</Question>
 				<Question id="free" q="Is it free?">
@@ -61,16 +61,17 @@
 					<p class="further">More: <a href="{resolve('downloads/')}#free">Free, and stays free</a>.</p>
 				</Question>
 				<Question id="what-you-need" q="What do I need?">
-					<p>A Windows 11 PC (Windows 10 generally works) or a Mac, with Bluetooth; a walking pad or treadmill that apps can control over Bluetooth; and World of Warcraft: Forever.</p>
+					<p>A Windows 11 PC (Windows 10 generally works) or a Mac, with Bluetooth; a walking pad or treadmill that shows its numbers to apps over Bluetooth; and World of Warcraft: Forever.</p>
 					<p>The treadmill is switched on, not paired in the computer&#39;s Bluetooth settings, and its own phone app is closed - most treadmills accept one connection at a time. The game runs in <em>Windowed</em> or <em>Windowed (Fullscreen)</em> mode, with its top-left corner visible.</p>
 					<p class="further">The list in full: <a href="{resolve('downloads/')}#what-you-need">What you need</a>.</p>
 				</Question>
 				<Question id="mac" q="Does it work on a Mac?">
-					<p>There is a Mac version, for a Mac with an Apple chip (M1 or later) and for an older Mac with an Intel processor - and it is new. GitHub&#39;s Macs build it, run its tests and check that the finished program starts, drives the simulated belt and stops it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. If you do, do everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> first, and <a href={LINKS.issues}>say how it went</a>.</p>
+					<p>There is a Mac version, for a Mac with an Apple chip (M1 or later) and for an older Mac with an Intel processor - and it is new. GitHub&#39;s Macs build it, run its tests and check that the finished program starts, records a walk on a simulated pad and saves it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. If you do, do everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>, and <a href={LINKS.issues}>say how it went</a>.</p>
 					<p class="further">What is different from Windows: <a href="{resolve('how-it-works/')}#on-a-mac">On a Mac</a>.</p>
 				</Question>
 				<Question id="other-games" q="Does it work with other games, or without a game?">
-					<p>Yes, with you setting the speed. The dashboard has a manual session - start, pause, stop and speed buttons - for any game, or for a plain walk. And if you just walk with the treadmill&#39;s remote while Walka is running, that walk is recorded too. A belt that follows your character is for World of Warcraft: Forever; plugins for other games are an idea for later, not something Walka has.</p>
+					<p>Yes, and there is nothing to set up: the companion records a walk whenever the belt moves. Start the belt with the treadmill&#39;s remote and play anything, or nothing. Such a walk is in the dashboard&#39;s history as <em>No game session</em>, and in your totals.</p>
+					<p>Counting a walk for a character is for World of Warcraft: Forever. Plugins for other games, which would say which character a walk is for, are an idea for later, not something Walka has.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#no-game">Other games, or no game</a>.</p>
 				</Question>
 			</div>
@@ -100,7 +101,7 @@
 				<Question id="install-addon" q="How do I install the addon?">
 					<p>Walka can put it in the game for you: with the game closed, click <em>Install</em> under <em>Getting started</em> on the dashboard (or <em>Settings → Game addon → Install automatically</em>). Then start the game and tick <em>Walka</em> in the AddOns list.</p>
 					<p>By hand instead: unzip the <a href={DOWNLOADS.addon}>addon download</a> into <code>World of Warcraft\<wbr />_forever_\<wbr />Interface\<wbr />AddOns</code> (on a Mac: <code>/Applications/<wbr />World of Warcraft/<wbr />_forever_/<wbr />Interface/<wbr />AddOns/</code>), so that there is a <code>Walka</code> folder in it. If your game is somewhere Walka does not look, choose the addon folder yourself under <em>Settings → Game addon</em>.</p>
-					<p class="further">More: <a href="{resolve('downloads/')}#addon">The game addon</a>.</p>
+					<p class="further">More: <a href="{resolve('downloads/')}#addon">The game addon</a>. Walka is experimental, and you use it at your own risk: read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.</p>
 				</Question>
 			</div>
 		</section>
@@ -109,30 +110,36 @@
 			<h2>Treadmills</h2>
 			<div class="questions">
 				<Question id="which-treadmills" q="Which treadmills work?">
-					<p>Walka speaks Bluetooth FTMS, the standard that fitness apps use to control a treadmill. It is built around the UREVO Strol 2E. It finds UREVO pads and WELLFIT treadmills (the TM029 Pro among them) by name, and any other FTMS treadmill by what it advertises, after a 15-second scan. None of these has been tried by Walka&#39;s author on the real machine yet.</p>
+					<p>Walka reads Bluetooth FTMS, the standard that fitness apps use to show a treadmill&#39;s speed and distance. It is built around the UREVO Strol 2E, and made to read any treadmill that reports its data over standard Bluetooth FTMS.</p>
+					<p>It finds UREVO pads and WELLFIT treadmills (the TM029 Pro among them) by name, and any other FTMS treadmill by what it advertises, after a 15-second scan - or you pick it yourself on the dashboard, under <em>Treadmill → Scan</em>. None of these has been tried by Walka&#39;s author on the real machine yet.</p>
 					<p class="further">The table: <a href="{resolve('downloads/')}#which-treadmills-work">Which treadmills work</a>; what is known and where it comes from: <a href={LINKS.hardware}>the hardware notes</a>.</p>
 				</Question>
+				<Question id="apps-can-control" q="Does my treadmill have to be one that apps can control?">
+					<p>No. The treadmill does not have to be one that apps can control: Walka controls nothing. It has to show its numbers to apps over Bluetooth FTMS. A treadmill that apps can watch and not drive is all Walka needs.</p>
+					<p class="further">More: <a href="{resolve('downloads/')}#which-treadmills-work">Which treadmills work</a>.</p>
+				</Question>
 				<Question id="not-listed" q="Mine is not listed: will it work?">
-					<p>It depends on the treadmill. If an app other than the maker&#39;s own can <em>set the speed</em> of your treadmill, Walka very likely can too.</p>
-					<p>To see what yours offers, run <code class="cmd">Walka.exe probe</code> (on a Mac: <code class="cmd">Walka probe</code>, typed in Terminal) with the treadmill on: it only listens - it sends the treadmill no commands - and saves a small text report. <a href={LINKS.issues}>Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added. The report is made to be posted in public; post the file, not a screenshot of the window.</p>
+					<p>It depends on the treadmill. If an app other than the maker&#39;s own can <em>show the speed</em> of your treadmill, Walka very likely can too.</p>
+					<p>To see what yours offers, run <code class="cmd">Walka.exe probe</code> (on a Mac: <code class="cmd">Walka probe</code>, typed in Terminal) with the treadmill on. Like Walka itself it only listens - it sends the treadmill no commands - and saves a small text report. <a href={LINKS.issues}>Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added. The report is made to be posted in public; post the file, not a screenshot of the window.</p>
 					<p class="further">More: <a href="{resolve('downloads/')}#probe">Is yours not listed, or not behaving?</a></p>
 				</Question>
 				<Question id="will-not-work" q="What will not work?">
-					<p>Treadmills that only talk to their maker&#39;s app in a private language (many NordicTrack / iFIT machines, the older KingSmith WalkingPads), and bikes or rowers - Walka only connects to treadmills. A treadmill that shows its numbers to apps but does not take speed commands cannot be driven either. Walka then still counts your walk, with you setting the speed on the treadmill.</p>
+					<p>Treadmills that only talk to their maker&#39;s app in a private language (many NordicTrack / iFIT machines, the older KingSmith WalkingPads), and bikes or rowers - Walka only reads treadmills.</p>
 					<p class="further">More: <a href="{resolve('downloads/')}#what-will-not-work">What will not work</a>.</p>
 				</Question>
-				<Question id="how-fast" q="How fast can the belt go?">
-					<p>Walka stays at walking pace. The companion&#39;s hard speed cap is 3.0 mph until you raise it under <em>Settings → Safety limits</em>, and it cannot be set above 6.5 km/h (4.0 mph), whatever the treadmill can do.</p>
-					<p>Out of the box the belt goes slower than that: 0.8 mph when your character stands still, 1.2 mph when it walks, 1.6 mph when it runs and 2.0 mph on a fast mount, with a maximum of 2.5 mph in the addon. Every one of those numbers is yours to set in <code class="cmd">/walka options</code>.</p>
-					<p class="further">More: <a href="{resolve('how-it-works/')}#using-it">Using it</a>.</p>
+				<Question id="phone-app" q="Can I use the treadmill's own phone app at the same time?">
+					<p>Not with most treadmills: they talk to one app at a time. While Walka is connected, the maker&#39;s phone app cannot be - and the other way round.</p>
+					<p>So close the treadmill&#39;s own app before you start Walka. To use the app again, press <em>Disconnect</em> on the dashboard (or close Walka) first: that lets go of the treadmill, and leaves the belt as it is.</p>
+					<p class="further">More: <a href="{resolve('downloads/')}#things-to-know">Things to know</a>.</p>
+				</Question>
+				<Question id="how-fast" q="Does Walka set or limit the speed?">
+					<p>No. The speed is yours: Walka sets none and limits none. How fast you walk is between you and the treadmill, and you set it there, with the treadmill&#39;s own remote and buttons.</p>
+					<p>Start slow. Studies of treadmill desks find people settle at 1-2 mph, that typing is barely affected there, and that mouse work suffers most.</p>
+					<p class="further">More: <a href="{resolve('downloads/')}#things-to-know">Things to know</a>.</p>
 				</Question>
 				<Question id="incline" q="Does it change the incline?">
-					<p>No. Incline is left alone: set it on the treadmill.</p>
-					<p class="further">More: <a href="{resolve('downloads/')}#full-size-treadmills">With a treadmill that is not a walking pad</a>.</p>
-				</Question>
-				<Question id="warranty" q="Will it affect my treadmill's warranty?">
-					<p>It may. Walka is not made, tested or approved by the maker of your treadmill. Driving a treadmill from software other than its maker&#39;s own may be something the maker does not support, and may affect its warranty. That is yours to check.</p>
-					<p class="further">More: the <a href={LINKS.disclaimer}>disclaimer</a>.</p>
+					<p>No. Walka does not touch the incline, any more than the speed: set it on the treadmill.</p>
+					<p class="further">More: <a href="{resolve('downloads/')}#things-to-know">Things to know</a>.</p>
 				</Question>
 			</div>
 		</section>
@@ -145,7 +152,7 @@
 					<p>But Blizzard&#39;s EULA is written broadly (it prohibits unauthorised software that &quot;reads&quot; information from the game), Blizzard does not pre-approve third-party tools, and no statement says a passive screen reader like this is fine. Similar addon-plus-reader projects exist publicly for this client; that is not the same as permission. The long version is the README&#39;s <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/README.md#is-this-allowed">Is this allowed?</a>, and the <a href={LINKS.disclaimer}>disclaimer</a> names action taken against a game account among the things its authors are not liable for.</p>
 				</Question>
 				<Question id="input" q="Does Walka press keys, move the mouse or read the game's memory?">
-					<p>No. Walka never sends input to the game - no key presses, no mouse input, no memory reading. An addon cannot use Bluetooth, files or the network, so it draws its state as a thin strip of black and white squares in the top-left corner of the game window, and the companion reads that strip off the screen. The STOP key <span class="keys">(<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>X</kbd>,</span> or <span class="keys"><kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>X</kbd></span> on a Mac) is a hotkey of the system, and its key press is not passed on to the game.</p>
+					<p>No. Walka never sends input to the game - no key presses, no mouse input, no memory reading. An addon cannot use Bluetooth, files or the network, so it draws its state as a thin strip of black and white squares in the top-left corner of the game window, and the companion reads that strip off the screen.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#signal">How the signal travels</a>.</p>
 				</Question>
 				<Question id="what-it-looks-at" q="What exactly does it look at?">
@@ -153,14 +160,26 @@
 					<p>Each picture is searched in the computer&#39;s memory and then dropped: no picture is saved or sent anywhere, and nothing of it is kept but the strip&#39;s ten bytes. Of the game&#39;s files it touches only Walka&#39;s own - the addon folder, and the addon&#39;s saved file, which it only reads.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#what-walka-looks-at">What Walka looks at, exactly</a>.</p>
 				</Question>
-				<Question id="combat" q="What happens in combat?">
-					<p>The game hides your character&#39;s exact speed from addons during combat, and Walka does not work around that. While the speed is hidden the addon estimates: moving or not, at your last known run speed. The HUD tooltip tells you when this is happening. The strip does not say whether your character is fighting - the belt does not need to know, so the addon does not say. Do your first sessions out of combat, somewhere quiet, until you know how the belt responds to the way you play.</p>
-					<p class="further">More: <a href="{resolve('how-it-works/')}#in-combat">In combat</a>.</p>
+				<Question id="your-pace" q={'What is "Your pace"?'}>
+					<p>The speed you tell the addon your treadmill is set to. An addon cannot be told what the treadmill is doing while the game runs, so the HUD counts with the speed you say the belt is set to: <code class="cmd">/walka pace 1.5</code>, the <strong>-</strong> and <strong>+</strong> buttons on the HUD, or <em>Your pace</em> in <code class="cmd">/walka options</code>. It starts at 1.5 mph.</p>
+					<p>It only feeds the HUD&#39;s estimate; it changes nothing at the treadmill. The measured numbers replace the estimate later: press <strong>Sync</strong> in the history window after a walk, or just log in next time.</p>
+					<p class="further">More: <a href="{resolve('how-it-works/')}#your-pace">Your pace</a>.</p>
+				</Question>
+				<Question id="pause-stop" q="What do Pause and Stop in the game do?">
+					<p>They pause and end the <em>session</em> - the addon&#39;s count - and nothing else. The commands <code class="cmd">/walka pause</code>, <code class="cmd">/walka resume</code> and <code class="cmd">/walka stop</code> mark the session in the same way. The belt does not react to any of them: it runs at the speed you set until you stop it at the treadmill.</p>
+					<p>The companion goes by the belt, not by those buttons. A walk is counted while the belt moves, and not while it stands still - with the session paused in the game, it is recorded all the same.</p>
+					<p class="further">More: <a href="{resolve('how-it-works/')}#pause">Pause, stop and going AFK</a>.</p>
 				</Question>
 				<Question id="afk" q="What happens when I go AFK?">
-					<p>Going AFK pauses the session, and the belt, automatically. The session resumes when your character next starts moving - typing a chat line does not start a belt - if that is within ten minutes. After a longer break it stays paused until you press the play button on the HUD (or type <code class="cmd">/walka resume</code>): by then nobody can say what stands on the belt.</p>
-					<p>You can turn the automatic pause off in <code class="cmd">/walka options</code>. Either way, do not leave a session running when you walk away: stop it.</p>
+					<p>Going AFK pauses the session automatically, and it carries on when your character next moves. That is the addon&#39;s count, and nothing else: the belt is not touched by it.</p>
+					<p>You can turn the automatic pause off in <code class="cmd">/walka options</code>. Either way, do not leave the belt running when you walk away: stop it yourself, at the treadmill.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#pause">Pause, stop and going AFK</a>.</p>
+				</Question>
+				<Question id="combat" q="What happens in combat?">
+					<p>The game hides your character&#39;s exact speed from addons during combat, and Walka does not work around that. While the speed is hidden the addon estimates: moving or not, at your last known run speed. The HUD tooltip tells you when this is happening.</p>
+					<p>That only matters for the road and the journey&#39;s &quot;character steps&quot; - your own walk is counted from the treadmill, not from the character. The strip does not say whether your character is fighting: the companion does not need to know, so the addon does not say.</p>
+					<p>For you, not for Walka: do the first sessions out of combat, somewhere quiet. Mouse work suffers most on a treadmill desk, so expect your aim to be worse than seated.</p>
+					<p class="further">More: <a href="{resolve('how-it-works/')}#in-combat">In combat</a>.</p>
 				</Question>
 			</div>
 		</section>
@@ -169,50 +188,58 @@
 			<h2>Safety</h2>
 
 			<!-- The one answer that is never folded away. -->
-			<div class="stopping" id="stopping">
+			<div class="listens" id="walka-only-listens">
 				<Frame pad="clamp(1.1rem, 4.5vw, 2rem)">
 					<h3>
-						<span class="stop-sign"><Icon name="stop" size={26} /></span>
-						How do I stop the belt?
+						<span class="sign"><Icon name="info" size={26} /></span>
+						Can Walka start or stop my belt?
 					</h3>
 					<div class="prose">
-						<p>Fastest first:</p>
-						<ol>
-							<li>the treadmill&#39;s <strong>remote</strong>, stop button or safety key - Walka is built to leave the belt stopped then;</li>
-							<li><span class="keys"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>X</kbd></span> anywhere on the computer, even inside the game <span class="keys">(<kbd>Control</kbd>+<kbd>Option</kbd>+<kbd>X</kbd></span> on a Mac; change it under <em>Settings → Safety limits</em>);</li>
-							<li>the red <strong class="stop-button">STOP</strong> on the dashboard;</li>
-							<li><em>Stop</em> on the HUD, or <code class="cmd">/walka stop</code>.</li>
-						</ol>
-						<p>Bluetooth is not an emergency stop: keep the remote within reach.</p>
-						<p class="further">More: <a href="{resolve('safety/')}#stopping">Stopping the belt</a>.</p>
+						<p><strong>No.</strong> Walka only listens to your treadmill. It cannot start, stop or change the speed of the belt: you set the speed on the treadmill itself. Not from the game, not from the dashboard, not when something goes wrong.</p>
+						<ul>
+							<li><strong>You start the belt</strong> with the treadmill&#39;s remote or buttons, and <strong>you stop it</strong> the same way - or with its safety key. Keep the remote where your hand finds it without looking.</li>
+							<li><strong>Closing Walka, or pressing <em>Disconnect</em>,</strong> ends the recording and lets go of the treadmill. The belt goes on doing what it was doing.</li>
+							<li><strong>When you step off, stop the belt.</strong> Nothing else will.</li>
+						</ul>
+						<p class="further">More: <a href="{resolve('safety/')}#only-listens">Walka only listens</a>.</p>
 					</div>
 				</Frame>
 			</div>
 
 			<div class="questions">
+				<Question id="why-it-changed" q="Walka used to move the belt. Why did that change?">
+					<p>Earlier versions did move the belt: the program started it, changed its speed and stopped it. That has been taken out, not switched off. A motorised belt under someone who is looking at a game was not worth the risk of a program getting it wrong.</p>
+					<p>Since version 0.7.0 Walka only listens to the treadmill. The code that sent commands to a treadmill has been deleted, and there is no setting that brings it back. The earlier versions have been withdrawn: do not use one.</p>
+					<p class="further">More: <a href="{resolve('safety/')}#made-sure">How that is made sure of</a>.</p>
+				</Question>
+				<Question id="older-version" q="I have an older version: what should I do?">
+					<p>Replace it. A version older than 0.7.0 could move the belt, and those downloads have been removed. <a href={resolve('downloads/')}>Download the current one</a> and delete the old <code>Walka.exe</code>. The addon is updated with <em>Install</em> on the dashboard.</p>
+					<p>Your walks and settings are kept. The settings that were about moving the belt are simply no longer read.</p>
+					<p class="further">The current one is experimental too, and you use it at your own risk: read the <a href={LINKS.disclaimer}>disclaimer</a> before you download.</p>
+				</Question>
+				<Question id="at-your-own-risk" q="Is it safe to walk while I play?">
+					<p>That is for you to decide, and you do it at your own risk. You are walking on a motorised belt while you look at a game: your eyes are on the game, not on your feet. Walka is not a safety device. It cannot move the belt, and it cannot stop one either.</p>
+					<p>Start slow, keep the treadmill&#39;s remote within reach, stop the belt when you step off, and keep children and pets away from it. Walking at a desk while you play is for adults. Do not do it when you are tired or have been drinking.</p>
+					<p class="further">More: <a href="{resolve('safety/')}#at-your-own-risk">At your own risk</a>; the whole of it is the <a href={LINKS.disclaimer}>disclaimer</a>.</p>
+				</Question>
 				<Question id="lost-signal" q="What if the game freezes, or Walka loses sight of it?">
-					<p>Walka is built so that a lost signal slows the belt down and does not speed it up. The signal is lost whenever the companion cannot see the strip in the corner of the game window: a loading screen, the game minimised, another window on top of that corner, the game frozen or closed.</p>
-					<p>Counted from the last picture it saw: after 1 second the belt is no longer sped up, until 5 seconds it holds its speed, then it slows to the <em>safe speed</em> (0.8 mph by default), and after 2 minutes of that it pauses. If the game window disappears altogether, the session ends and the belt stops. That is what the code is written to do, and what its tests check against a simulated treadmill - not a guarantee.</p>
-					<p class="further">More: <a href="{resolve('safety/')}#rules">What Walka is built to do</a>.</p>
+					<p>Nothing happens to the belt. Nothing the game shows reaches the treadmill: the belt runs at the speed you set until you stop it at the treadmill.</p>
+					<p>Walka loses sight of the game whenever the companion cannot see the strip in the corner of the game window: a loading screen, the game minimised, another window on top of that corner, the game frozen. That is expected, and nothing depends on it but the filing - your walk is recorded all the same. In the middle of a session the walk stays with that session; when the game is closed, the session is over.</p>
+					<p class="further">More: <a href="{resolve('how-it-works/')}#signal">How the signal travels</a>.</p>
 				</Question>
-				<Question id="crash" q="What if Walka crashes?">
-					<p>Closing Walka in the ordinary way is built to stop the belt it was driving. A Walka that is killed cannot do that - a crash, <em>End task</em> in Task Manager - so there is the <em>guard</em>: a small second process that is built to connect to the treadmill itself when that happens, and stop the belt. It keeps trying for three minutes, and a stop is the only command it has.</p>
-					<p>It is a net, not a promise: reaching the pad takes several seconds at best, and nothing stops the belt if the guard goes down with Walka (<em>End process tree</em>, a power cut, a computer that freezes). Then the belt keeps its speed until you stop it at the treadmill.</p>
-					<p class="further">More: <a href="{resolve('safety/')}#rules">What Walka is built to do</a>, and rule 8 of the <a href={LINKS.safety}>long version</a>.</p>
-				</Question>
-				<Question id="sleep" q="What if my computer goes to sleep?">
-					<p>Walka is built to stop the belt first, exactly as by STOP, when the computer says it is about to sleep. Not every computer says so in time - a laptop with &quot;Modern Standby&quot; may not - and asleep, the companion can watch neither the game nor the belt: the treadmill would keep the speed it was last given.</p>
-					<p>So the companion is also built to notice on waking that it has not been running, and to stop the belt then. Either way the belt stays stopped until you resume: press <em>Resume</em> on the dashboard.</p>
-					<p class="further">More: <a href="{resolve('safety/')}#rules">What Walka is built to do</a>, and rule 14 of the <a href={LINKS.safety}>long version</a>.</p>
+				<Question id="crash" q="What happens to the belt if Walka is closed, or crashes?">
+					<p>Nothing. Closing Walka, or pressing <em>Disconnect</em>, ends the recording and lets go of the treadmill. The belt goes on doing what it was doing. A crash changes nothing about that: Walka does not stop the belt when something goes wrong, because it cannot. Stop it yourself, at the treadmill.</p>
+					<p>Your walk is saved when Walka is closed. A walk in progress is also saved every half minute, so after a crash or a forced quit it is picked up from its last half-minute checkpoint at the next start.</p>
 				</Question>
 				<Question id="not-a-safety-device" q="Is Walka a safety device?">
-					<p>No. Walka is not a safety device: the treadmill&#39;s own stop button, remote and safety key are. Its safety rules are what it is designed to do, and what its tests check against a simulated treadmill - they are not a guarantee. Software has bugs, Bluetooth drops and computers freeze, so Walka must not be the only thing between you and a moving belt. It is not a medical device either, and nothing in it is medical advice.</p>
-					<p class="further">More: <a href="{resolve('safety/')}#not-a-guarantee">A design, not a guarantee</a> and the <a href={LINKS.disclaimer}>disclaimer</a>.</p>
+					<p>No. Walka is not a safety device, and it cannot stop a belt: the treadmill&#39;s own stop button, remote and safety key are what does. Keep them within reach.</p>
+					<p>It is not a medical device either, and nothing in it is medical advice. Its calories, steps and heart rate are estimates, for interest only.</p>
+					<p class="further">More: <a href="{resolve('safety/')}#is-and-is-not">What Walka is, and is not</a> and the <a href={LINKS.disclaimer}>disclaimer</a>.</p>
 				</Question>
 				<Question id="doctor" q="Should I ask a doctor first?">
 					<p>Ask a doctor first if you have a heart condition, high blood pressure, trouble with balance or dizziness, an injury, if you are pregnant, if you take medicine that affects your balance or your heart rate, if you have not exercised for a long time - or if you are in any doubt.</p>
 					<p>Stop at once if you feel dizzy, faint, short of breath, have pain in your chest, or anything hurts: stop the belt at the treadmill and step off. Walka is not a medical device, and nothing in it is medical advice.</p>
-					<p class="further">More: <a href="{resolve('safety/')}#before-you-use-it">Before you use it</a>; the whole of it is the <a href={LINKS.disclaimer}>disclaimer</a>.</p>
+					<p class="further">More: <a href="{resolve('safety/')}#before-you-use-it">Before you walk</a>; the whole of it is the <a href={LINKS.disclaimer}>disclaimer</a>.</p>
 				</Question>
 			</div>
 		</section>
@@ -226,12 +253,12 @@
 				</Question>
 				<Question id="what-it-keeps" q="What does it keep, and where?">
 					<p>Walka keeps your settings (with the weight and height you entered), your walks (with heart rate, if you use a sensor) and the journey numbers of your characters (with each character&#39;s name, without the realm), in a folder of its own: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac.</p>
-					<p>In the game&#39;s folder it writes only into Walka&#39;s own addon folder - the addon, and <code>CompanionData.lua</code>, the file from which the game loads what the treadmill measured (your walks, with your body profile and the treadmill&#39;s limits). What the addon itself records, the road included, is saved by the game with your other addon settings.</p>
+					<p>In the game&#39;s folder it writes only into Walka&#39;s own addon folder - the addon, and <code>CompanionData.lua</code>, the file from which the game loads what the treadmill measured (your walks, with your body profile and the treadmill&#39;s name). What the addon itself records, the road included, is saved by the game with your other addon settings.</p>
 					<p>Walks shorter than 20 seconds are not kept, and a walk can be deleted on the dashboard&#39;s <em>History</em> page.</p>
 					<p class="further">More: <a href="{resolve('privacy/')}#what-it-keeps">Privacy</a>.</p>
 				</Question>
 				<Question id="dashboard-network" q="Can other devices on my network open the dashboard?">
-					<p>No. The dashboard is only reachable from the computer Walka runs on, at <code>127.0.0.1:8787</code>. It can start and stop the belt, so it is not offered to other devices on your network. A way round that would be a security problem: see <a href={LINKS.security}>Reporting a security or safety problem</a>.</p>
+					<p>No. The dashboard is only reachable from the computer Walka runs on, at <code>127.0.0.1:8787</code>. It shows your walks, weight and height and has no password, so it is not offered to other devices on your network. A way round that would be a security problem: see <a href={LINKS.security}>Reporting a security or safety problem</a>.</p>
 				</Question>
 				<Question id="website" q="Does this website track me?">
 					<p>No. This website has no accounts, no forms, no cookies, no analytics, no advertising and no trackers, and everything a page needs is served by the site itself.</p>
@@ -248,6 +275,11 @@
 		<section id="numbers" class="group">
 			<h2>The numbers</h2>
 			<div class="questions">
+				<Question id="no-game-session" q={'What is "No game session" in the history?'}>
+					<p>A walk that was recorded while no session was running in the game. A walk is recorded whenever the belt moves, with a game or without. If a session is running in the game - <code class="cmd">/walka start</code>, or the play button on the HUD - the walk is filed under that session, and so under your character.</p>
+					<p>With no session - another game, no game at all - it is recorded all the same, as a walk of its own: <em>No game session</em> in the dashboard&#39;s history, and in your totals.</p>
+					<p class="further">More: <a href="{resolve('how-it-works/')}#no-game">Other games, or no game</a>.</p>
+				</Question>
 				<Question id="calories" q="How are calories worked out, and how accurate are they?">
 					<p>Calories come from belt speed and your weight, using an equation validated at slow desk-walking speeds (the usual treadmill formula reads 11-35% low there). Expect roughly ±10% for an individual. The dashboard also shows how much of it is <em>on top of</em> what sitting would have burned. It is always an estimate, for interest only: do not use it to decide anything about your health, your diet, your medication or your training.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#calories-and-steps">Calories and steps</a>.</p>
@@ -322,29 +354,32 @@
 		<section id="troubleshooting" class="group">
 			<h2>When something is wrong</h2>
 			<div class="questions">
+				<Question id="belt-does-not-start" q="Why does the belt not start, stop or change speed from Walka?">
+					<p>It is not meant to: Walka only listens. Use the treadmill&#39;s remote or buttons.</p>
+					<p class="further">More: <a href="#walka-only-listens">Can Walka start or stop my belt?</a></p>
+				</Question>
 				<Question id="treadmill-not-found" q="Why does Walka not find my treadmill?">
 					<p>Is it on? Close the treadmill&#39;s own phone app (force-quit it), and remove the treadmill from Windows <em>Bluetooth &amp; devices</em> if you paired it there. On a Mac, check that <strong>Terminal</strong> is switched on under <em>System Settings → Privacy &amp; Security → Bluetooth</em>, then close Walka and open it again.</p>
 					<p>If it is not a UREVO or a WELLFIT, give it the whole scan (15 seconds), or press <em>Scan</em> on the dashboard and pick it - if it is not in the list either, it does not speak Bluetooth FTMS. A USB Bluetooth 5 adapter helps with weak built-in radios.</p>
 				</Question>
+				<Question id="no-speed-shown" q="It connects, but shows no speed while the belt moves. Why?">
+					<p>If Walka connects but the dashboard shows no speed while the belt moves, the treadmill may not send standard treadmill data. Run <code class="cmd">Walka.exe probe</code> (on a Mac: <code class="cmd">Walka probe</code>, typed in Terminal) and <a href={LINKS.issues}>open an issue</a> with the report it saves.</p>
+					<p class="further">More: <a href="#not-listed">Mine is not listed: will it work?</a></p>
+				</Question>
 				<Question id="no-game-signal" q={'Why does the dashboard say "no game signal"?'}>
-					<p>Run the game windowed or borderless, and keep the top-left corner uncovered. In the game, type <code class="cmd">/walka beacon on</code> and try <code class="cmd">/walka beacon size 6</code>; then run <code class="cmd">Walka.exe beacon</code> (<code class="cmd">Walka beacon</code> on a Mac), which checks that the strip can be read from your screen.</p>
+					<p>Run the game windowed or borderless, and keep the top-left corner uncovered. In the game, type <code class="cmd">/walka beacon on</code> and try <code class="cmd">/walka beacon size 6</code>; then run <code class="cmd">Walka.exe beacon</code> (<code class="cmd">Walka beacon</code> on a Mac), which checks that the strip can be read from your screen. Your walk is recorded all the same - it is only not filed under a character.</p>
 					<p>On a Mac, if the dashboard says macOS has not allowed recording the screen - or says <em>no game signal</em> although the game is there - open <em>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</em>, switch on <strong>Terminal</strong>, then close Walka and open it again.</p>
 				</Question>
-				<Question id="no-speed-commands" q="It connects, but the belt does not start or change speed. Why?">
-					<p>The treadmill may only <em>show</em> its numbers to apps. Look for &quot;does not take speed commands&quot; under <em>Activity</em> on the dashboard, and <a href={LINKS.issues}>open an issue</a> with a <code class="cmd">Walka.exe probe</code> report. Walka then still counts your walk, with you setting the speed on the treadmill.</p>
+				<Question id="not-my-character" q="Why is a walk not counted for my character?">
+					<p>Was a session running in the game while you walked? <code class="cmd">/walka status</code> says what the addon is doing right now. Without a session the walk is recorded as <em>No game session</em>.</p>
+					<p class="further">More: <a href="#no-game-session">What is &quot;No game session&quot; in the history?</a></p>
 				</Question>
-				<Question id="belt-does-not-follow" q="Why does the belt not follow my character?">
-					<p>Have you accepted the disclaimer on the dashboard? It says <em>Waiting for you to accept the disclaimer</em> until you have. Is a session started? <code class="cmd">/walka status</code> says what the addon is doing right now. If the dashboard says <em>waiting for you to move your character</em> or <em>stopped at the treadmill</em>, press Resume.</p>
-				</Question>
-				<Question id="no-restart" q="Why does the belt not restart after a break?">
-					<p>After more than ten minutes AFK the session stays paused until you press the play button on the HUD (or type <code class="cmd">/walka resume</code>). After the computer has slept, press <em>Resume</em> on the dashboard. And for about ten seconds after a stop, &quot;Waiting for the treadmill to finish its previous workout&quot; is normal: the pad ignores a start until then.</p>
-				</Question>
-				<Question id="two-entries" q={'Why are there two "Walka" entries in Task Manager?'}>
-					<p>One is the <em>guard</em>: a small second copy that is built to stop the belt if Walka itself is killed or crashes. It ends when you close Walka.</p>
-					<p class="further">More: <a href="#crash">What if Walka crashes?</a></p>
+				<Question id="hud-numbers" q="Why are the HUD's numbers off?">
+					<p>They are an estimate from the pace you told the addon: set it with <code class="cmd">/walka pace</code> to what the treadmill shows. The measured numbers arrive with <em>Sync</em>.</p>
+					<p class="further">More: <a href="#your-pace">What is &quot;Your pace&quot;?</a></p>
 				</Question>
 				<Question id="full-list" q="Where is the full list?">
-					<p>In the README, under <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/README.md#troubleshooting">Troubleshooting</a>: the rows above and the rest, such as a speed that is one step off, <code>~</code> numbers in the history, or an addon marked out of date after a game patch. If nothing there helps, <a href={LINKS.issues}>open an issue</a>.</p>
+					<p>In the README, under <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/README.md#troubleshooting">Troubleshooting</a>: the rows above and the rest, such as walks that are no longer recorded after the pad was switched off and on, <code>~</code> numbers in the history, or an addon marked out of date after a game patch. If nothing there helps, <a href={LINKS.issues}>open an issue</a>.</p>
 				</Question>
 			</div>
 		</section>
@@ -361,13 +396,14 @@
 					<p>What Walka owes to other projects is in the <a href={LINKS.thirdParty}>third-party notices</a>. This website is under the MIT licence too, in <a href={LINKS.websiteRepo}>a repository of its own</a>.</p>
 				</Question>
 				<Question id="report" q="How do I report a bug, or a security problem?">
-					<p>Ordinary bugs - the belt does not follow, a number is wrong, a treadmill is not found - go to the <a href={LINKS.issues}>issue tracker</a>, which is public.</p>
-					<p>If you have found a way to make Walka do something to the belt that its user did not ask for, please say so in private first: <a href={LINKS.reportVulnerability}>report a vulnerability</a> on GitHub, where only the maintainer sees the report. There is no bounty and no promised time to answer, and a report that concerns the belt is looked at before everything else. There is no published contact e-mail.</p>
+					<p>Ordinary bugs - a walk is not recorded, a number is wrong, a treadmill is not found - go to the <a href={LINKS.issues}>issue tracker</a>, which is public.</p>
+					<p>Walka only listens to a treadmill, so the worst thing that could be wrong with it is that this is not true. If you have found a way to make Walka send a treadmill anything at all, or to get at what it stores, please say so in private first: <a href={LINKS.reportVulnerability}>report a vulnerability</a> on GitHub, where only the maintainer sees the report. There is no bounty and no promised time to answer, and a report that concerns the belt is looked at before everything else. There is no published contact e-mail.</p>
 					<p class="further">What counts and what does not: <a href={LINKS.security}>Reporting a security or safety problem</a>.</p>
 				</Question>
 				<Question id="help-test" q="Can I help test it on a real treadmill?">
-					<p>Yes - the README asks for exactly this, because the pad and the game have not been tested against this code. Start with <code class="cmd">Walka.exe probe</code>, which only listens, and keep the report: it settles open questions in the <a href={LINKS.hardware}>hardware notes</a>. Then do the rest of <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>, in order - it goes on with a manual session while you stand next to the pad, not on it.</p>
-					<p><a href={LINKS.issues}>Open an issue</a> with the report and the treadmill&#39;s make and model, and say how it went - on a Mac too. You do this at your own risk, like everything with Walka: slowly at first, with the pad&#39;s remote in your hand.</p>
+					<p>Yes - the README asks for exactly this, because the pad and the game have not been tested against this code. Nothing in Walka can move the belt, so what there is to check is whether your walk is <em>counted right</em>.</p>
+					<p>Start with <code class="cmd">Walka.exe probe</code>, which only listens, and keep the report: it settles open questions in the <a href={LINKS.hardware}>hardware notes</a>. Then walk for a few minutes with the dashboard open and compare it with the treadmill&#39;s own display: the speed, and after the walk the distance and the steps. The rest is under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.</p>
+					<p><a href={LINKS.issues}>Open an issue</a> with the report and the treadmill&#39;s make and model, and say how it went - on a Mac too. You do this at your own risk, like everything with Walka - read the <a href={LINKS.disclaimer}>disclaimer</a> first. Start slow, and know where the remote is.</p>
 				</Question>
 			</div>
 		</section>
@@ -411,52 +447,34 @@
 		font-size: var(--text-small);
 	}
 
-	/* Keys to press, and short commands, are not broken over two lines. */
-	.keys,
+	/* Short commands are not broken over two lines. */
 	.cmd {
 		white-space: nowrap;
 	}
 
-	kbd {
-		font-size: 0.8em;
-	}
-
-	/* ---- How do I stop the belt? Always open, and framed: the one answer
-	   that matters most. */
-	.stopping {
+	/* ---- Can Walka start or stop my belt? Always open, and framed: the one
+	   answer that matters most. */
+	.listens {
 		margin-top: clamp(1.1rem, 2.5vw, 1.5rem);
 	}
 
-	.stopping h3 {
+	.listens h3 {
 		display: grid;
 		grid-template-columns: auto minmax(0, 1fr);
 		align-items: center;
 		gap: 0.7rem;
 	}
 
-	.stop-sign {
-		color: var(--stop);
+	.sign {
+		color: var(--accent);
 	}
 
-	.stopping .prose {
+	.listens .prose {
 		max-width: none;
 		margin-top: 0.9rem;
 	}
 
-
-	/* the dashboard's own red button, in small (as on the home page) */
-	.stop-button {
-		display: inline-block;
-		padding: 0.08em 0.6em;
-		border-radius: 6px;
-		background: var(--stop);
-		color: #fff;
-		font-size: 0.82em;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-	}
-
-	.stopping + .questions {
+	.listens + .questions {
 		margin-top: 0.75rem;
 		border-top: 0;
 	}
