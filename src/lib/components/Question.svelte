@@ -36,7 +36,6 @@
 <style>
 	details {
 		border-bottom: 1px solid var(--line);
-		scroll-margin-top: calc(var(--header-h) + 1rem);
 	}
 
 	summary {

@@ -74,25 +74,30 @@
 </header>
 
 <style>
+	/* The bar has a ground of its own, so that the page can pass under it. */
 	.bar {
 		position: sticky;
 		top: 0;
 		z-index: 50;
 		view-transition-name: site-bar; /* it does not fade when the page changes */
 		height: var(--header-h);
-		border-bottom: 1px solid transparent;
+		border-bottom: 1px solid var(--line);
+		background: var(--scrim);
+		-webkit-backdrop-filter: blur(14px) saturate(1.3);
+		backdrop-filter: blur(14px) saturate(1.3);
 		transition:
 			background 0.25s,
 			border-color 0.25s,
 			backdrop-filter 0.25s;
 	}
 
-	.bar.scrolled,
-	.bar:has(.menu[open]) {
-		border-bottom-color: var(--line);
-		background: var(--scrim);
-		-webkit-backdrop-filter: blur(14px) saturate(1.3);
-		backdrop-filter: blur(14px) saturate(1.3);
+	/* Where scripts run, it is clear while the page is at its top - the sky of
+	   a hero shows through - and gets its ground once the page has moved. */
+	:global(html.js) .bar:not(.scrolled):not(:has(.menu[open])) {
+		border-bottom-color: transparent;
+		background: none;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
 	}
 
 	.row {

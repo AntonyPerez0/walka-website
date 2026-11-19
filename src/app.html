@@ -8,6 +8,10 @@
 		<meta name="theme-color" content="#faf6ea" media="(prefers-color-scheme: light)" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		<script>
+			// Scripts run here: the styles may count on them (the bar along the top
+			// is clear until the page has moved - without scripts it has a ground
+			// of its own all the time).
+			document.documentElement.classList.add('js');
 			// Light or dark, if the visitor chose one here before; otherwise the
 			// page follows the system. Runs before anything is drawn.
 			try {

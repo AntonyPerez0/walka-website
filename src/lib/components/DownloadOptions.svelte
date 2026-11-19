@@ -116,8 +116,9 @@
 		margin-top: 0.35rem;
 	}
 
+	/* a jump to #windows or #mac lands with the icon in view */
 	h3 {
-		scroll-margin-top: calc(var(--header-h) + 5rem);
+		scroll-margin-top: 4.5rem;
 	}
 
 	.size {

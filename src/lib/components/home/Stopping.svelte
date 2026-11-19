@@ -138,7 +138,7 @@
 		padding: 0.08em 0.6em;
 		border-radius: 6px;
 		background: var(--stop);
-		color: #fff;
+		color: var(--on-stop);
 		font-size: 0.82em;
 		font-weight: 700;
 		letter-spacing: 0.08em;
