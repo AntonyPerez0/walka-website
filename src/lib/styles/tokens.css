@@ -75,8 +75,6 @@
 	--bad: light-dark(#a52424, #ee8080);
 	--bad-tint: light-dark(#fae9e4, #2c1418);
 	--note-tint: light-dark(#eef3fb, #0f1838);
-	--stop: #d03b3b; /* the red of the dashboard's STOP */
-	--on-stop: #ffffff;
 
 	/* ---- atmosphere: the soft lights behind a hero ------------------------ */
 	--glow-1: light-dark(rgba(255, 255, 244, 0.9), rgba(70, 120, 255, 0.4));

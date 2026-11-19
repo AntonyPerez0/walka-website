@@ -2,8 +2,8 @@
 	// The top of a page other than the home page: the small label, the
 	// heading (the page's one <h1>) and a sentence or two.
 	//
-	//   <PageHero label="Before you walk" title="Safety">
-	//     <p>Walka moves a motorised belt while you stand on it.</p>
+	//   <PageHero label="Read before you walk" title="Safety">
+	//     <p>Walka does not move your treadmill. It only listens to it.</p>
 	//   </PageHero>
 	import type { Snippet } from 'svelte';
 	import Sky from './Sky.svelte';

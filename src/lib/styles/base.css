@@ -164,7 +164,7 @@ code {
 	overflow-wrap: anywhere;
 }
 
-/* A key on the keyboard: Ctrl+Alt+X */
+/* A key on the keyboard */
 kbd {
 	display: inline-block;
 	padding: 0.1em 0.5em;

@@ -3,8 +3,8 @@
 	// (it stays in view on a wide screen; on a narrow one it is folded away
 	// above the text until it is asked for), and the text beside it.
 	//
-	//   <Article sections={[{ id: 'stopping', label: 'Stopping the belt' }, ...]}>
-	//     <section id="stopping" class="prose"> <h2>Stopping the belt</h2> ... </section>
+	//   <Article sections={[{ id: 'only-listens', label: 'Walka only listens' }, ...]}>
+	//     <section id="only-listens" class="prose"> <h2>Walka only listens</h2> ... </section>
 	//   </Article>
 	//
 	// Every id in `sections` must be the id of something in the page.
