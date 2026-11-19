@@ -8,11 +8,28 @@
 	import '@fontsource/spectral/latin-ext-500-italic.css';
 	import '#lib/styles/tokens.css';
 	import '#lib/styles/base.css';
-	import { onNavigate } from '$app/navigation';
+	import { afterNavigate, onNavigate } from '$app/navigation';
 	import Footer from '#lib/components/Footer.svelte';
 	import Header from '#lib/components/Header.svelte';
 
 	let { children } = $props();
+
+	// A line of code or a table that is wider than the screen scrolls sideways
+	// inside its own box. Such a box is given a place in the Tab order, so
+	// that it can be scrolled with the arrow keys as well as with a finger.
+	function reachByKeyboard() {
+		for (const box of document.querySelectorAll<HTMLElement>('main pre, main .table')) {
+			if (box.scrollWidth > box.clientWidth + 1) box.tabIndex = 0;
+			else box.removeAttribute('tabindex');
+		}
+	}
+
+	afterNavigate(reachByKeyboard);
+
+	$effect(() => {
+		window.addEventListener('resize', reachByKeyboard, { passive: true });
+		return () => window.removeEventListener('resize', reachByKeyboard);
+	});
 
 	// Going from one page to another, the old page fades into the new one -
 	// where the browser can do that, and unless the visitor asked for less
@@ -20,10 +37,13 @@
 	onNavigate((navigation) => {
 		if (!document.startViewTransition || navigation.from?.url.pathname === navigation.to?.url.pathname) return;
 		return new Promise((resolve) => {
-			document.startViewTransition(async () => {
+			const transition = document.startViewTransition(async () => {
 				resolve();
-				await navigation.complete;
+				// (a page change that is cut short by the next one is not an error)
+				await navigation.complete.catch(() => {});
 			});
+			transition.finished.catch(() => {});
+			transition.ready.catch(() => {});
 		});
 	});
 </script>

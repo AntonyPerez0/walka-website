@@ -33,7 +33,8 @@
 	} = $props();
 </script>
 
-<div class={['frame', className]} class:glow class:quiet style:--cut={cut} style:--pad={pad}>
+<div class={['frame', className]} class:quiet style:--cut={cut} style:--pad={pad}>
+	{#if glow}<span class="light" aria-hidden="true"></span>{/if}
 	<div class="frame-inner">
 		{@render children()}
 	</div>
@@ -121,8 +122,16 @@
 		padding: calc(var(--t) + var(--pad));
 	}
 
-	/* The light behind it: a shadow that follows the cut corners. */
-	.frame.glow {
-		filter: drop-shadow(0 30px 60px var(--shadow)) drop-shadow(0 0 80px var(--shadow-glow));
+	/* The light behind it: the shadow of a box that lies just inside the
+	   frame, so that only its soft edge shows around it. (A shadow of a box
+	   is cheap for a browser to draw; a filter on the whole frame is not.) */
+	.light {
+		position: absolute;
+		inset: 3% 2% 1%;
+		z-index: -5;
+		border-radius: var(--cut);
+		box-shadow:
+			0 34px 70px var(--shadow),
+			0 0 90px 6px var(--shadow-glow);
 	}
 </style>
