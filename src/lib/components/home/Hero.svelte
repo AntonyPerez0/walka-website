@@ -130,6 +130,44 @@
 		text-align: center;
 	}
 
+	/* The first screen arrives in order: the words, then the picture. Only
+	   styles do this - nothing waits for a script - and not at all for
+	   someone who asked for less motion. */
+	@media (prefers-reduced-motion: no-preference) {
+		.copy > :global(*),
+		.stage {
+			animation: arrive 0.8s var(--ease) both;
+		}
+
+		.copy > :global(:nth-child(2)) {
+			animation-delay: 0.05s;
+		}
+
+		.copy > :global(:nth-child(3)) {
+			animation-delay: 0.1s;
+		}
+
+		.copy > :global(:nth-child(4)) {
+			animation-delay: 0.15s;
+		}
+
+		.copy > :global(:nth-child(5)) {
+			animation-delay: 0.2s;
+		}
+
+		.stage {
+			animation-duration: 1s;
+			animation-delay: 0.18s;
+		}
+	}
+
+	@keyframes arrive {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+	}
+
 	/* On a narrow screen the heading stands on two lines. */
 	@media (max-width: 40rem) {
 		h1 {

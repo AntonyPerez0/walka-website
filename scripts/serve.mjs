@@ -5,7 +5,8 @@
 //   npm run preview -- --port 5000
 //
 // Like GitHub Pages it answers /page with /page/, serves 404.html (with
-// status 404) for anything that is not there, and sets no special headers.
+// status 404) for anything that is not there, compresses text, and sets no
+// special headers.
 // The same build has to work under a project address (/walka-website/) and
 // at the root of a domain: try both before changing how links are written.
 
@@ -13,6 +14,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
 
 const args = process.argv.slice(2);
 const option = (name, fallback) => {
@@ -54,11 +56,16 @@ const server = createServer(async (request, response) => {
 	}
 
 	const send = async (file, status = 200) => {
-		const body = await readFile(file);
-		response.writeHead(status, {
-			'content-type': TYPES[extname(file)] ?? 'application/octet-stream',
-			'cache-control': 'max-age=600'
-		});
+		let body = await readFile(file);
+		const type = TYPES[extname(file)] ?? 'application/octet-stream';
+		const headers = { 'content-type': type, 'cache-control': 'max-age=600' };
+		const text = /^(text\/|application\/(json|xml|manifest\+json)|image\/svg)/.test(type);
+		if (text && /\bgzip\b/.test(String(request.headers['accept-encoding'] ?? ''))) {
+			body = gzipSync(body);
+			headers['content-encoding'] = 'gzip';
+			headers.vary = 'Accept-Encoding';
+		}
+		response.writeHead(status, headers);
 		response.end(request.method === 'HEAD' ? undefined : body);
 	};
 	const redirect = (location) => {

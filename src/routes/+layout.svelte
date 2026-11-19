@@ -8,10 +8,24 @@
 	import '@fontsource/spectral/latin-ext-500-italic.css';
 	import '#lib/styles/tokens.css';
 	import '#lib/styles/base.css';
+	import { onNavigate } from '$app/navigation';
 	import Footer from '#lib/components/Footer.svelte';
 	import Header from '#lib/components/Header.svelte';
 
 	let { children } = $props();
+
+	// Going from one page to another, the old page fades into the new one -
+	// where the browser can do that, and unless the visitor asked for less
+	// motion (the styles in base.css switch it off then).
+	onNavigate((navigation) => {
+		if (!document.startViewTransition || navigation.from?.url.pathname === navigation.to?.url.pathname) return;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 </script>
 
 <a class="skip" href="#main">Skip to the page</a>

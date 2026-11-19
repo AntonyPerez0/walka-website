@@ -27,7 +27,7 @@
 					<span class="i"><Icon name="shield" size={22} /></span>
 					<p>
 						Scanned for viruses by Microsoft Defender, before every release.
-						<a href={resolve('downloads/')}>Is the download safe?</a>
+						<a href="{resolve('downloads/')}#is-the-download-safe">Is the download safe?</a>
 					</p>
 				</li>
 				<li>
@@ -35,7 +35,7 @@
 					<p>
 						You need a Windows 10 or 11 PC or a Mac, with Bluetooth; a walking pad or treadmill that apps can control
 						over Bluetooth; and World of Warcraft: Forever.
-						<a href={resolve('downloads/')}>Which treadmills work</a>
+						<a href="{resolve('downloads/')}#which-treadmills-work">Which treadmills work</a>
 					</p>
 				</li>
 			</ul>

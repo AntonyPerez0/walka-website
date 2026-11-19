@@ -1,6 +1,10 @@
 <script lang="ts">
+	// A page that is still being written: this holds its place, and the anchors other pages link to.
+	import PageHero from '#lib/components/PageHero.svelte';
 	import Seo from '#lib/components/Seo.svelte';
 </script>
 
-<Seo title="privacy" description="Placeholder for privacy." />
-<div class="container" style="padding-block: 6rem"><h1>privacy</h1></div>
+<Seo title="Privacy" description="Privacy, on the Walka website. This page is being written." />
+
+<PageHero title="Privacy"><p>This page is being written.</p></PageHero>
+<div class="container prose" style="padding-block: 4rem"></div>

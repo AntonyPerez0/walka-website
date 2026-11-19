@@ -4,17 +4,24 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="color-scheme" content="dark light" />
+		<meta name="theme-color" content="#05071a" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#faf6ea" media="(prefers-color-scheme: light)" />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		<script>
 			// Light or dark, if the visitor chose one here before; otherwise the
 			// page follows the system. Runs before anything is drawn.
 			try {
 				var theme = localStorage.getItem('walka-theme');
-				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+				if (theme === 'light' || theme === 'dark') {
+					document.documentElement.dataset.theme = theme;
+					var bars = document.querySelectorAll('meta[name="theme-color"]');
+					for (var i = 0; i < bars.length; i++) bars[i].content = theme === 'light' ? '#faf6ea' : '#05071a';
+				}
 			} catch (e) {}
 		</script>
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
 		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
+		<link rel="manifest" href="%sveltekit.assets%/site.webmanifest" />
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

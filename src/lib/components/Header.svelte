@@ -78,6 +78,7 @@
 		position: sticky;
 		top: 0;
 		z-index: 50;
+		view-transition-name: site-bar; /* it does not fade when the page changes */
 		height: var(--header-h);
 		border-bottom: 1px solid transparent;
 		transition:

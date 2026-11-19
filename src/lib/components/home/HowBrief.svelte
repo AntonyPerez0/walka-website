@@ -10,7 +10,7 @@
 		},
 		{
 			title: 'Walka reads the strip.',
-			text: 'A small program on your computer looks at that corner - and nowhere else in the game.'
+			text: 'A small program on your computer takes a tiny screenshot of that corner and decodes it.'
 		},
 		{
 			title: 'The belt follows.',
@@ -26,8 +26,8 @@
 	<div class="container">
 		<SectionHead label="How it works" title="The game draws. Walka reads. The belt follows.">
 			<p>
-				An addon cannot use Bluetooth, files or the network. So it draws - and Walka never sends anything back into the
-				game: no key presses, no mouse, no reading of memory.
+				An addon cannot use Bluetooth, files or the network. So it draws - and Walka never sends input to the game: no
+				key presses, no mouse input, no memory reading.
 			</p>
 		</SectionHead>
 

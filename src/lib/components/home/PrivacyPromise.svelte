@@ -10,13 +10,14 @@
 		},
 		{
 			title: 'It looks at one corner.',
-			text: 'Walka reads the top-left corner of the game window. No picture is saved or sent anywhere.'
+			text: 'Walka reads the top-left corner of the game window - and, until it has found the game for the first time, searches the screen for it. No picture is saved or sent anywhere.',
+			more: { label: 'What it looks at, exactly', page: 'how-it-works/', hash: '#what-walka-looks-at' }
 		},
 		{
 			title: 'The picture is yours.',
 			text: 'The Share picture is drawn in your browser. Nothing is posted for you: you choose where it goes.'
 		}
-	];
+	] as const;
 </script>
 
 <section class="privacy">
@@ -33,6 +34,9 @@
 				<li use:reveal={i * 90}>
 					<h3>{fact.title}</h3>
 					<p>{fact.text}</p>
+					{#if 'more' in fact}
+						<p class="more-line"><a href="{resolve(fact.more.page)}{fact.more.hash}">{fact.more.label}</a></p>
+					{/if}
 				</li>
 			{/each}
 		</ul>
@@ -90,6 +94,11 @@
 
 	h3 {
 		margin-bottom: 0.5rem;
+	}
+
+	.more-line {
+		margin-top: 0.6rem;
+		font-size: var(--text-small);
 	}
 
 	.later {

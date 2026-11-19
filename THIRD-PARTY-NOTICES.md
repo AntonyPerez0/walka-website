@@ -1,0 +1,77 @@
+# Third-party notices
+
+This page is about what the Walka website is made with, and what of that
+is in the pages a visitor downloads. Walka itself has notices of its own:
+[THIRD-PARTY-NOTICES.md](https://github.com/AntonyPerez0/walka-addon/blob/HEAD/THIRD-PARTY-NOTICES.md)
+in Walka's repository.
+
+## Fonts
+
+The site serves two typefaces from its own address. Both are published
+under the SIL Open Font License, Version 1.1, which asks that the
+copyright notice and the licence go with every copy. They do: the full
+texts are in [`static/licences/`](static/licences/) and are published
+with the site, at `licences/Inter-OFL.txt` and `licences/Spectral-OFL.txt`.
+
+* **Inter** - Copyright 2016 The Inter Project Authors
+  (<https://github.com/rsms/inter>). Used for text, labels and numbers.
+* **Spectral** - Copyright 2017 The Spectral Project Authors
+  (<https://github.com/productiontype/Spectral>). Used for headings.
+
+The font files come from the [Fontsource](https://fontsource.org) packages
+`@fontsource-variable/inter` and `@fontsource/spectral`, at the versions
+fixed in `package-lock.json`. They are not changed.
+
+## In the site's scripts
+
+The scripts a visitor's browser runs are built from this repository's code
+together with:
+
+* **Svelte** and **SvelteKit** - Copyright (c) Svelte Contributors,
+  published under the MIT licence (<https://github.com/sveltejs/svelte>,
+  <https://github.com/sveltejs/kit>).
+
+```
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Used to build the site, not part of it
+
+Vite (MIT), TypeScript (Apache License 2.0), svelte-check (MIT) and sharp
+(Apache License 2.0), which makes the smaller versions of the pictures.
+Their exact versions are in `package-lock.json`.
+
+## Pictures
+
+The screenshots and the Share pictures on the site are Walka's own output,
+made with its demo mode and a made-up character. The maps on the Share
+pictures are drawings made for Walka; how their outlines were made is in
+Walka's own
+[third-party notices](https://github.com/AntonyPerez0/walka-addon/blob/HEAD/THIRD-PARTY-NOTICES.md#the-continents-on-the-share-picture).
+
+The site's design - its frames, ornaments, icons and backdrops - is drawn
+for Walka in CSS and SVG. No artwork, logos, fonts, icons or screenshots
+of any game are used.
+
+## Names
+
+Walka is a fan-made tool. It is not affiliated with or endorsed by
+Blizzard Entertainment, UREVO, WELLFIT or any other maker of treadmills.
+World of Warcraft is a trademark of Blizzard Entertainment, Inc.; the
+other names belong to their owners.

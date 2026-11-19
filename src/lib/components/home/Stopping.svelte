@@ -41,7 +41,7 @@
 				<span class="n" aria-hidden="true">3</span>
 				<div>
 					<h3>The red <span class="stop">STOP</span> on the dashboard.</h3>
-					<p>It is on every view of the dashboard, top right.</p>
+					<p>It is on every view of the dashboard.</p>
 				</div>
 			</li>
 			<li use:reveal={240}>
@@ -144,9 +144,29 @@
 		letter-spacing: 0.08em;
 	}
 
+	/* In one column the four ways come straight after the heading, and the
+	   remark and the link after them. */
 	@media (max-width: 56rem) {
 		.layout {
 			grid-template-columns: 1fr;
+			gap: 0;
+		}
+
+		.words {
+			display: contents;
+		}
+
+		.ways {
+			order: 1;
+			margin-top: 2rem;
+		}
+
+		.note {
+			order: 2;
+		}
+
+		.note + p {
+			order: 3;
 		}
 	}
 

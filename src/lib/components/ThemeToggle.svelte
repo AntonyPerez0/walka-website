@@ -3,9 +3,17 @@
 	// styles show the right one, so it is right before any script has run.
 	import Icon from './Icon.svelte';
 	import { theme } from '#lib/theme.svelte.ts';
+
+	// What the button will do, said out loud - once the page knows which
+	// light it is in. (The server does not: it writes the neutral words.)
+	let ready = $state(false);
+	$effect(() => {
+		ready = true;
+	});
+	const label = $derived(ready ? `Switch to the ${theme.current === 'dark' ? 'light' : 'dark'} theme` : 'Switch between light and dark');
 </script>
 
-<button class="toggle" type="button" onclick={() => theme.toggle()} aria-label="Switch between light and dark" title="Light or dark">
+<button class="toggle" type="button" onclick={() => theme.toggle()} aria-label={label} title={label}>
 	<span class="only-dark"><Icon name="sun" size={20} /></span>
 	<span class="only-light"><Icon name="moon" size={20} /></span>
 </button>

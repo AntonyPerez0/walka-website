@@ -21,34 +21,39 @@
 <ul class="options">
 	<li class:yours={platform === 'windows'}>
 		<span class="icon"><Icon name="window" size={28} stroke={1.5} /></span>
-		<h3>Windows</h3>
-		<p class="what">One file, <code>Walka.exe</code>. Nothing to install: you just open it.</p>
+		<h3 id="windows">Windows</h3>
+		<p class="what"><code>Walka.exe</code>, one file. Nothing to install: you just open it.</p>
 		<a class="button button--block" class:button--ghost={platform === 'mac'} href={DOWNLOADS.windows}>
 			<Icon name="download" /> Download for Windows
 		</a>
-		<p class="fine">Windows 10 or 11{#if size('Walka.exe')} · {size('Walka.exe')}{/if}</p>
+		<p class="fine">
+			For Windows 11; Windows 10 generally works.{#if size('Walka.exe')}{' '}<span class="size">{size('Walka.exe')}.</span>{/if}
+		</p>
 	</li>
 
 	<li class:yours={platform === 'mac'}>
 		<span class="icon"><Icon name="laptop" size={28} stroke={1.5} /></span>
-		<h3>Mac</h3>
+		<h3 id="mac">Mac</h3>
 		<p class="what">For a Mac with an Apple chip (M1 or later). New, and not yet tried with the game on a real Mac.</p>
 		<a class="button button--block" class:button--ghost={platform === 'windows'} href={DOWNLOADS.macAppleSilicon}>
 			<Icon name="download" /> Download for Mac
 		</a>
 		<p class="fine">
-			An older Mac with an Intel processor? <a href={DOWNLOADS.macIntel}>Download this one</a>.
+			An older Mac with an Intel processor? <a href={DOWNLOADS.macIntel}>Download this one</a>. <em>Apple menu → About This Mac</em>
+			says which you have.
 		</p>
 	</li>
 
 	<li>
 		<span class="icon"><Icon name="addon" size={28} stroke={1.5} /></span>
-		<h3>The game addon</h3>
+		<h3 id="addon">The game addon</h3>
 		<p class="what">The Walka addon for World of Warcraft. Walka can also put it in the game for you.</p>
 		<a class="button button--ghost button--block" href={DOWNLOADS.addon}>
 			<Icon name="download" /> Download the addon
 		</a>
-		<p class="fine"><code>Walka-addon.zip</code>{#if size('Walka-addon.zip')} · {size('Walka-addon.zip')}{/if}</p>
+		<p class="fine">
+			<code>Walka-addon.zip</code>{#if size('Walka-addon.zip')}{' '}<span class="size">{size('Walka-addon.zip')}.</span>{/if}
+		</p>
 	</li>
 </ul>
 
@@ -109,6 +114,14 @@
 
 	.fine {
 		margin-top: 0.35rem;
+	}
+
+	h3 {
+		scroll-margin-top: calc(var(--header-h) + 5rem);
+	}
+
+	.size {
+		white-space: nowrap;
 	}
 
 	@media (max-width: 56rem) {

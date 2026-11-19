@@ -107,9 +107,19 @@
 		mask-image: linear-gradient(#000 62%, transparent);
 	}
 
+	/* Behind the heading of an inner page: one light, fewer and fainter
+	   stars, and none of the larger ones - the words stand to the left there. */
 	.sky.quiet {
 		background: radial-gradient(70% 90% at 50% 0%, var(--glow-1), transparent 72%);
 		opacity: 0.8;
+	}
+
+	.sky.quiet .sparks {
+		display: none;
+	}
+
+	.sky.quiet .dots {
+		opacity: 0.55;
 	}
 
 	.stars {

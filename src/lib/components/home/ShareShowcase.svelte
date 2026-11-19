@@ -1,39 +1,37 @@
 <script lang="ts">
 	// The Share picture, in its five themes. The pictures are Walka's own
 	// output: the Share page made them, with the demo character.
-	import { fade } from 'svelte/transition';
+	//
+	// Choosing a theme needs no script: the five pictures are all in the page,
+	// and the styles show the one whose name is ticked. (A picture that is
+	// not shown is not fetched.)
 	import { resolve } from '$app/paths';
 	import Picture from '#lib/components/Picture.svelte';
 	import SectionHead from '#lib/components/SectionHead.svelte';
 
 	// Colours from Walka's own themes (companion/src/walka/static/card.js).
 	const THEMES = [
-		{ id: 'sapphire', name: 'Sapphire', ground: '#14205a', metal: '#f1c75a', gem: '#69d2ff', glow: '70, 120, 255' },
-		{ id: 'ember', name: 'Ember', ground: '#451912', metal: '#e59a5e', gem: '#ffb04f', glow: '255, 120, 40' },
-		{ id: 'wildwood', name: 'Wildwood', ground: '#11413a', metal: '#cfb766', gem: '#64e8a8', glow: '60, 225, 165' },
-		{ id: 'frost', name: 'Frost', ground: '#28405f', metal: '#cbd5e2', gem: '#c2ecff', glow: '150, 210, 255' },
-		{ id: 'parchment', name: 'Parchment', ground: '#f3e6c6', metal: '#96702c', gem: '#c8473d', glow: '176, 128, 60' }
+		{ id: 'sapphire', name: 'Sapphire', ground: '#14205a', metal: '#f1c75a', gem: '#69d2ff' },
+		{ id: 'ember', name: 'Ember', ground: '#451912', metal: '#e59a5e', gem: '#ffb04f' },
+		{ id: 'wildwood', name: 'Wildwood', ground: '#11413a', metal: '#cfb766', gem: '#64e8a8' },
+		{ id: 'frost', name: 'Frost', ground: '#28405f', metal: '#cbd5e2', gem: '#c2ecff' },
+		{ id: 'parchment', name: 'Parchment', ground: '#f3e6c6', metal: '#96702c', gem: '#c8473d' }
 	] as const;
-
-	let chosen = $state<(typeof THEMES)[number]['id']>('sapphire');
-	const theme = $derived(THEMES.find((t) => t.id === chosen) ?? THEMES[0]);
-
-	const calm = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 </script>
 
-<section class="share" style:--theme-glow={theme.glow}>
+<section class="share">
 	<div class="container layout">
 		<figure class="picture">
 			<div class="card">
-				{#key chosen}
-					<div class="layer" in:fade={{ duration: calm ? 0 : 420 }}>
+				{#each THEMES as t (t.id)}
+					<div class="layer" data-theme={t.id}>
 						<Picture
-							name="share-{chosen}"
+							name="share-{t.id}"
 							sizes="(min-width: 60rem) 30rem, min(30rem, calc(100vw - 2.5rem))"
-							alt="A Share picture in the {theme.name} theme: real-world steps and miles walked, the character's level, time played, and the road it travelled on a map of the world"
+							alt="A Share picture in the {t.name} theme: real-world steps and miles walked, the character's level, time played, and the road it travelled on a map of the world"
 						/>
 					</div>
-				{/key}
+				{/each}
 			</div>
 			<figcaption class="fine">A Share picture, made with the demo character.</figcaption>
 		</figure>
@@ -51,7 +49,7 @@
 				<div class="chips">
 					{#each THEMES as t (t.id)}
 						<label class="chip" style:--ground={t.ground} style:--metal-c={t.metal} style:--gem-c={t.gem}>
-							<input type="radio" name="share-theme" value={t.id} bind:group={chosen} />
+							<input type="radio" name="share-theme" value={t.id} checked={t.id === 'sapphire'} />
 							<span class="swatch" aria-hidden="true"></span>
 							<span class="name">{t.name}</span>
 						</label>
@@ -63,16 +61,68 @@
 				Drawn in your browser. Nothing is uploaded and nothing is posted for you. The design is Walka's own: no game
 				artwork, logos or fonts are used.
 			</p>
-			<p><a class="more" href={resolve('how-it-works/')}>What is on the picture</a></p>
+			<p><a class="more" href="{resolve('how-it-works/')}#share">What is on the picture</a></p>
 		</div>
 	</div>
 </section>
 
 <style>
 	.share {
+		--theme-glow: 70, 120, 255;
 		position: relative;
 		padding-block: var(--section);
 		overflow: clip;
+	}
+
+	/* The picture whose name is ticked is the one that shows, and its light
+	   is the light behind it. Sapphire is ticked to begin with - and is what
+	   a browser shows that does not know :has(). */
+	.layer {
+		display: none;
+		grid-area: 1 / 1;
+	}
+
+	.layer[data-theme='sapphire'] {
+		display: block;
+	}
+
+	.share:has(input:checked:not([value='sapphire'])) .layer[data-theme='sapphire'] {
+		display: none;
+	}
+
+	.share:has(input[value='ember']:checked) .layer[data-theme='ember'],
+	.share:has(input[value='wildwood']:checked) .layer[data-theme='wildwood'],
+	.share:has(input[value='frost']:checked) .layer[data-theme='frost'],
+	.share:has(input[value='parchment']:checked) .layer[data-theme='parchment'] {
+		display: block;
+	}
+
+	.share:has(input[value='ember']:checked) {
+		--theme-glow: 255, 120, 40;
+	}
+
+	.share:has(input[value='wildwood']:checked) {
+		--theme-glow: 60, 225, 165;
+	}
+
+	.share:has(input[value='frost']:checked) {
+		--theme-glow: 150, 210, 255;
+	}
+
+	.share:has(input[value='parchment']:checked) {
+		--theme-glow: 176, 128, 60;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.layer {
+			animation: show 0.45s ease both;
+		}
+	}
+
+	@keyframes show {
+		from {
+			opacity: 0;
+		}
 	}
 
 	.layout {
@@ -105,10 +155,6 @@
 		box-shadow:
 			0 30px 70px -20px var(--shadow),
 			0 0 0 1px var(--line);
-	}
-
-	.layer {
-		grid-area: 1 / 1;
 	}
 
 	figcaption {

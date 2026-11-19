@@ -11,6 +11,8 @@ import { browser } from '$app/env';
 export type Theme = 'light' | 'dark';
 
 const KEY = 'walka-theme';
+// The colour a phone's browser gives its own bars: the page's ground.
+const GROUND: Record<Theme, string> = { dark: '#05071a', light: '#faf6ea' };
 const systemQuery = browser ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
 function chosen(): Theme | null {
@@ -39,6 +41,10 @@ class ThemeState {
 		const root = document.documentElement;
 		if (this.choice) root.dataset.theme = this.choice;
 		else delete root.dataset.theme;
+		for (const bar of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+			const own: Theme = bar.media.includes('light') ? 'light' : 'dark';
+			bar.content = GROUND[this.choice ?? own];
+		}
 		try {
 			if (this.choice) localStorage.setItem(KEY, this.choice);
 			else localStorage.removeItem(KEY);
