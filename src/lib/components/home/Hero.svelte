@@ -52,7 +52,7 @@
 					narrow="dashboard-phone"
 					first
 					sizes="(min-width: 1420px) 1290px, calc(100vw - 2.5rem)"
-					alt="The Walka dashboard: the belt's speed, this session's time, distance, steps, calories and heart rate, and a red STOP button"
+					alt="The Walka dashboard's Live view while the belt follows the character: the belt's speed, the state of the connections and the red STOP button. On a wide screen it also shows this session's time, distance, steps, calories and heart rate."
 				/>
 			</div>
 		</Frame>
