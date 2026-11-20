@@ -74,6 +74,16 @@
 		overflow: clip;
 	}
 
+	/* Safari before 16 does not know "clip": there the light behind the
+	   picture would make the page wider than a narrow screen. (Said this
+	   way, because the build folds "hidden" and "clip" in one rule into
+	   "clip" alone.) */
+	@supports not (overflow: clip) {
+		.share {
+			overflow: hidden;
+		}
+	}
+
 	/* The picture whose name is ticked is the one that shows, and its light
 	   is the light behind it. Sapphire is ticked to begin with - and is what
 	   a browser shows that does not know :has(). */
@@ -223,6 +233,14 @@
 	.chip:has(input:focus-visible) {
 		outline: 2px solid var(--ring);
 		outline-offset: 3px;
+	}
+
+	/* A browser that does not know :has() (Firefox before 121) shows the
+	   Sapphire picture - and no buttons that would do nothing there. */
+	@supports not selector(:has(a)) {
+		.themes {
+			display: none;
+		}
 	}
 
 	/* a small cut stone in the theme's own colours */

@@ -600,6 +600,9 @@ tbody tr:last-child > * {
 
 .steps {
 	display: grid;
+	/* (never wider than the screen: a command that cannot break, in very
+	   large text, used to widen every step and cut its lines off) */
+	grid-template-columns: minmax(0, 1fr);
 	gap: 0;
 	padding: 0 !important;
 	list-style: none !important;
@@ -609,6 +612,7 @@ tbody tr:last-child > * {
 .steps > li {
 	position: relative;
 	display: grid;
+	grid-template-columns: minmax(0, 1fr);
 	gap: 0.5em;
 	margin: 0 !important;
 	padding: 1.4rem 0 1.4rem 4rem;

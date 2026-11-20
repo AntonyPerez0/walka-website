@@ -57,11 +57,11 @@ npm run preview -- --base /     # ... and as a domain of its own would
   link is relative, nothing is loaded from another site, every page has a
   title, a description, one main heading and the "not affiliated with
   Blizzard" line, the download buttons are the links Walka's README uses,
-  nothing that looks like a secret key is in it, and the styles can be read
-  by the oldest browsers the site is built for (the list is in
-  `vite.config.ts`). The rules, and the short list of outside addresses the
-  site's code may talk to, are at the top of
-  [`scripts/verify.mjs`](scripts/verify.mjs).
+  nothing that looks like a secret key is in it, and no media query in the
+  styles is in the form `(width <= 40rem)`, which the oldest browsers the
+  site is built for cannot read (the list is in `vite.config.ts`). The
+  rules, and the short list of outside addresses the site's code may talk
+  to, are at the top of [`scripts/verify.mjs`](scripts/verify.mjs).
 
 ## How it is published
 
