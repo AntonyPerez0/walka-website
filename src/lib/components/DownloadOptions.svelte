@@ -77,7 +77,10 @@
 		grid-template-rows: subgrid;
 		align-content: start;
 		gap: 0.5rem;
-		padding: clamp(1.25rem, 3vw, 2rem);
+		/* (the second limit only counts when the text is set very large on a
+		   narrow screen: the room around the words gives way before the
+		   words are cut off) */
+		padding: min(clamp(1.25rem, 3vw, 2rem), 6.25vw);
 		background: var(--surface);
 	}
 
@@ -99,6 +102,7 @@
 
 	.button {
 		margin-top: 0.9rem;
+		padding-inline: min(1.6rem, 8vw);
 		white-space: normal;
 		text-align: center;
 	}
@@ -126,13 +130,15 @@
 	}
 
 	@media (max-width: 56rem) {
+		/* (minmax: a column never wider than the screen, whatever stands in it) */
 		.options {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 			grid-template-rows: none;
 		}
 
 		li {
 			grid-row: auto;
+			grid-template-columns: minmax(0, 1fr);
 			grid-template-rows: none;
 		}
 	}

@@ -27,6 +27,8 @@
 //     belt that follows the character, the STOP key, the speed cap) must
 //     not come back, in a page's text, its descriptions or its pictures'
 //     alt text. Nor may a page link to a withdrawn version.
+//  7. The styles can be read by the oldest browsers the site is built for:
+//     no media query in the form "(width <= 40rem)".
 //
 // It reads files only: no browser, nothing to install.
 
@@ -302,6 +304,11 @@ async function checkCss(file) {
 		}
 	}
 	if (/@import\s+(?:url\()?["']?https?:/i.test(css)) problem(file, 'stylesheet imports from another site');
+	// "@media (width <= 40rem)" is today's way to write (max-width: 40rem).
+	// Safari before 16.4 does not read it, and would lose every rule for a
+	// narrow screen. vite.config.ts has the build write the old form.
+	const ranged = css.match(/@media[^{]*\(\s*(?:width|height)\s*[<>]=?[^{]*/i);
+	if (ranged) problem(file, `a media query older browsers cannot read: "${ranged[0].trim()}". See build.cssTarget in vite.config.ts`);
 }
 
 async function main() {

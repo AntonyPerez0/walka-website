@@ -7,7 +7,6 @@
 	import PageHero from '#lib/components/PageHero.svelte';
 	import Seo from '#lib/components/Seo.svelte';
 	import ThemedPicture from '#lib/components/ThemedPicture.svelte';
-	import { detectPlatform, type Platform } from '#lib/platform.ts';
 	import { isDate, latestRelease, type Release } from '#lib/release.ts';
 	import { DOWNLOADS, LINKS } from '#lib/site.ts';
 
@@ -20,14 +19,11 @@
 		{ id: 'free', label: 'Free, and stays free' }
 	];
 
-	// Which system the visitor is on (a guess from the browser), and which
-	// release is the latest (asked from GitHub). Both only add to the page:
-	// without them every download is there, as plain links.
-	let platform = $state<Platform | null>(null);
+	// Which release is the latest (asked from GitHub). It only adds to the
+	// page: without it every download is there, as plain links.
 	let release = $state<Release | null>(null);
 
 	$effect(() => {
-		platform = detectPlatform();
 		latestRelease().then((found) => (release = found));
 	});
 
@@ -60,9 +56,8 @@
 			program carries a copy of the addon and can put it in the game for you.
 		</p>
 
-		{#if platform === 'other'}
-			<p class="elsewhere">Walka is a program for Windows and for Mac. The files below are for that computer.</p>
-		{/if}
+		<!-- only for a visitor on neither system: see the styles below -->
+		<p class="elsewhere">Walka is a program for Windows and for Mac. The files below are for that computer.</p>
 
 		<DownloadOptions {release} />
 
@@ -314,10 +309,19 @@
 		line-height: 1.55;
 	}
 
+	/* Shown by a style, not put in by a script: src/app.html says which
+	   computer this is before the page is drawn. A line that came later would
+	   push the page down - and a page that is reloaded far down would no
+	   longer stand where it was left. */
 	.elsewhere {
+		display: none;
 		margin-bottom: 1.25rem;
 		color: var(--ink);
 		font-weight: 600;
+	}
+
+	:global(html[data-system='other']) .elsewhere {
+		display: block;
 	}
 
 	.in-short {

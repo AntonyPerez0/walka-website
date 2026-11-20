@@ -8,7 +8,7 @@
 
 <section class="get" id="get">
 	<div class="container">
-		<Frame cut="clamp(14px, 2.4vw, 26px)" pad="clamp(1.25rem, 5vw, 4rem)" glow>
+		<Frame cut="clamp(14px, 2.4vw, 26px)" pad="min(clamp(1.25rem, 5vw, 4rem), 6.25vw)" glow>
 			<header>
 				<p class="label label--gold">Free, and stays free</p>
 				<h2>Get Walka</h2>

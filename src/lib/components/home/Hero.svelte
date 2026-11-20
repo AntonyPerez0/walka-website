@@ -77,6 +77,10 @@
 
 	.copy {
 		display: grid;
+		/* (never wider than the screen, whatever stands in it: with very large
+		   text a button that could not wrap used to widen the column, and the
+		   ends of every line were cut off) */
+		grid-template-columns: minmax(0, 1fr);
 		justify-items: center;
 		text-align: center;
 	}
@@ -196,6 +200,7 @@
 
 		.actions :global(.button) {
 			width: 100%;
+			white-space: normal;
 		}
 	}
 </style>

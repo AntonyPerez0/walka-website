@@ -51,7 +51,12 @@
 	let changing = 0;
 
 	onNavigate((navigation) => {
-		if (navigation.from?.url.pathname === navigation.to?.url.pathname) return;
+		// A move inside one page needs none of this. But Back, pressed in the
+		// moment before a fade starts, looks like one (the address has not
+		// changed yet): while a page change is under way it is treated as a
+		// page change too, so that it lands last and the page that is shown
+		// is the page the address names.
+		if (changing === 0 && navigation.from?.url.pathname === navigation.to?.url.pathname) return;
 		const root = document.documentElement;
 		// (a page change that is cut short by the next one is not an error)
 		const settled = navigation.complete.catch(() => {});

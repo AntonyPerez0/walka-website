@@ -104,7 +104,10 @@
 	--text-label: 0.75rem;
 
 	/* ---- space ------------------------------------------------------------- */
-	--gutter: clamp(1.25rem, 0.5rem + 3.6vw, 3rem);
+	/* (the last limit, a share of the screen, only counts when the text is set
+	   very large on a narrow screen - or on a screen under 320px: the room
+	   at the sides gives way before the words run out of it) */
+	--gutter: min(clamp(1.25rem, 0.5rem + 3.6vw, 3rem), 6.25vw);
 	--page: 75rem; /* the widest the content gets */
 	--page-wide: 82.5rem; /* the hero's picture may go a little wider */
 	--measure: 42.5rem; /* a comfortable line of text */

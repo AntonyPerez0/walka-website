@@ -12,6 +12,18 @@
 			// is clear until the page has moved - without scripts it has a ground
 			// of its own all the time).
 			document.documentElement.classList.add('js');
+			// Which computer this is - Windows, a Mac, or neither (a phone, a
+			// tablet, Linux). A guess from what the browser says; it is never
+			// sent anywhere. It is made here, before anything is drawn, so that
+			// what a page shows for it stands in its place from the start.
+			// src/lib/platform.ts reads it.
+			try {
+				var says = ((navigator.userAgentData || {}).platform || '') + ' ' + (navigator.platform || '') + ' ' + (navigator.userAgent || '');
+				says = says.toLowerCase();
+				// (a phone or a tablet runs neither download)
+				var handheld = /android|iphone|ipad|ipod/.test(says) || (/mac/.test(says) && navigator.maxTouchPoints > 1);
+				document.documentElement.dataset.system = handheld ? 'other' : /win/.test(says) ? 'windows' : /mac/.test(says) ? 'mac' : 'other';
+			} catch (e) {}
 			// Light or dark, if the visitor chose one here before; otherwise the
 			// page follows the system. Runs before anything is drawn.
 			try {

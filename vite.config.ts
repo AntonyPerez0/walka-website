@@ -2,22 +2,33 @@ import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
+// The oldest browsers the styles are written out for: the name Lightning CSS
+// has for each, the name Vite has for it, and the version.
+const OLDEST = [
+	['chrome', 'chrome', 109, 0],
+	['edge', 'edge', 109, 0],
+	['firefox', 'firefox', 115, 0],
+	['safari', 'safari', 15, 6],
+	['ios_saf', 'ios', 15, 6]
+] as const;
+
 export default defineConfig({
 	// Styles are written once, in today's CSS (nesting, light-dark()), and
 	// lowered at build time for browsers a few years old.
 	css: {
 		transformer: 'lightningcss',
 		lightningcss: {
-			targets: {
-				chrome: 109 << 16,
-				edge: 109 << 16,
-				firefox: 115 << 16,
-				safari: (15 << 16) | (6 << 8),
-				ios_saf: (15 << 16) | (6 << 8)
-			}
+			targets: Object.fromEntries(OLDEST.map(([name, , major, minor]) => [name, (major << 16) | (minor << 8)]))
 		}
 	},
-	build: { cssMinify: 'lightningcss' },
+	build: {
+		cssMinify: 'lightningcss',
+		// (the pass that makes the styles small takes its browsers from here,
+		// not from the list above. Left to itself it writes "(width <= 40rem)",
+		// which Safari before 16.4 does not read: every rule for a narrow
+		// screen would be lost there)
+		cssTarget: OLDEST.map(([, name, major, minor]) => `${name}${major}${minor ? `.${minor}` : ''}`)
+	},
 
 	plugins: [
 		sveltekit({

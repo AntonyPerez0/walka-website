@@ -24,7 +24,10 @@ export type Release = {
 export async function latestRelease(): Promise<Release | null> {
 	try {
 		const kept = JSON.parse(sessionStorage.getItem(KEY) ?? 'null');
-		if (kept && Date.now() - kept.at < AN_HOUR && typeof kept.release?.version === 'string' && kept.release.version) {
+		// (only an answer this page could have kept itself: a time that is a
+		// number and not ahead of the clock, a version that is not blank)
+		const age = typeof kept?.at === 'number' ? Date.now() - kept.at : NaN;
+		if (age >= 0 && age < AN_HOUR && typeof kept.release?.version === 'string' && kept.release.version.trim()) {
 			return kept.release as Release;
 		}
 	} catch {

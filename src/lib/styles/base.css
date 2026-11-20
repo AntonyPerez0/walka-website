@@ -720,6 +720,15 @@ pre code {
 	overflow-wrap: normal;
 }
 
+/* A line too long for a narrow screen scrolls sideways in its box, and a
+   script makes that box reachable by keyboard (+layout.svelte). Without
+   scripts the line wraps instead, so that there is nothing to scroll. */
+html:not(.js) pre,
+html:not(.js) pre code {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
 /* A screenshot inside running text gets a fine edge. */
 .figure picture {
 	overflow: hidden;
