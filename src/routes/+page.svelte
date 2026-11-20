@@ -12,7 +12,7 @@
 <Seo
 	home
 	title="Walka - walk on your walking pad while you play"
-	description="Walk on your walking pad while you play World of Warcraft. Walka counts your steps, miles and calories, and draws your character's road on the map. Free."
+	description="Walk on your walking pad while you play World of Warcraft. Walka counts your steps, miles and calories. Free. Experimental, and at your own risk."
 />
 
 <Hero />

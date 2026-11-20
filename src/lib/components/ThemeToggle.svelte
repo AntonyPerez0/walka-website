@@ -43,4 +43,10 @@
 	.toggle span {
 		display: grid;
 	}
+
+	/* Without scripts the button could do nothing, so it is not shown: the
+	   page follows the system's light or dark then. */
+	:global(html:not(.js)) .toggle {
+		display: none;
+	}
 </style>

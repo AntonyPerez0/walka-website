@@ -416,6 +416,7 @@
 				name="dashboard"
 				narrow="dashboard-phone"
 				sizes={COLUMN}
+				narrowSizes="calc(100vw - 2.75rem)"
 				alt="The dashboard's Live view while a walk is recorded: the belt's speed as the treadmill reports it. On a wide screen it also shows this walk's time, distance, steps, calories and heart rate, and the state of the connections."
 			/>
 			<figcaption>The dashboard's Live view, with the demo character.</figcaption>
@@ -799,7 +800,7 @@
 		<h2>Where to read more</h2>
 		<ul class="reading">
 			<li>
-				<a href={LINKS.repo}>The README</a>
+				<a href={LINKS.readme}>The README</a>
 				<span>Everything on this page and more, with troubleshooting.</span>
 			</li>
 			<li>

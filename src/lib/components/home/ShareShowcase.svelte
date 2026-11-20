@@ -134,6 +134,8 @@
 
 	.picture {
 		position: relative;
+		/* on paper, not cut in two by the end of a sheet */
+		break-inside: avoid;
 	}
 
 	/* the light of the chosen theme, behind the picture */

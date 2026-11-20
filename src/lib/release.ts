@@ -24,7 +24,7 @@ export type Release = {
 export async function latestRelease(): Promise<Release | null> {
 	try {
 		const kept = JSON.parse(sessionStorage.getItem(KEY) ?? 'null');
-		if (kept && Date.now() - kept.at < AN_HOUR) return kept.release as Release;
+		if (kept && Date.now() - kept.at < AN_HOUR && typeof kept.release?.version === 'string') return kept.release as Release;
 	} catch {
 		// no storage, or nothing kept
 	}
@@ -35,10 +35,17 @@ export async function latestRelease(): Promise<Release | null> {
 		if (typeof data?.tag_name !== 'string') return null;
 		const release: Release = {
 			version: data.tag_name.replace(/^v/, ''),
-			published: String(data.published_at ?? ''),
-			url: String(data.html_url ?? ''),
+			// (only what is what it should be is taken: a date that is a date,
+			// sizes that are numbers)
+			published: typeof data.published_at === 'string' && isDate(data.published_at) ? data.published_at : '',
+			url: typeof data.html_url === 'string' ? data.html_url : '',
 			sizes: Object.fromEntries(
-				(Array.isArray(data.assets) ? data.assets : []).map((asset: { name: string; size: number }) => [asset.name, asset.size])
+				(Array.isArray(data.assets) ? data.assets : [])
+					.filter((asset: unknown): asset is { name: string; size: number } => {
+						const { name, size } = (asset ?? {}) as { name?: unknown; size?: unknown };
+						return typeof name === 'string' && typeof size === 'number' && Number.isFinite(size) && size > 0;
+					})
+					.map((asset: { name: string; size: number }) => [asset.name, asset.size])
 			)
 		};
 		try {
@@ -52,8 +59,14 @@ export async function latestRelease(): Promise<Release | null> {
 	}
 }
 
+/** Whether a text is a date: "2026-11-19T21:30:00Z" is, "soon" is not. */
+export function isDate(text: unknown): text is string {
+	return typeof text === 'string' && Number.isFinite(Date.parse(text));
+}
+
+/** "13 MB", "1.2 MB", "114 KB" - or nothing, for anything that is not a size. */
 export function megabytes(bytes: number | undefined): string {
-	if (!bytes) return '';
+	if (typeof bytes !== 'number' || !Number.isFinite(bytes) || bytes < 1024) return '';
 	const mb = bytes / (1024 * 1024);
 	return mb >= 10 ? `${Math.round(mb)} MB` : mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
 }

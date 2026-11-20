@@ -16,6 +16,7 @@
 		name,
 		narrow,
 		narrowBelow = '40rem',
+		narrowSizes = '100vw',
 		alt,
 		sizes = '100vw',
 		first = false,
@@ -26,6 +27,8 @@
 		/** The same for narrow screens: <narrow>-dark and <narrow>-light. */
 		narrow?: string;
 		narrowBelow?: string;
+		/** How wide the narrow picture is drawn (see Picture.svelte). */
+		narrowSizes?: string;
 		alt: string;
 		sizes?: string;
 		first?: boolean;
@@ -49,7 +52,7 @@
 			const set = (source: Entry['sources'][number]) =>
 				source.set.map((s) => `${asset(s.file as Parameters<typeof asset>[0])} ${s.width}w`).join(', ');
 			const colour = `(prefers-color-scheme: ${scheme})`;
-			if (small) links.push({ media: `${colour} and (max-width: ${narrowBelow})`, srcset: set(small), sizes: '100vw' });
+			if (small) links.push({ media: `${colour} and (max-width: ${narrowBelow})`, srcset: set(small), sizes: narrowSizes });
 			if (wide) links.push({ media: small ? `${colour} and (min-width: ${justAbove})` : colour, srcset: set(wide), sizes });
 		}
 		return links;
@@ -63,8 +66,8 @@
 </svelte:head>
 
 <div class="only-dark">
-	<Picture name="{name}-dark" narrow={narrow ? `${narrow}-dark` : undefined} {narrowBelow} {alt} {sizes} class={className} />
+	<Picture name="{name}-dark" narrow={narrow ? `${narrow}-dark` : undefined} {narrowBelow} {narrowSizes} {alt} {sizes} class={className} />
 </div>
 <div class="only-light">
-	<Picture name="{name}-light" narrow={narrow ? `${narrow}-light` : undefined} {narrowBelow} {alt} {sizes} class={className} />
+	<Picture name="{name}-light" narrow={narrow ? `${narrow}-light` : undefined} {narrowBelow} {narrowSizes} {alt} {sizes} class={className} />
 </div>

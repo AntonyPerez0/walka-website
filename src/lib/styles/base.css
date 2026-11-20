@@ -529,10 +529,11 @@ tbody tr:last-child > * {
  * Something that comes up softly when it is scrolled into view (see
  * src/lib/reveal.ts, which sets the attribute). Nothing is hidden unless a
  * script has run and found the thing below the screen - and nothing moves
- * for someone who asked for less motion.
+ * for someone who asked for less motion. On paper nothing waits: a page
+ * that is printed before it was scrolled is printed whole.
  */
 
-@media (prefers-reduced-motion: no-preference) {
+@media screen and (prefers-reduced-motion: no-preference) {
 	[data-reveal='wait'] {
 		opacity: 0;
 		transform: translateY(16px);

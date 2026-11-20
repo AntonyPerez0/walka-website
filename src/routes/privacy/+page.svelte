@@ -8,7 +8,7 @@
 
 	// The date of the last change to the words of this page. It stands at the
 	// top and again under "Changes": change it whenever the text changes.
-	const UPDATED = { iso: '2026-11-19', text: '19 November 2026' };
+	const UPDATED = { iso: '2026-11-20', text: '20 November 2026' };
 
 	const GITHUB_PRIVACY = 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement';
 	// what has changed on this page, and when
@@ -289,7 +289,7 @@
 		<h3 id="host">Who hosts it, and what a host sees</h3>
 		<p>
 			The files are kept in a <a href={LINKS.websiteRepo}>public repository</a> on GitHub, built by a GitHub Actions
-			workflow and served by GitHub Pages. Today the site is at a github.io address; a domain of its own comes later.
+			workflow and served by GitHub Pages.
 		</p>
 		<p>
 			Like any web host, GitHub receives your IP address and your browser's details when a page is fetched, and may keep

@@ -164,8 +164,8 @@ phone). The Share pictures are the PNG files that the Share page's
 
 `static/og.png` is the picture that link previews show: the front page's
 first screen at 1200×630, dark, without the navigation and the buttons.
-`static/apple-touch-icon.png` and the `icon-*.png` files are made from
-Walka's mark by `node scripts/icons.mjs`.
+`static/favicon-32.png`, `static/apple-touch-icon.png` and the
+`icon-*.png` files are made from Walka's mark by `node scripts/icons.mjs`.
 
 ### The look
 

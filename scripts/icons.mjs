@@ -1,6 +1,7 @@
 // Makes the PNG icons in static/ from Walka's mark. They are in git: run
 // this again (node scripts/icons.mjs) only if the mark changes.
 //
+//   favicon-32.png         32   the tab's icon, for a browser that does not take the SVG
 //   apple-touch-icon.png   180  the icon on an iPhone's home screen
 //   icon-192.png, icon-512.png  the icons of the installed web app
 //   icon-maskable-512.png  the same with room around it, for Android's shapes
@@ -23,6 +24,7 @@ const mark = (size, { scale = 1, radius = 8 } = {}) => {
 </svg>`);
 };
 
+await sharp(mark(32)).png().toFile(out('favicon-32.png'));
 await sharp(mark(180, { radius: 0 })).png().toFile(out('apple-touch-icon.png'));
 await sharp(mark(192)).png().toFile(out('icon-192.png'));
 await sharp(mark(512)).png().toFile(out('icon-512.png'));

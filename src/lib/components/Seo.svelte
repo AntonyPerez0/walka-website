@@ -17,6 +17,9 @@
 		home?: boolean;
 	} = $props();
 
+	// What the picture of a link preview (static/og.png) shows, in words.
+	const PICTURE = 'Walka: walk on your walking pad while you play. The Walka dashboard on a deep blue ground.';
+
 	const full = $derived(home ? title : `${title} - Walka`);
 	// The address of this page inside the site: "/", "/safety/". It is the
 	// same wherever the site is served from, because the route knows it.
@@ -38,7 +41,8 @@
 		<meta property="og:image" content="{SITE_URL}/og.png" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
-		<meta property="og:image:alt" content="Walka: walk on your walking pad while you play. The Walka dashboard on a deep blue ground." />
+		<meta property="og:image:alt" content={PICTURE} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image:alt" content={PICTURE} />
 	{/if}
 </svelte:head>

@@ -2,10 +2,10 @@
 	// What every page is wrapped in: the fonts and the styles, the bar along
 	// the top and the foot.
 	import '@fontsource-variable/inter/wght.css';
+	// (Only the Latin cut of Spectral: nothing on the site is written in
+	// letters beyond it, and a second cut would be fetched on every visit.)
 	import '@fontsource/spectral/latin-600.css';
-	import '@fontsource/spectral/latin-ext-600.css';
 	import '@fontsource/spectral/latin-500-italic.css';
-	import '@fontsource/spectral/latin-ext-500-italic.css';
 	import '#lib/styles/tokens.css';
 	import '#lib/styles/base.css';
 	import { afterNavigate, onNavigate } from '$app/navigation';
@@ -34,8 +34,18 @@
 	// Going from one page to another, the old page fades into the new one -
 	// where the browser can do that, and unless the visitor asked for less
 	// motion (the styles in base.css switch it off then).
+	//
+	// The new page is put at its top (or, going back, where it was left) in
+	// one step. A jump inside a page glides (base.css); that gliding is
+	// switched off for the length of a page change, or the new page would
+	// arrive far down and roll to its place for a second and more.
 	onNavigate((navigation) => {
-		if (!document.startViewTransition || navigation.from?.url.pathname === navigation.to?.url.pathname) return;
+		if (navigation.from?.url.pathname === navigation.to?.url.pathname) return;
+		const root = document.documentElement;
+		root.style.scrollBehavior = 'auto';
+		// (a page change that is cut short by the next one is not an error)
+		navigation.complete.catch(() => {}).finally(() => (root.style.scrollBehavior = ''));
+		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			const transition = document.startViewTransition(async () => {
 				resolve();

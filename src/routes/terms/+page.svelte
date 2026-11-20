@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { asset, resolve } from '$app/paths';
 	import Article from '#lib/components/Article.svelte';
 	import Callout from '#lib/components/Callout.svelte';
 	import PageHero from '#lib/components/PageHero.svelte';
@@ -9,7 +9,7 @@
 
 	// The date of the last change to the words of this page. It stands at the
 	// top and again under "Changes": change it whenever the text changes.
-	const UPDATED = { iso: '2026-11-19', text: '19 November 2026' };
+	const UPDATED = { iso: '2026-11-20', text: '20 November 2026' };
 
 	// The website's own files on GitHub.
 	const WEBSITE = {
@@ -158,8 +158,10 @@
 		</ul>
 		<p>Each says the same &quot;as is, no warranty&quot; about the code.</p>
 		<p>
-			The fonts this site uses, Inter and Spectral, are open-licensed (the SIL Open Font License), and are listed with
-			their licences in the website repository's <a class="together" href={WEBSITE.notices}>third-party notices</a>.
+			The fonts this site uses, Inter and Spectral, are open-licensed under the SIL Open Font License (<a
+				href={asset('licences/Inter-OFL.txt')}>Inter's licence</a
+			>, <a href={asset('licences/Spectral-OFL.txt')}>Spectral's licence</a>), and are listed with their licences in the
+			website repository's <a class="together" href={WEBSITE.notices}>third-party notices</a>.
 		</p>
 	</section>
 

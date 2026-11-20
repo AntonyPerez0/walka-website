@@ -15,7 +15,7 @@
 		platform = detectPlatform();
 	});
 
-	const size = (file: string) => megabytes(release?.sizes[file]);
+	const size = (file: string) => megabytes(release?.sizes?.[file]);
 </script>
 
 <ul class="options">

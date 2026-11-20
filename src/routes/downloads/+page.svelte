@@ -8,7 +8,7 @@
 	import Seo from '#lib/components/Seo.svelte';
 	import ThemedPicture from '#lib/components/ThemedPicture.svelte';
 	import { detectPlatform, type Platform } from '#lib/platform.ts';
-	import { latestRelease, type Release } from '#lib/release.ts';
+	import { isDate, latestRelease, type Release } from '#lib/release.ts';
 	import { DOWNLOADS, LINKS } from '#lib/site.ts';
 
 	const SECTIONS = [
@@ -31,11 +31,12 @@
 		latestRelease().then((found) => (release = found));
 	});
 
-	const published = $derived(
-		release?.published
-			? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(release.published))
-			: ''
-	);
+	// (the date is looked at once more here: an answer kept in the tab from
+	// before may hold anything)
+	const published = $derived.by(() => {
+		const when = release?.published;
+		return isDate(when) ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(when)) : '';
+	});
 </script>
 
 <Seo
@@ -144,10 +145,10 @@
 <p>The pad and the game have not been tested against this code. Read <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a>.</p>
 </Callout>
 <Callout kind="caution" title="Walking while you play is at your own risk">
-<p>Your eyes are on a game, not on your feet. Walka comes with no warranty, and it is not a safety device or a medical device. If you have a health condition, are pregnant or are in any doubt, ask a doctor first - and stop if you feel dizzy or unwell. The whole of it: <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/DISCLAIMER.md">the disclaimer</a>.</p>
+<p>Your eyes are on a game, not on your feet. Walka comes with no warranty, and it is not a safety device or a medical device. If you have a health condition, are pregnant or are in any doubt, ask a doctor first - and stop if you feel dizzy or unwell. The whole of it: <a href={LINKS.disclaimer}>the disclaimer</a>.</p>
 </Callout>
 <Callout kind="warning" title="The Mac version is new">
-<p>GitHub&#39;s Macs build it, run its tests and check that the finished program starts, records a walk on a simulated pad and saves it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. Do everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> - and if you do, <a href="https://github.com/AntonyPerez0/walka-addon/issues">say how it went</a>.</p>
+<p>GitHub&#39;s Macs build it, run its tests and check that the finished program starts, records a walk on a simulated pad and saves it when it is closed. Nobody has yet tried it with the game and a walking pad on a real Mac. Do everything under <a href="{resolve('safety/')}#before-your-first-walk">Before your first walk</a> - and if you do, <a href={LINKS.issues}>say how it went</a>.</p>
 </Callout>
 <h3 id="what-walka-is">What Walka is, and is not</h3>
 <ul>
@@ -185,7 +186,7 @@
 	</tbody>
 </table>
 </div>
-<p><strong>None of these has been tried by Walka&#39;s author on the real machine yet</strong> - the warning at the top of this page is for all of them. Details and sources: <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/docs/HARDWARE.md">the hardware notes</a>.</p>
+<p><strong>None of these has been tried by Walka&#39;s author on the real machine yet</strong> - the warning at the top of this page is for all of them. Details and sources: <a href={LINKS.hardware}>the hardware notes</a>.</p>
 <h3 id="things-to-know">Things to know</h3>
 <ul>
 <li><strong>The speed is yours.</strong> Walka sets none and limits none. How fast you walk is between you and the treadmill. That goes for the incline too, on any treadmill: Walka does not touch it.</li>
@@ -197,7 +198,7 @@
 <h3 id="probe">Is yours not listed, or not behaving?</h3>
 <p>Run <code>Walka.exe probe</code> (on a Mac: <code>Walka probe</code>) with the treadmill on. Like Walka itself it only listens: it sends the treadmill no commands. The one thing it writes is the switch that turns notifications on. It listens while you operate the treadmill with its remote, and saves a small text report - the window says where.</p>
 <p>On a Mac a command is typed in Terminal: drag the <code>Walka</code> file into a Terminal window, type a space and <code>probe</code>, press Return.</p>
-<p><a href="https://github.com/AntonyPerez0/walka-addon/issues">Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added.</p>
+<p><a href={LINKS.issues}>Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added.</p>
 <p>The saved report is made to be posted in public.</p>
 <ul>
 <li><strong>What is in it:</strong> the treadmill&#39;s Bluetooth name, the services it offers, its speed range and what it says it can do, and what it sent while you used the remote.</li>
@@ -212,7 +213,7 @@
 <section id="first-time" class="prose">
 <h2>Opening it for the first time</h2>
 <p>Your computer does not recognise Walka, so the first time it may stop and warn you before it opens it. This is what you may see and what to click. What those messages mean, and do not mean, is under <a href="#the-warnings">Is the download safe?</a></p>
-<p>Walka is experimental, and you use it at your own risk. Read the <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/DISCLAIMER.md">disclaimer</a> first.</p>
+<p>Walka is experimental, and you use it at your own risk. Read the <a href={LINKS.disclaimer}>disclaimer</a> first.</p>
 <h3 id="first-time-windows">On Windows</h3>
 <ol>
 <li><strong>Download <code>Walka.exe</code>.</strong> It goes to your <em>Downloads</em> folder. If the browser says it &quot;isn&#39;t commonly downloaded&quot;, choose <strong>Keep</strong> (in Edge: <strong>...</strong> → <strong>Keep</strong> → <strong>Show more</strong> → <strong>Keep anyway</strong>).</li>
@@ -238,6 +239,7 @@
 		name="dashboard"
 		narrow="dashboard-phone"
 		sizes="(min-width: 60rem) 46rem, calc(100vw - 2.5rem)"
+		narrowSizes="calc(100vw - 2.75rem)"
 		alt="The Walka dashboard's Live view: the belt's speed as the treadmill reports it, and the state of the connections. On a wide screen it also shows the numbers of the walk: time, distance, steps, calories and heart rate."
 	/>
 	<figcaption>The dashboard's Live view, with the demo character.</figcaption>
@@ -257,17 +259,17 @@
 <ul>
 <li><strong>Every release is scanned for viruses before it is published.</strong> Microsoft Defender - the antivirus that is part of Windows - scans <code>Walka.exe</code>, the Mac programs and the addon&#39;s files on one of GitHub&#39;s Windows machines, with the virus definitions of that day, after showing that it catches the standard test file. If it finds anything, nothing is published.</li>
 <li><strong>A scan that finds nothing is not proof that a file is harmless</strong> - no scanner can give that - which is why the rest of this list is here.</li>
-<li><strong>It is built in the open.</strong> Nobody makes <code>Walka.exe</code> or the Mac programs on their own computer: GitHub <a href="https://github.com/AntonyPerez0/walka-addon/actions/workflows/ci.yml">builds it</a> from the code in <a href="https://github.com/AntonyPerez0/walka-addon">Walka&#39;s repository</a>, and all of that code is there to read.</li>
+<li><strong>It is built in the open.</strong> Nobody makes <code>Walka.exe</code> or the Mac programs on their own computer: GitHub <a href={LINKS.build}>builds it</a> from the code in <a href={LINKS.repo}>Walka&#39;s repository</a>, and all of that code is there to read.</li>
 <li><strong>What else is in it is fixed and listed.</strong> The program also carries Python and a handful of libraries. The build takes exact versions of them, checked against checksums that are part of the repository (<code>companion/requirements-build.lock</code>), so a library that is tampered with tomorrow does not get into Walka by being the newest. <code>Walka.exe licenses</code> lists them, with their licences.</li>
 <li><strong>A published release is never replaced.</strong> A fix is a new version.</li>
 </ul>
-<p>The result of the scan for the latest release is in <a href="https://github.com/AntonyPerez0/walka-addon/releases/latest/download/virus-scan.json"><code>virus-scan.json</code></a>, on the <a href="https://github.com/AntonyPerez0/walka-addon/releases/latest">release page</a>: what Microsoft Defender found, when, with which virus definitions and of which day, and the checksums of <code>Walka.exe</code> and the Mac zips it scanned.</p>
+<p>The result of the scan for the latest release is in <a href={DOWNLOADS.virusScan}><code>virus-scan.json</code></a>, on the <a href={LINKS.latestRelease}>release page</a>: what Microsoft Defender found, when, with which virus definitions and of which day, and the checksums of <code>Walka.exe</code> and the Mac zips it scanned.</p>
 <h3 id="check-it-yourself">Check it yourself</h3>
-<p>Drop the file you downloaded on <a href="https://www.virustotal.com/gui/home/upload">virustotal.com</a> - no account needed. It runs the file past the scanners of about 70 antivirus makers.</p>
+<p>Drop the file you downloaded on <a href={LINKS.virusTotal}>virustotal.com</a> - no account needed. It runs the file past the scanners of about 70 antivirus makers.</p>
 <p><strong>If a scanner or two flag it:</strong> <code>Walka.exe</code> is a Python program packed into one file, and it is not signed by a company. A few scanners are wary of every file like that, so one or two flags with a vague name (<em>Generic</em>, <em>Suspicious</em>, ...) are usually a false alarm. The report shows which scanners flag it and what they call it: you decide.</p>
-<p><strong>If many of them flag it,</strong> do not open it, and <a href="https://github.com/AntonyPerez0/walka-addon/issues">open an issue</a>.</p>
+<p><strong>If many of them flag it,</strong> do not open it, and <a href={LINKS.issues}>open an issue</a>.</p>
 <h3 id="check-your-download">Check that your download is the file that was built</h3>
-<p><strong>The checksum.</strong> <a href="https://github.com/AntonyPerez0/walka-addon/releases/latest/download/SHA256SUMS.txt"><code>SHA256SUMS.txt</code></a> on the release page has the checksum of every download. Work out the checksum of your own file and compare it with the line for that file.</p>
+<p><strong>The checksum.</strong> <a href={DOWNLOADS.checksums}><code>SHA256SUMS.txt</code></a> on the release page has the checksum of every download. Work out the checksum of your own file and compare it with the line for that file.</p>
 <ul>
 <li><p>On Windows, in PowerShell, in the folder the download is in:</p>
 <pre><code>Get-FileHash Walka.exe</code></pre>
@@ -285,15 +287,15 @@
 <p><strong>&quot;Apple could not verify Walka is free of malware&quot;</strong> is the same on a Mac. macOS says that about every program that was not signed with an Apple developer account and sent to Apple to be checked. It does not mean that anything was found.</p>
 <p>So neither message means that something was found - and neither means that the file is harmless. What there is to go on is the list above, and whether to open the file is your decision.</p>
 <h3 id="report">Found a problem with a release?</h3>
-<p>A way to put something into a release that is not built from the repository&#39;s code is a security problem. Please report it in private, not in a public issue: <a href="https://github.com/AntonyPerez0/walka-addon/security/advisories/new">report a vulnerability</a>. An antivirus program that flags <code>Walka.exe</code> without naming anything is not one - that is what this section is for.</p>
+<p>A way to put something into a release that is not built from the repository&#39;s code is a security problem. Please report it in private, not in a public issue: <a href={LINKS.reportVulnerability}>report a vulnerability</a>. An antivirus program that flags <code>Walka.exe</code> without naming anything is not one - that is what this section is for.</p>
 </section>
 
 <section id="free" class="prose">
 <h2>Free, and stays free</h2>
 <p>Walka is free, and stays free: no paid version, no advertising and no asking for money - in the game or outside it.</p>
-<p>Its code is published under the <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/LICENSE">MIT licence</a>, which says the same &quot;as is, no warranty&quot; about the code as the <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/DISCLAIMER.md">disclaimer</a> says about Walka. If you pass Walka on or build on it, that licence and the disclaimer go with it.</p>
-<p>The program you download is Walka&#39;s code together with Python and the libraries it runs on, in one file, and their licences go with it: <code>Walka.exe licenses</code> prints all of them, with the exact version of each. The game addon contains no third-party code. What Walka owes to other projects is in the <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/THIRD-PARTY-NOTICES.md">third-party notices</a>.</p>
-<p>All of the code is in <a href="https://github.com/AntonyPerez0/walka-addon">Walka&#39;s repository</a>. You can also run Walka from source instead of downloading the program: it needs Python 3.10 or newer, and the commands are in the README there.</p>
+<p>Its code is published under the <a href={LINKS.licence}>MIT licence</a>, which says the same &quot;as is, no warranty&quot; about the code as the <a href={LINKS.disclaimer}>disclaimer</a> says about Walka. If you pass Walka on or build on it, that licence and the disclaimer go with it.</p>
+<p>The program you download is Walka&#39;s code together with Python and the libraries it runs on, in one file, and their licences go with it: <code>Walka.exe licenses</code> prints all of them, with the exact version of each. The game addon contains no third-party code. What Walka owes to other projects is in the <a href={LINKS.thirdParty}>third-party notices</a>.</p>
+<p>All of the code is in <a href={LINKS.repo}>Walka&#39;s repository</a>. You can also run Walka from source instead of downloading the program: it needs Python 3.10 or newer, and the commands are in the README there.</p>
 <p>Honestly: Walka is not approved by Blizzard, and you use it at your own risk. It is a fan-made tool, not affiliated with or endorsed by Blizzard Entertainment, UREVO, WELLFIT or any other maker of treadmills. More under <a href="{resolve('faq/')}#is-this-allowed">Is this allowed by Blizzard?</a></p>
 </section>
 </Article>

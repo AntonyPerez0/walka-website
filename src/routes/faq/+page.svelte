@@ -82,7 +82,7 @@
 			<div class="questions">
 				<Question id="is-the-download-safe" q="Is the download safe?">
 					<p><code>Walka.exe</code> - like <code>Walka</code> for the Mac - is a program from the internet that your computer does not recognise, so it is right to ask. Every release is scanned for viruses by Microsoft Defender before it is published, and if it finds anything, nothing is published. A scan that finds nothing is not proof that a file is harmless - no scanner can give that.</p>
-					<p>So there is more to go on: GitHub builds the program in the open from code that is there to read, you can drop your download on <a href="https://www.virustotal.com/gui/home/upload">virustotal.com</a> yourself, and <code>SHA256SUMS.txt</code> lets you check that your download is the file that was built.</p>
+					<p>So there is more to go on: GitHub builds the program in the open from code that is there to read, you can drop your download on <a href={LINKS.virusTotal}>virustotal.com</a> yourself, and <code>SHA256SUMS.txt</code> lets you check that your download is the file that was built.</p>
 					<p class="further">All of it: <a href="{resolve('downloads/')}#is-the-download-safe">Is the download safe?</a></p>
 				</Question>
 				<Question id="windows-protected" q={'Why does Windows say "Windows protected your PC"?'}>
@@ -149,7 +149,7 @@
 			<div class="questions">
 				<Question id="is-this-allowed" q="Is this allowed by Blizzard?">
 					<p>Honestly: it is not approved by Blizzard, and you use it at your own risk. The addon uses only the public addon API, and the companion never sends input to the game, never automates anything in the game and never reads the game&#39;s memory. Blizzard&#39;s enforcement statements target automation, input broadcasting, client modification and tools that get around addon restrictions for an advantage; Walka is none of those.</p>
-					<p>But Blizzard&#39;s EULA is written broadly (it prohibits unauthorised software that &quot;reads&quot; information from the game), Blizzard does not pre-approve third-party tools, and no statement says a passive screen reader like this is fine. Similar addon-plus-reader projects exist publicly for this client; that is not the same as permission. The long version is the README&#39;s <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/README.md#is-this-allowed">Is this allowed?</a>, and the <a href={LINKS.disclaimer}>disclaimer</a> names action taken against a game account among the things its authors are not liable for.</p>
+					<p>But Blizzard&#39;s EULA is written broadly (it prohibits unauthorised software that &quot;reads&quot; information from the game), Blizzard does not pre-approve third-party tools, and no statement says a passive screen reader like this is fine. Similar addon-plus-reader projects exist publicly for this client; that is not the same as permission. The long version is the README&#39;s <a href={LINKS.isThisAllowed}>Is this allowed?</a>, and the <a href={LINKS.disclaimer}>disclaimer</a> names action taken against a game account among the things its authors are not liable for.</p>
 				</Question>
 				<Question id="input" q="Does Walka press keys, move the mouse or read the game's memory?">
 					<p>No. Walka never sends input to the game - no key presses, no mouse input, no memory reading. An addon cannot use Bluetooth, files or the network, so it draws its state as a thin strip of black and white squares in the top-left corner of the game window, and the companion reads that strip off the screen.</p>
@@ -379,7 +379,7 @@
 					<p class="further">More: <a href="#your-pace">What is &quot;Your pace&quot;?</a></p>
 				</Question>
 				<Question id="full-list" q="Where is the full list?">
-					<p>In the README, under <a href="https://github.com/AntonyPerez0/walka-addon/blob/HEAD/README.md#troubleshooting">Troubleshooting</a>: the rows above and the rest, such as walks that are no longer recorded after the pad was switched off and on, <code>~</code> numbers in the history, or an addon marked out of date after a game patch. If nothing there helps, <a href={LINKS.issues}>open an issue</a>.</p>
+					<p>In the README, under <a href={LINKS.troubleshooting}>Troubleshooting</a>: the rows above and the rest, such as walks that are no longer recorded after the pad was switched off and on, <code>~</code> numbers in the history, or an addon marked out of date after a game patch. If nothing there helps, <a href={LINKS.issues}>open an issue</a>.</p>
 				</Question>
 			</div>
 		</section>

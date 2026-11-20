@@ -23,6 +23,7 @@
 		sizes = '100vw',
 		narrow,
 		narrowBelow = '40rem',
+		narrowSizes = '100vw',
 		lazy = true,
 		class: className = ''
 	}: {
@@ -34,6 +35,8 @@
 		/** A picture for narrow screens, and the width below which it is used. */
 		narrow?: string;
 		narrowBelow?: string;
+		/** How wide the narrow picture is drawn: "calc(100vw - 3.75rem)". */
+		narrowSizes?: string;
 		/** false for a picture on the first screen: it is then fetched at once, and first. */
 		lazy?: boolean;
 		class?: string;
@@ -55,7 +58,7 @@
 					media="(max-width: {narrowBelow})"
 					type={source.type}
 					srcset={srcset(source.set)}
-					sizes="100vw"
+					sizes={narrowSizes}
 					width={small.width}
 					height={small.height}
 				/>

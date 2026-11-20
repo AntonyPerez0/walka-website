@@ -56,6 +56,7 @@
 					narrow="dashboard-phone"
 					first
 					sizes="(min-width: 1420px) 1290px, calc(100vw - 2.5rem)"
+					narrowSizes="calc(100vw - 3.75rem)"
 					alt="The Walka dashboard's Live view: the belt's speed as the treadmill reports it, and what Walka is connected to. On a wide screen it also shows this walk's time, distance, steps, calories and heart rate."
 				/>
 			</div>

@@ -65,6 +65,9 @@ const DOWNLOADS = [
 ];
 const PAGES_WITH_DOWNLOADS = ['index.html', 'downloads/index.html'];
 
+// The pages that invite someone to download or to walk.
+const INVITING = ['index.html', 'how-it-works/index.html', 'safety/index.html', 'downloads/index.html'];
+
 // What the site said about the Walka that drove the belt (up to 0.6.1).
 // None of it is true any more. Each is looked for in everything a visitor
 // can read on a page: its text, its title and description, alt text, labels.
@@ -223,6 +226,12 @@ async function checkHtml(file) {
 		const description = full.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1]?.trim();
 		if (!description) problem(file, 'no meta description');
 		else if (description.length > 200) problem(file, `meta description is ${description.length} characters (keep it under 200)`);
+		// The description is what a search result and a link preview say. On
+		// the pages that invite someone to download or to walk, it says the
+		// warning as well.
+		else if (INVITING.includes(file) && !/\bown risk\b/i.test(description)) {
+			problem(file, 'the meta description invites without saying "at your own risk"');
+		}
 	}
 	if (file !== '404.html') checkPolicy(file, full);
 

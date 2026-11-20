@@ -19,6 +19,9 @@ export const DOWNLOADS = {
 export const LINKS = {
 	repo: WALKA_REPO,
 	readme: `${WALKA_REPO}#readme`,
+	// two sections of the README, by their headings
+	isThisAllowed: `${WALKA_REPO}/blob/HEAD/README.md#is-this-allowed`,
+	troubleshooting: `${WALKA_REPO}/blob/HEAD/README.md#troubleshooting`,
 	releases: `${WALKA_REPO}/releases`,
 	latestRelease: `${WALKA_REPO}/releases/latest`,
 	issues: `${WALKA_REPO}/issues`,
@@ -32,6 +35,8 @@ export const LINKS = {
 	thirdParty: `${WALKA_REPO}/blob/HEAD/THIRD-PARTY-NOTICES.md`,
 	licence: `${WALKA_REPO}/blob/HEAD/LICENSE`,
 	build: `${WALKA_REPO}/actions/workflows/ci.yml`,
+	// where anyone can have a downloaded file scanned
+	virusTotal: 'https://www.virustotal.com/gui/home/upload',
 	websiteRepo: WEBSITE_REPO,
 	websiteIssues: `${WEBSITE_REPO}/issues`
 } as const;
