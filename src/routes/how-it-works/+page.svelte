@@ -84,8 +84,8 @@
 				<h3>The companion</h3>
 				<p>
 					<code>Walka.exe</code>, or <code>Walka</code> on a Mac - a small app that reads the addon's signal off the
-					screen, listens to the treadmill over Bluetooth, records your walks, and shows a live dashboard in your
-					browser.
+					screen, listens to the treadmill over Bluetooth, records your walks, and shows a live dashboard in a
+					window of its own.
 				</p>
 			</li>
 		</ul>
@@ -302,9 +302,14 @@
 			<li>
 				<h3>Double-click it</h3>
 				<p>
-					There is nothing to install: it is one file, and you just open it. A black window opens: that is Walka.
-					<strong>Leave it open while you walk</strong> - closing it ends the recording (the belt is not touched). The
-					<em>dashboard</em> page opens in your browser (if not, go to <code>127.0.0.1:8787</code>).
+					There is nothing to install: it is one file, and you just open it. Walka opens in a window of its own, with
+					its <em>dashboard</em> in it. <strong>Leave it open while you walk</strong> (minimised is fine) - closing the
+					window closes Walka: the walk is saved and the recording ends (the belt is not touched).
+				</p>
+				<p>
+					A black window instead, and the dashboard in your browser? That is version 0.7.0, the one before the window.
+					It works the same: see
+					<a href="{resolve('downloads/')}#before-the-window">the version before the window</a>.
 				</p>
 				<p>
 					The first time, Windows may say <em>"Windows protected your PC"</em>. Click <strong>More info</strong>, then
@@ -364,17 +369,23 @@
 		</Callout>
 		<p>
 			Steps 1 and 2 are different on a Mac. You download the zip for your Mac (Apple chip or Intel processor), and the
-			first time macOS has to be told to open the <code>Walka</code> file inside it. The
+			first time macOS has to be told to open the <code>Walka</code> application inside it. The
 			<a href="{resolve('downloads/')}#first-time-mac">downloads page</a> has those first-run steps.
 		</p>
 		<p>
-			A Terminal window then opens: that is Walka. Leave it open while you walk - closing it ends the recording (the
-			belt is not touched). From there it is step 3 above.
+			Walka's window then opens, with the dashboard in it. Leave it open while you walk (minimised is fine). Closing
+			the window - or <em>Walka → Quit</em> - closes Walka: the walk is saved and the recording ends (the belt is not
+			touched). From there it is step 3 above.
 		</p>
 		<p>
-			macOS asks before a program may use Bluetooth or look at the screen. Walka runs inside Terminal, so it asks about
-			<strong>Terminal</strong>: <em>Bluetooth</em>, to listen to the walking pad, and <em>Screen Recording</em>, to see
-			the strip the addon draws.
+			macOS asks before a program may use Bluetooth or look at the screen, and it asks about <strong>Walka</strong> by
+			name: <em>Bluetooth</em>, to listen to the walking pad, and <em>Screen Recording</em>, to see the strip the addon
+			draws. After you replace Walka with a newer version, macOS may ask both again: Walka is not signed with an Apple
+			developer account, and to macOS a program like that which has changed is a new program.
+		</p>
+		<p>
+			A Terminal window instead? That is version 0.7.0, and there macOS asks about <strong>Terminal</strong>: see
+			<a href="{resolve('downloads/')}#before-the-window">the version before the window</a>.
 		</p>
 		<p>What is different from Windows:</p>
 		<ul>
@@ -385,7 +396,48 @@
 			<li><strong>Your settings and walks</strong> are in <code class="long">~/Library/<wbr />Application Support/<wbr />Walka</code>.</li>
 			<li>
 				<strong>Commands</strong> like <code>probe</code> and <code>beacon</code> are typed in Terminal: drag the
-				<code>Walka</code> file into a Terminal window, type a space and <code>probe</code>, press Return.
+				<code>Walka</code> application into a Terminal window (that types where it is), then - with no space in
+				between - type <code class="long">/Contents/<wbr />MacOS/<wbr />Walka probe</code> and press Return. Started
+				this way Walka belongs to Terminal as far as macOS is concerned: it is <strong>Terminal</strong> that is asked
+				about, and allowed, Bluetooth and the screen.
+			</li>
+		</ul>
+
+		<h3 id="walkas-window">Walka's window</h3>
+		<p>
+			Walka is a program with a window of its own: no console window to leave open next to it, and no tab in your web
+			browser. Closing the window closes Walka - the walk being recorded is saved first, and the belt is not touched.
+		</p>
+		<ul>
+			<li>
+				<strong>What draws it.</strong> The window shows the dashboard with what your system already has for showing
+				pages inside programs: <em>Microsoft Edge WebView2</em> on Windows (part of Windows 11, and on nearly every
+				Windows 10), WebKit on a Mac. Nothing is downloaded for it. The dashboard is still a page that Walka serves on
+				your own computer, at <code>127.0.0.1:8787</code>, and still only there.
+			</li>
+			<li>
+				<strong>Without WebView2</strong> (some Windows 10 PCs) Walka opens the dashboard in your web browser instead,
+				and shows a small box that says <em>Walka is running</em>: leave it open while you walk, and press
+				<strong>OK</strong> in it to close Walka.
+			</li>
+			<li>
+				<strong>In the browser on purpose:</strong> start Walka with <code>--browser</code>.
+				<code>--no-window</code> shows the dashboard nowhere; it is still at its address.
+			</li>
+			<li>
+				<strong>Saving files.</strong> <em>Download TCX</em> and <em>Download PNG</em> ask where to save the file. (In
+				a browser they go to the downloads folder.)
+			</li>
+			<li>
+				<strong>The log.</strong> Next to your settings and walks is <code>walka.log</code>: what Walka connected to,
+				and what went wrong. It can hold your treadmill's name and Bluetooth address, and it stays on your computer
+				unless you send it to somebody.
+			</li>
+			<li>
+				<strong>Typing a command</strong> (<code>Walka.exe probe</code>, <code>Walka.exe beacon</code>) on Windows:
+				open the folder <code>Walka.exe</code> is in, click the address bar at the top of that window, type
+				<code>cmd</code> and press Enter. A command prompt opens in that folder: type the command there. The prompt
+				comes back at once, before the command is done - what the command prints follows below it.
 			</li>
 		</ul>
 	</section>
@@ -417,7 +469,7 @@
 				narrow="dashboard-phone"
 				sizes={COLUMN}
 				narrowSizes="calc(100vw - 2.75rem)"
-				alt="The dashboard's Live view while a walk is recorded: the belt's speed as the treadmill reports it. On a wide screen it also shows this walk's time, distance, steps, calories and heart rate, and the state of the connections."
+				alt="The dashboard's Live view while a walk is recorded: the belt's speed as the treadmill reports it, and the state of the connections. On a wide screen it also shows this walk's time, distance, steps, calories and heart rate."
 			/>
 			<figcaption>The dashboard's Live view, with the demo character.</figcaption>
 		</figure>
@@ -675,7 +727,7 @@
 		<h3 id="private-by-default">Private by default</h3>
 		<ul>
 			<li>
-				The picture is drawn in your browser from numbers that are already on your computer. Nothing is uploaded and
+				The picture is drawn on your computer, from numbers that are already on it. Nothing is uploaded and
 				nothing is posted for you.
 			</li>
 			<li>

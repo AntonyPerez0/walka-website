@@ -15,7 +15,7 @@
 		},
 		{
 			title: 'The picture is yours.',
-			text: 'The Share picture is drawn in your browser. Nothing is posted for you: you choose where it goes.'
+			text: 'The Share picture is drawn on your computer. Nothing is posted for you: you choose where it goes.'
 		}
 	] as const;
 </script>

@@ -109,7 +109,7 @@
 				<strong>Not sure which Mac you have?</strong> <em>Apple menu → About This Mac</em> says which:
 				<em>Chip: Apple M...</em> is <a href={DOWNLOADS.macAppleSilicon}><code>Walka-mac-apple-silicon.zip</code></a>,
 				<em>Processor: ... Intel ...</em> is <a href={DOWNLOADS.macIntel}><code>Walka-mac-intel.zip</code></a>. Inside
-				each zip is one file, <code>Walka</code>, and that is what you open. The Mac version is new and has not been tried
+				each zip is the application, <code>Walka</code>, and that is what you open. The Mac version is new and has not been tried
 				with the game on a real Mac yet: see <a href="#before-you-download">Before you download</a>.
 			</p>
 			<p>
@@ -192,7 +192,7 @@
 <p>Treadmills that only talk to their maker&#39;s app in a private language (many NordicTrack / iFIT machines, the older KingSmith WalkingPads), and bikes or rowers - Walka only reads treadmills.</p>
 <h3 id="probe">Is yours not listed, or not behaving?</h3>
 <p>Run <code>Walka.exe probe</code> (on a Mac: <code>Walka probe</code>) with the treadmill on. Like Walka itself it only listens: it sends the treadmill no commands. The one thing it writes is the switch that turns notifications on. It listens while you operate the treadmill with its remote, and saves a small text report - the window says where.</p>
-<p>On a Mac a command is typed in Terminal: drag the <code>Walka</code> file into a Terminal window, type a space and <code>probe</code>, press Return.</p>
+<p>On a Mac a command is typed in Terminal: drag the <code>Walka</code> application into a Terminal window (that types where it is), then - with no space in between - type <code>/Contents/MacOS/Walka probe</code> and press Return. On Windows: open the folder <code>Walka.exe</code> is in, click the address bar at the top of that window, type <code>cmd</code> and press Enter, then type the command in the prompt that opens.</p>
 <p><a href={LINKS.issues}>Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added.</p>
 <p>The saved report is made to be posted in public.</p>
 <ul>
@@ -213,21 +213,31 @@
 <ol>
 <li><strong>Download <code>Walka.exe</code>.</strong> It goes to your <em>Downloads</em> folder. If the browser says it &quot;isn&#39;t commonly downloaded&quot;, choose <strong>Keep</strong> (in Edge: <strong>...</strong> → <strong>Keep</strong> → <strong>Show more</strong> → <strong>Keep anyway</strong>).</li>
 <li><strong>Double-click it.</strong> The first time, Windows may say <em>&quot;Windows protected your PC&quot;</em>. Click <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
-<li><strong>A black window opens: that is Walka.</strong> Leave it open while you walk - closing it ends the recording (the belt is not touched). The <em>dashboard</em> page opens in your browser (if not, go to <code>127.0.0.1:8787</code>).</li>
+<li><strong>Walka opens in a window of its own,</strong> with its <em>dashboard</em> in it. Leave it open while you walk (minimised is fine) - closing the window closes Walka: the walk is saved and the recording ends (the belt is not touched).</li>
 </ol>
 <h3 id="first-time-mac">On a Mac</h3>
 <ol>
 <li><strong>Download the zip for your Mac</strong> - Apple chip or Intel, <a href="#mac">as above</a>.</li>
-<li><strong>Open the zip</strong> (double-click it in <em>Downloads</em>). Inside is one file, <code>Walka</code>.</li>
+<li><strong>Open the zip</strong> (double-click it in <em>Downloads</em>). Inside is the application, <code>Walka</code>. It runs from where it is; you can also drag it into <em>Applications</em>.</li>
 <li><strong>Double-click <code>Walka</code>.</strong> The first time, macOS refuses: <em>&quot;Apple could not verify Walka is free of malware&quot;</em>. Click <strong>Done</strong>, open <strong>System Settings → Privacy &amp; Security</strong>, scroll down to <em>Security</em> and click <strong>Open Anyway</strong> next to Walka. (On macOS 14 and older: hold Control, click <code>Walka</code>, choose <strong>Open</strong>, then <strong>Open</strong>.)</li>
-<li><strong>A Terminal window opens: that is Walka.</strong> Leave it open while you walk. Closing it ends the recording (the belt is not touched). The dashboard opens in your browser.</li>
+<li><strong>Walka's window opens,</strong> with the dashboard in it. Leave it open while you walk (minimised is fine). Closing the window - or <em>Walka → Quit</em> - closes Walka: the walk is saved and the recording ends (the belt is not touched).</li>
 </ol>
-<p>macOS asks before a program may use Bluetooth or look at the screen. Walka runs inside Terminal, so it asks about <strong>Terminal</strong>.</p>
+<p>macOS asks before a program may use Bluetooth or look at the screen, and it asks about <strong>Walka</strong> by name.</p>
 <ul>
 <li><strong>Bluetooth</strong> - to listen to the walking pad. Click <strong>Allow</strong>.</li>
-<li><strong>Screen Recording</strong> - to see the strip the addon draws in the corner of the game. The dashboard says when this is what is missing. Open <strong>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</strong> (<em>Screen Recording</em> on older versions), switch on <strong>Terminal</strong>, then close Walka and open it again. Recent versions of macOS ask again every few weeks whether Terminal may still do this: choose <strong>Allow</strong>.</li>
+<li><strong>Screen Recording</strong> - to see the strip the addon draws in the corner of the game. The dashboard says when this is what is missing. Open <strong>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</strong> (<em>Screen Recording</em> on older versions), switch on <strong>Walka</strong>, then close Walka and open it again. Recent versions of macOS ask again every few weeks whether Walka may still do this: choose <strong>Allow</strong>.</li>
 </ul>
+<p>After you replace Walka with a newer version, macOS may ask both again: Walka is not signed with an Apple developer account, and to macOS a program like that which has changed is a new program. (If the switch for Walka is on but the dashboard still says the screen may not be recorded, switch it off and on again.)</p>
 <p>Both can be changed later in the same place in System Settings. Walka reads the top-left corner of the game window - and, until it has found the game for the first time, searches the screen for it. No picture is saved or sent anywhere. Nothing leaves your computer.</p>
+<h3 id="before-the-window">A black window, and the dashboard in your browser?</h3>
+<p>Then you have version 0.7.0: the one before Walka had a window of its own. It works the same. What is different:</p>
+<ul>
+<li><strong>The black window is Walka.</strong> On a Mac it is a Terminal window. Leave it open while you walk - closing it ends the recording (the belt is not touched).</li>
+<li><strong>The dashboard opens in your browser.</strong> If not, go to <code>127.0.0.1:8787</code>.</li>
+<li><strong>On a Mac the zip holds one file, <code>Walka</code>,</strong> and macOS asks about <strong>Terminal</strong>, not about Walka: it is Terminal that you allow, and that you switch on for the screen.</li>
+<li><strong>A command on a Mac</strong> is typed like this: drag the <code>Walka</code> file into a Terminal window, type a space and <code>probe</code>, press Return.</li>
+</ul>
+<p>Which version the download buttons give is said under them, with its date.</p>
 <h3 id="on-the-dashboard">Then, on the dashboard</h3>
 <figure class="figure shot">
 	<ThemedPicture
@@ -273,7 +283,7 @@
 <pre><code>shasum -a 256 Walka-mac-apple-silicon.zip</code></pre>
 </li>
 </ul>
-<p>On a Mac it is the zip that is listed, so check the zip, not the <code>Walka</code> file inside it. PowerShell shows the checksum in capital letters and the list has small ones: that is the same checksum.</p>
+<p>On a Mac it is the zip that is listed, so check the zip, not <code>Walka</code> inside it. PowerShell shows the checksum in capital letters and the list has small ones: that is the same checksum.</p>
 <p><strong>The build record.</strong> GitHub also keeps a signed, public record that these files were built by the repository&#39;s workflow from this version of the code. GitHub&#39;s <code>gh</code> tool checks a download against it.</p>
 <pre><code>gh attestation verify Walka.exe --repo AntonyPerez0/walka-addon</code></pre>
 <p>For a Mac zip or the addon zip, put that file&#39;s name in place of <code>Walka.exe</code>.</p>
@@ -289,7 +299,7 @@
 <h2>Free, and stays free</h2>
 <p>Walka is free, and stays free: no paid version, no advertising and no asking for money - in the game or outside it.</p>
 <p>Its code is published under the <a href={LINKS.licence}>MIT licence</a>, which says the same &quot;as is, no warranty&quot; about the code as the <a href={LINKS.disclaimer}>disclaimer</a> says about Walka. If you pass Walka on or build on it, that licence and the disclaimer go with it.</p>
-<p>The program you download is Walka&#39;s code together with Python and the libraries it runs on, in one file, and their licences go with it: <code>Walka.exe licenses</code> prints all of them, with the exact version of each. The game addon contains no third-party code. What Walka owes to other projects is in the <a href={LINKS.thirdParty}>third-party notices</a>.</p>
+<p>The program you download is Walka&#39;s code together with Python and the libraries it runs on - on Windows in one file, on a Mac in one application - and their licences go with it: <code>Walka.exe licenses</code> prints all of them, with the exact version of each. The game addon contains no third-party code. What Walka owes to other projects is in the <a href={LINKS.thirdParty}>third-party notices</a>.</p>
 <p>All of the code is in <a href={LINKS.repo}>Walka&#39;s repository</a>. You can also run Walka from source instead of downloading the program: it needs Python 3.10 or newer, and the commands are in the README there.</p>
 <p>Honestly: Walka is not approved by Blizzard, and you use it at your own risk. It is a fan-made tool, not affiliated with or endorsed by Blizzard Entertainment, UREVO, WELLFIT or any other maker of treadmills. More under <a href="{resolve('faq/')}#is-this-allowed">Is this allowed by Blizzard?</a></p>
 </section>

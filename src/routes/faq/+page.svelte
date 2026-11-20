@@ -120,7 +120,7 @@
 				</Question>
 				<Question id="not-listed" q="Mine is not listed: will it work?">
 					<p>It depends on the treadmill. If an app other than the maker&#39;s own can <em>show the speed</em> of your treadmill, Walka very likely can too.</p>
-					<p>To see what yours offers, run <code class="cmd">Walka.exe probe</code> (on a Mac: <code class="cmd">Walka probe</code>, typed in Terminal) with the treadmill on. Like Walka itself it only listens - it sends the treadmill no commands - and saves a small text report. <a href={LINKS.issues}>Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added. The report is made to be posted in public; post the file, not a screenshot of the window.</p>
+					<p>To see what yours offers, run <code class="cmd">Walka.exe probe</code> (on a Mac it is typed in Terminal: see <a href="{resolve('how-it-works/')}#on-a-mac">On a Mac</a>) with the treadmill on. Like Walka itself it only listens - it sends the treadmill no commands - and saves a small text report. <a href={LINKS.issues}>Open an issue</a> with that report and the treadmill&#39;s make and model, and it can be added. The report is made to be posted in public; post the file, not a screenshot of the window.</p>
 					<p class="further">More: <a href="{resolve('downloads/')}#probe">Is yours not listed, or not behaving?</a></p>
 				</Question>
 				<Question id="will-not-work" q="What will not work?">
@@ -248,11 +248,11 @@
 			<h2>Your data</h2>
 			<div class="questions">
 				<Question id="uploads" q="Does Walka upload anything?">
-					<p>No. Nothing is uploaded. Walka runs on your computer: no picture of your screen is saved or sent anywhere, the Share picture is drawn in your browser, and the road your character travels never leaves your PC. Posting a picture or importing a walk somewhere else is something you do yourself, by hand.</p>
+					<p>No. Nothing is uploaded. Walka runs on your computer: no picture of your screen is saved or sent anywhere, the Share picture is drawn on your computer, and the road your character travels never leaves your PC. Posting a picture or importing a walk somewhere else is something you do yourself, by hand.</p>
 					<p class="further">More: <a href="{resolve('privacy/')}#what-leaves">Privacy</a>.</p>
 				</Question>
 				<Question id="what-it-keeps" q="What does it keep, and where?">
-					<p>Walka keeps your settings (with the weight and height you entered), your walks (with heart rate, if you use a sensor) and the journey numbers of your characters (with each character&#39;s name, without the realm), in a folder of its own: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac.</p>
+					<p>Walka keeps your settings (with the weight and height you entered), your walks (with heart rate, if you use a sensor) and the journey numbers of your characters (with each character&#39;s name, without the realm), in a folder of its own: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. Versions after 0.7.0 also keep <code>walka.log</code> there: what Walka connected to and what went wrong. It can hold your treadmill&#39;s name and Bluetooth address, and it stays on your computer unless you send it to somebody.</p>
 					<p>In the game&#39;s folder it writes only into Walka&#39;s own addon folder - the addon, and <code>CompanionData.lua</code>, the file from which the game loads what the treadmill measured (your walks, with your body profile and the treadmill&#39;s name). What the addon itself records, the road included, is saved by the game with your other addon settings.</p>
 					<p>Walks shorter than 20 seconds are not kept, and a walk can be deleted on the dashboard&#39;s <em>History</em> page.</p>
 					<p class="further">More: <a href="{resolve('privacy/')}#what-it-keeps">Privacy</a>.</p>
@@ -321,7 +321,7 @@
 						<p class="further">More: <a href="{resolve('how-it-works/')}#on-the-picture">What is on it</a>.</p>
 					</Question>
 					<Question id="posted" q="Is anything posted for me?">
-						<p>No. The picture is drawn in your browser from numbers that are already on your computer. Nothing is uploaded and nothing is posted for you: you choose where it goes.</p>
+						<p>No. The picture is drawn on your computer, from numbers that are already on it. Nothing is uploaded and nothing is posted for you: you choose where it goes.</p>
 						<p class="further">More: <a href="{resolve('how-it-works/')}#private-by-default">Private by default</a>.</p>
 					</Question>
 					<Question id="artwork" q="Does the picture use the game's artwork?">
@@ -359,16 +359,27 @@
 					<p class="further">More: <a href="#walka-only-listens">Can Walka start or stop my belt?</a></p>
 				</Question>
 				<Question id="treadmill-not-found" q="Why does Walka not find my treadmill?">
-					<p>Is it on? Close the treadmill&#39;s own phone app (force-quit it), and remove the treadmill from Windows <em>Bluetooth &amp; devices</em> if you paired it there. On a Mac, check that <strong>Terminal</strong> is switched on under <em>System Settings → Privacy &amp; Security → Bluetooth</em>, then close Walka and open it again.</p>
+					<p>Is it on? Close the treadmill&#39;s own phone app (force-quit it), and remove the treadmill from Windows <em>Bluetooth &amp; devices</em> if you paired it there. On a Mac, check that <strong>Walka</strong> is switched on under <em>System Settings → Privacy &amp; Security → Bluetooth</em> (<strong>Terminal</strong>, if your Walka runs in a Terminal window), then close Walka and open it again.</p>
 					<p>If it is not a UREVO or a WELLFIT, give it the whole scan (15 seconds), or press <em>Scan</em> on the dashboard and pick it - if it is not in the list either, it does not speak Bluetooth FTMS. A USB Bluetooth 5 adapter helps with weak built-in radios.</p>
 				</Question>
 				<Question id="no-speed-shown" q="It connects, but shows no speed while the belt moves. Why?">
-					<p>If Walka connects but the dashboard shows no speed while the belt moves, the treadmill may not send standard treadmill data. Run <code class="cmd">Walka.exe probe</code> (on a Mac: <code class="cmd">Walka probe</code>, typed in Terminal) and <a href={LINKS.issues}>open an issue</a> with the report it saves.</p>
+					<p>If Walka connects but the dashboard shows no speed while the belt moves, the treadmill may not send standard treadmill data. Run <code class="cmd">Walka.exe probe</code> (on a Mac it is typed in Terminal: see <a href="{resolve('how-it-works/')}#on-a-mac">On a Mac</a>) and <a href={LINKS.issues}>open an issue</a> with the report it saves.</p>
 					<p class="further">More: <a href="#not-listed">Mine is not listed: will it work?</a></p>
 				</Question>
 				<Question id="no-game-signal" q={'Why does the dashboard say "no game signal"?'}>
 					<p>Run the game windowed or borderless, and keep the top-left corner uncovered. In the game, type <code class="cmd">/walka beacon on</code> and try <code class="cmd">/walka beacon size 6</code>; then run <code class="cmd">Walka.exe beacon</code> (<code class="cmd">Walka beacon</code> on a Mac), which checks that the strip can be read from your screen. Your walk is recorded all the same - it is only not filed under a character.</p>
-					<p>On a Mac, if the dashboard says macOS has not allowed recording the screen - or says <em>no game signal</em> although the game is there - open <em>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</em>, switch on <strong>Terminal</strong>, then close Walka and open it again.</p>
+					<p>On a Mac, if the dashboard says macOS has not allowed recording the screen - or says <em>no game signal</em> although the game is there - open <em>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</em>, switch on <strong>Walka</strong> (<strong>Terminal</strong>, if your Walka runs in a Terminal window), then close Walka and open it again.</p>
+				</Question>
+								<Question id="black-window" q="Why does a black window open, and the dashboard in my browser?">
+					<p>That is version 0.7.0, the one before Walka had a window of its own. It works the same. The black window is Walka (on a Mac it is a Terminal window): leave it open while you walk - closing it ends the recording, and the belt is not touched.</p>
+					<p class="further">More: <a href="{resolve('downloads/')}#before-the-window">The version before the window</a>.</p>
+				</Question>
+				<Question id="opens-in-browser" q={'Why does Walka open in my web browser, with a small box that says "Walka is running"?'}>
+					<p>That Windows has no <em>Microsoft Edge WebView2</em>, which Walka&#39;s own window is drawn with. Walka works the same in the browser; the box is how you close it. To get the window, install the <em>WebView2 Runtime</em> from Microsoft.</p>
+					<p class="further">More: <a href="{resolve('how-it-works/')}#walkas-window">Walka&#39;s window</a>.</p>
+				</Question>
+				<Question id="nothing-happens" q="I open Walka and nothing happens. What now?">
+					<p>Is it open already? Look on the taskbar (or in the Dock). Otherwise <code>walka.log</code>, in the folder with your settings and walks, says how far it got: please <a href={LINKS.issues}>open an issue</a> with it. The log can hold your treadmill&#39;s name and Bluetooth address.</p>
 				</Question>
 				<Question id="not-my-character" q="Why is a walk not counted for my character?">
 					<p>Was a session running in the game while you walked? <code class="cmd">/walka status</code> says what the addon is doing right now. Without a session the walk is recorded as <em>No game session</em>.</p>

@@ -129,6 +129,11 @@
 						sensor. A walk is recorded whenever the belt moves, with a game or without. Closing Walka ends the recording.
 					</p>
 					<p><strong>Your characters' journey numbers,</strong> with each character's name but not its realm.</p>
+					<p>
+						<strong><code>walka.log</code>,</strong> if your Walka has a window of its own: what it connected to, and
+						what went wrong. It can hold your treadmill's name and Bluetooth address, and it stays on your computer
+						unless you send it to somebody.
+					</p>
 					<p>And a few small working files.</p>
 				</dd>
 			</div>
@@ -147,11 +152,11 @@
 				</dd>
 			</div>
 			<div>
-				<dt><strong>Your browser</strong></dt>
+				<dt><strong>Walka's window, or your browser</strong></dt>
 				<dd>
 					<p>
-						Your choices on the dashboard's Share page, and whether <em>Getting started</em> is hidden - in the
-						browser's own storage for the dashboard's address.
+						Your choices on the dashboard's Share page, and whether <em>Getting started</em> is hidden - kept by what
+						shows the dashboard: Walka's own window, or your browser, in its own storage for the dashboard's address.
 					</p>
 				</dd>
 			</div>
@@ -179,13 +184,17 @@
 
 		<h3 id="dashboard">The dashboard</h3>
 		<p>
-			The dashboard is a page that Walka itself serves on your computer, at <code>127.0.0.1:8787</code>. It is only
-			reachable from the computer itself: it shows your walks, weight and height and has no password, so it is not
+			The dashboard is a page that Walka itself serves on your computer, at <code>127.0.0.1:8787</code>, and shows in a
+			window of its own (version 0.7.0: in your browser). It is only reachable from the computer itself: it shows your walks, weight and height and has no password, so it is not
 			offered to other devices on your network.
 		</p>
 		<p>
 			The page loads nothing from anywhere else. In its own words: &quot;Runs on this computer. Nothing is
 			uploaded.&quot;
+		</p>
+		<p>
+			Walka's own window is drawn with what your system already has for showing pages inside programs: <em>Microsoft
+			Edge WebView2</em> on Windows, WebKit on a Mac. Nothing is downloaded for it.
 		</p>
 
 		<h3 id="screen">What it looks at on your screen</h3>
@@ -215,8 +224,8 @@
 			</li>
 		</ul>
 		<p>
-			On a Mac, macOS asks before a program may look at the screen. Walka runs inside Terminal, so the permission is
-			asked for, and given to, <strong>Terminal</strong>. You can change it later under
+			On a Mac, macOS asks before a program may look at the screen, and it asks about <strong>Walka</strong> by name
+			(about <strong>Terminal</strong>, if your Walka runs in a Terminal window). You can change it later under
 			<em>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</em>.
 		</p>
 
@@ -227,7 +236,7 @@
 		</p>
 		<ul>
 			<li>
-				The picture is drawn in your browser from numbers that are already on your computer. Nothing is uploaded and
+				The picture is drawn on your computer, from numbers that are already on it. Nothing is uploaded and
 				nothing is posted for you.
 			</li>
 			<li>
@@ -263,7 +272,8 @@
 		<h3 id="what-leaves">What leaves your computer</h3>
 		<p>
 			Only what you take out yourself: a Share picture you post, a walk you download as a TCX file and import somewhere
-			by hand, a probe report you attach to an issue. From then on it is with the place you gave it to, under that
+			by hand, a probe report or a <code>walka.log</code> you attach to an issue (the log can hold your treadmill's name and
+			Bluetooth address). From then on it is with the place you gave it to, under that
 			place's rules.
 		</p>
 		<p>

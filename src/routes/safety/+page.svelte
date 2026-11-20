@@ -94,7 +94,7 @@
 			</Callout>
 		</div>
 		<p>Walka listens to what your treadmill reports - its speed, its distance, on some pads its steps - and writes your walks down. Starting the belt, stopping it and choosing its speed are yours, with the treadmill's own remote, buttons and safety key, exactly as if Walka were not there.</p>
-		<p>The dashboard - Walka's page in your browser - says so on its <em>Live</em> view:</p>
+		<p>The dashboard - Walka's own page - says so on its <em>Live</em> view:</p>
 		<blockquote>
 			<p>Walka only listens to your treadmill. It cannot start, stop or change the speed of the belt: you set the speed on the treadmill itself.</p>
 		</blockquote>
@@ -169,6 +169,7 @@
 			<li><strong>A real treadmill.</strong> None of the treadmills Walka names - UREVO, WELLFIT or any other - has been tried by its author on the real machine yet.</li>
 			<li><strong>The game itself.</strong> The addon was tested under a mock of the game client - never in the game itself.</li>
 			<li><strong>A real Mac.</strong> Nobody has yet tried the Mac version with the game and a walking pad on a real Mac.</li>
+			<li><strong>Walka's own window.</strong> GitHub's machines open it in every build and load the dashboard in it. It has not been looked at on a real PC yet, and nobody has clicked in it on a real Mac.</li>
 			<li><strong>Shutting Windows down.</strong> Saving the walk when Windows logs off or shuts down has not been tried on a real PC yet. A walk in progress is also saved every half minute, and picked up again at the next start.</li>
 			<li><strong>Some of what the Strol 2E does over Bluetooth.</strong> Still unknown for this pad: the exact speed range and step it advertises, where (or whether) it reports steps, how it reports what is done at the pad, and whether it switches itself off, and drops the connection, after a long pause.</li>
 		</ul>
@@ -196,7 +197,7 @@
 		<ol class="steps">
 			<li>
 				<h3><code>Walka.exe probe</code></h3>
-				<p>On a Mac: <code>Walka probe</code>, typed in Terminal - drag the <code>Walka</code> file into a Terminal window, type a space and <code>probe</code>, press Return.</p>
+				<p>On a Mac it is typed in Terminal: drag the <code>Walka</code> application into a Terminal window (that types where it is), then - with no space in between - type <code>/Contents/MacOS/Walka probe</code> and press Return. How to type a command on Windows is under <a href="{resolve('how-it-works/')}#walkas-window">Walka's window</a>.</p>
 				<p>It lists what the pad exposes and listens while you operate it with the remote. It sends the treadmill no commands. Keep the report - it settles the open questions in the <a href={LINKS.hardware}>hardware notes</a>.</p>
 			</li>
 			<li>
@@ -244,7 +245,7 @@
 		<p>By downloading, installing or using Walka you accept that you do so at your own risk. Whether walking at a desk while playing is safe for you, for your treadmill and for the room you do it in is for you to decide - and so is whether to let anyone else do it on your equipment.</p>
 		<p><strong>No warranty, and a limit of liability.</strong> In plain words: Walka is provided as is and as available, with no warranty of any kind, express or implied - not of safety, accuracy or fitness for a particular purpose, nor any other - and nothing in Walka, its documentation or its dashboard is a promise that it will work without fault or without interruption. To the fullest extent the law permits, its authors, contributors and copyright holders are not liable for any claim, damages or other liability arising from, out of or in connection with Walka or the use of it - in contract, in tort (including negligence) or otherwise - and that includes personal injury, death, damage to property or equipment, loss of data, and action taken against a game account. The law of some places does not allow all of this; nothing here takes away a right that the law says cannot be taken away, and where that is so, the above applies as far as the law allows.</p>
 		<p>That is a summary, and it changes nothing in the text itself. The full text is <a href={LINKS.disclaimer}>DISCLAIMER.md</a>: please read it before your first walk.</p>
-		<p>Walka says the short of it every time it starts, in its own window, and the dashboard's <em>Live</em> view says it too: Walka only listens to your treadmill, and walking while you play is at your own risk. Both point to the disclaimer.</p>
+		<p>The dashboard's <em>Live</em> view says the short of it whenever Walka is open: Walka only listens to your treadmill, and walking while you play is at your own risk. It points to the disclaimer.</p>
 	</section>
 
 	<section id="report" class="prose">

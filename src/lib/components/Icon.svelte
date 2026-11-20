@@ -11,9 +11,7 @@
 		close: '<path d="m6.500 6.500 11 11m0-11-11 11"/>',
 		check: '<path d="m5.500 12.500 4.200 4.200 8.800-9.400"/>',
 		chevron: '<path d="m8 10 4 4 4-4"/>',
-		// the six things you get
-		stride: '<path d="M6.500 16.500 10 9l3.200 4.800L16 10.500l2.500 4"/><path d="M4.500 19.500h15"/>',
-		stop: '<path d="M8.700 3.500h6.600l4.700 4.700v6.600l-4.700 4.700H8.700L4 14.800V8.200z"/><rect x="9.500" y="9.500" width="5" height="5" rx="0.800"/>',
+		// four of the six things you get (the other two are drawn in Features.svelte)
 		count: '<path d="M6 19v-5m6 5V6m6 13v-8"/><path d="M3.500 21h17"/>',
 		road: '<path d="M7 20c0-4 10-4 10-8s-10-3-10-7"/><circle cx="7" cy="4.500" r="1.400"/><path d="m17 17.500 2 2.500-2 2.500-2-2.500z" transform="translate(0 -3)"/>',
 		picture: '<path d="M7.500 4h9L20 7.500v9L16.500 20h-9L4 16.500v-9z"/><path d="m12 8.500 1.100 2.400 2.400 1.100-2.400 1.100L12 15.500l-1.100-2.400-2.400-1.100 2.400-1.100z"/>',
