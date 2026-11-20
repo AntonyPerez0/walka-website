@@ -1,5 +1,20 @@
 <script lang="ts">
+	// This page is built two ways, and each must say only what is true of it.
+	//
+	// WITHOUT accounts (no SUPABASE_URL at build time: src/env.ts) the site
+	// has none, and part three is "What is planned". WITH accounts, part
+	// three is "Your account, if you make one", in the present tense.
+	//
+	// So every sentence about accounts stands inside {#if ACCOUNTS.on} ...
+	// {:else} ... {/if} - the description, the short version and the lists of
+	// sections too. After changing either side, build both ways and read both.
+	//
+	// What part three says is taken from docs/data-model.md and from
+	// supabase/migrations: when a table or a rule changes there, it changes
+	// here, and the date below with it.
+	import { ACCOUNTS_REGION, CONTACT, MAIL_SENDER } from '$app/env/public';
 	import { resolve } from '$app/paths';
+	import { ACCOUNTS, WAY_NAMES, type Way } from '#lib/account/config.ts';
 	import Article from '#lib/components/Article.svelte';
 	import Callout from '#lib/components/Callout.svelte';
 	import PageHero from '#lib/components/PageHero.svelte';
@@ -14,11 +29,37 @@
 	// what has changed on this page, and when
 	const HISTORY = `${LINKS.websiteRepo}/commits/HEAD/src/routes/privacy/+page.svelte`;
 
+	// The company that runs the database and the sign-in, in its own words.
+	const SUPABASE = {
+		privacy: 'https://supabase.com/privacy',
+		processing: 'https://supabase.com/legal/customer-resources/data-processing-addendum',
+		others: 'https://supabase.com/legal/customer-resources/subprocessor-list'
+	};
+	const OPEN_FOOD_FACTS_PRIVACY = 'https://world.openfoodfacts.org/privacy';
+
+	// The ways to sign in that this build has switched on (SIGN_IN), and
+	// where each of the other sites says what it does with a sign-in.
+	type OtherSite = Exclude<Way, 'email'>;
+	const byEmail = ACCOUNTS.ways.includes('email');
+	const otherSites = ACCOUNTS.ways.filter((way): way is OtherSite => way !== 'email');
+	const SITE_PRIVACY: Record<OtherSite, string> = {
+		discord: 'https://discord.com/privacy',
+		google: 'https://policies.google.com/privacy',
+		github: GITHUB_PRIVACY
+	};
+	/** "Discord", "Discord or Google", "Discord, Google or GitHub" */
+	const oneOf = (names: string[]) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}`);
+	const otherNames = oneOf(otherSites.map((way) => WAY_NAMES[way]));
+
+	const DESCRIPTION = ACCOUNTS.on
+		? 'Walka uploads nothing. An account on this website is opt-in, private until you say otherwise, and yours to take out or delete. What is kept, where, and who sees it.'
+		: 'Walka uploads nothing, and this website has no accounts, no cookies, no analytics and no advertising. What is kept, where, and what is planned.';
+
 	// "The short version" stands above the article, so it is not in its list.
 	const SECTIONS = [
 		{ id: 'walka', label: 'Walka, the program' },
 		{ id: 'this-website', label: 'This website' },
-		{ id: 'planned', label: 'What is planned' },
+		ACCOUNTS.on ? { id: 'your-account', label: 'Your account, if you make one' } : { id: 'planned', label: 'What is planned' },
 		{ id: 'children', label: 'Children' },
 		{ id: 'your-rights', label: 'Your rights, and who to ask' },
 		{ id: 'changes', label: 'Changes to this page' }
@@ -41,18 +82,36 @@
 		{ id: 'downloads-page', label: 'The downloads page' },
 		{ id: 'links', label: 'Links to other sites' }
 	];
+
+	// Part three, on a site with accounts.
+	const IN_ACCOUNT = [
+		{ id: 'account-keeps', label: 'What is kept' },
+		{ id: 'who-sees-it', label: 'Who sees it' },
+		{ id: 'public-page', label: 'Your public page' },
+		{ id: 'health', label: 'Body numbers and the food diary' },
+		{ id: 'where-it-is-kept', label: 'Where it is kept' },
+		{ id: 'signing-in', label: 'Signing in' },
+		{ id: 'other-services', label: 'Other services your browser talks to' },
+		{ id: 'take-out-delete', label: 'Taking it out, and deleting it' },
+		{ id: 'adults', label: 'For adults only' },
+		{ id: 'estimates', label: 'Estimates, not advice' }
+	];
 </script>
 
-<Seo
-	title="Privacy"
-	description="Walka uploads nothing, and this website has no accounts, no cookies, no analytics and no advertising. What is kept, where, and what is planned."
-/>
+<Seo title="Privacy" description={DESCRIPTION} />
 
-<PageHero label="Nothing is uploaded" title="Privacy">
-	<p>
-		Walka runs on your computer and uploads nothing. This website has no accounts, no cookies and no analytics - the
-		rest is below, in plain words.
-	</p>
+<PageHero label={ACCOUNTS.on ? 'Walka uploads nothing' : 'Nothing is uploaded'} title="Privacy">
+	{#if ACCOUNTS.on}
+		<p>
+			Walka runs on your computer and uploads nothing. This website has no cookies and no analytics, and an account on
+			it only if you make one - the rest is below, in plain words.
+		</p>
+	{:else}
+		<p>
+			Walka runs on your computer and uploads nothing. This website has no accounts, no cookies and no analytics - the
+			rest is below, in plain words.
+		</p>
+	{/if}
 	<p class="updated">Last updated: <time datetime={UPDATED.iso}>{UPDATED.text}</time></p>
 </PageHero>
 
@@ -63,24 +122,57 @@
 	<div class="container columns">
 		<div class="statements">
 			<h2 id="short-version-title">The short version</h2>
-			<ul class="points">
-				<li><strong>Walka uploads nothing.</strong> What it records stays on your computer.</li>
-				<li><strong>This website has no accounts, no cookies, no analytics and no advertising.</strong></li>
-				<li>
-					<strong>GitHub hosts the site and the downloads.</strong> Opening a page asks no other company for anything.
-				</li>
-				<li><strong>The site's maker gets no visitor statistics</strong> and holds no data about you.</li>
-				<li>
-					<strong>Accounts are planned for later, and are not built.</strong> If they come, they will be opt-in, private
-					by default, and yours to export and delete.
-				</li>
-			</ul>
+			{#if ACCOUNTS.on}
+				<ul class="points">
+					<li>
+						<strong>Walka uploads nothing.</strong> What it records stays on your computer. A walk gets into an account
+						only when you add it on this website yourself.
+					</li>
+					<li>
+						<strong>An account is opt-in.</strong> Walka needs none, and neither do these pages. Without one, the site
+						holds no data about you.
+					</li>
+					<li>
+						<strong>Private until you say otherwise.</strong> Nothing in your account is shown to anyone until you switch
+						your page to public.
+					</li>
+					<li>
+						<strong>Yours to take and to delete.</strong> You can save everything as a file, and delete the account with
+						everything in it, at any time.
+					</li>
+					<li><strong>No cookies, no analytics, no advertising, and no selling of data.</strong></li>
+					<li>
+						<strong>GitHub hosts the site and the downloads; Supabase keeps the accounts.</strong> A page that is not an
+						account page asks no other company for anything.
+					</li>
+				</ul>
+			{:else}
+				<ul class="points">
+					<li><strong>Walka uploads nothing.</strong> What it records stays on your computer.</li>
+					<li><strong>This website has no accounts, no cookies, no analytics and no advertising.</strong></li>
+					<li>
+						<strong>GitHub hosts the site and the downloads.</strong> Opening a page asks no other company for anything.
+					</li>
+					<li><strong>The site's maker gets no visitor statistics</strong> and holds no data about you.</li>
+					<li>
+						<strong>Accounts are planned for later, and are not built.</strong> If they come, they will be opt-in, private
+						by default, and yours to export and delete.
+					</li>
+				</ul>
+			{/if}
 		</div>
 
-		<p class="rest">
-			The rest of this page says the same at length, in three parts: <a href="#walka">Walka, the program</a>,
-			<a href="#this-website">this website</a> as it is today, and <a href="#planned">what is planned</a>.
-		</p>
+		{#if ACCOUNTS.on}
+			<p class="rest">
+				The rest of this page says the same at length, in three parts: <a href="#walka">Walka, the program</a>,
+				<a href="#this-website">this website</a>, and <a href="#your-account">your account</a>, if you make one.
+			</p>
+		{:else}
+			<p class="rest">
+				The rest of this page says the same at length, in three parts: <a href="#walka">Walka, the program</a>,
+				<a href="#this-website">this website</a> as it is today, and <a href="#planned">what is planned</a>.
+			</p>
+		{/if}
 	</div>
 </section>
 
@@ -270,12 +362,21 @@
 		</p>
 
 		<h3 id="what-leaves">What leaves your computer</h3>
-		<p>
-			Only what you take out yourself: a Share picture you post, a walk you download as a TCX file and import somewhere
-			by hand, a probe report or a <code>walka.log</code> you attach to an issue (the log can hold your treadmill's name and
-			Bluetooth address). From then on it is with the place you gave it to, under that
-			place's rules.
-		</p>
+		{#if ACCOUNTS.on}
+			<p>
+				Only what you take out yourself: a Share picture you post, a walk you download as a TCX file and import
+				somewhere by hand, a walk you add to <a href="#your-account">an account on this website</a>, a probe report or
+				a <code>walka.log</code> you attach to an issue (the log can hold your treadmill's name and Bluetooth address).
+				From then on it is with the place you gave it to, under that place's rules.
+			</p>
+		{:else}
+			<p>
+				Only what you take out yourself: a Share picture you post, a walk you download as a TCX file and import somewhere
+				by hand, a probe report or a <code>walka.log</code> you attach to an issue (the log can hold your treadmill's name and
+				Bluetooth address). From then on it is with the place you gave it to, under that
+				place's rules.
+			</p>
+		{/if}
 		<p>
 			If you find a way to read what Walka stores from outside the computer, or to make Walka send anything anywhere,
 			that is a security problem. Please <a href={LINKS.reportVulnerability}>report it in private</a>.
@@ -285,14 +386,26 @@
 	<section id="this-website" class="prose">
 		<p class="label part">Part two</p>
 		<h2>This website</h2>
-		<p class="lead">
-			This site is plain files. It has no accounts, no forms, no comments, no cookies, no analytics, no advertising, no
-			trackers and no social-media widgets.
-		</p>
-		<p>
-			Everything a page needs - fonts, scripts, pictures - is served by the site itself. Opening a page asks no other
-			company for anything.
-		</p>
+		{#if ACCOUNTS.on}
+			<p class="lead">
+				This site is plain files. It has no comments, no cookies, no analytics, no advertising, no trackers and no
+				social-media widgets. Its account pages are the only ones with forms, and the only ones that talk to a
+				database: they are the subject of <a href="#your-account">part three</a>.
+			</p>
+			<p>
+				Everything a page needs - fonts, scripts, pictures - is served by the site itself. Opening a page that is not
+				an account page asks no other company for anything.
+			</p>
+		{:else}
+			<p class="lead">
+				This site is plain files. It has no accounts, no forms, no comments, no cookies, no analytics, no advertising, no
+				trackers and no social-media widgets.
+			</p>
+			<p>
+				Everything a page needs - fonts, scripts, pictures - is served by the site itself. Opening a page asks no other
+				company for anything.
+			</p>
+		{/if}
 
 		{@render inPart('This website', IN_WEBSITE)}
 
@@ -308,11 +421,19 @@
 		</p>
 
 		<h3 id="in-your-browser">What is kept in your browser</h3>
-		<p>
-			The site sets no cookies. One thing about you is kept in your own browser: your choice of light or dark, if you
-			use the switch. It is in the browser's local storage under the name <code>walka-theme</code>, and it is never sent
-			anywhere.
-		</p>
+		{#if ACCOUNTS.on}
+			<p>
+				The site sets no cookies. On every page, one thing about you is kept in your own browser: your choice of light
+				or dark, if you use the switch. It is in the browser's local storage under the name <code>walka-theme</code>,
+				and it is never sent anywhere.
+			</p>
+		{:else}
+			<p>
+				The site sets no cookies. One thing about you is kept in your own browser: your choice of light or dark, if you
+				use the switch. It is in the browser's local storage under the name <code>walka-theme</code>, and it is never sent
+				anywhere.
+			</p>
+		{/if}
 		<p>
 			To remove it, use the switch again to go back to what your system uses, or clear this site's data in your
 			browser's settings.
@@ -323,6 +444,18 @@
 			the release page, file sizes and the time of asking - nothing about you - and the browser drops it when the tab is
 			closed.
 		</p>
+		<p>
+			The site also keeps, in that tab's session storage, how far down each page you were, so that going back puts a
+			page where you left it. That is never sent anywhere, and the browser drops it when the tab is closed.
+		</p>
+		{#if ACCOUNTS.on}
+			<p>
+				The account pages keep more there, and only for those who use them. A walker's public page keeps your choice of
+				miles or kilometres, under the name <code>walka-units</code>, in the same way as light or dark. A browser that
+				is signed in keeps the sign-in, and the food diary a copy of your diary: see
+				<a href="#account-browser">what a signed-in browser keeps</a>.
+			</p>
+		{/if}
 
 		<h3 id="downloads-page">The downloads page</h3>
 		<p>
@@ -343,6 +476,433 @@
 		</p>
 	</section>
 
+	{#if ACCOUNTS.on}
+	<section id="your-account" class="prose">
+		<p class="label part">Part three</p>
+		<h2>Your account, if you make one</h2>
+		<p class="lead">
+			An account is for sharing your walking progress and for the food diary. Walka itself needs none, and neither do
+			the other pages of this site. An account exists only if you make one, and it holds only what you put into it.
+		</p>
+		<p>
+			Walka, the program, still uploads nothing. A walk gets into an account when you add it on this website yourself.
+			Later the desktop program may be able to send your walks itself; that will be a switch you turn on, and until it
+			exists Walka uploads nothing.
+		</p>
+		<p>
+			The accounts are run by the site's owner: the one maintainer who makes Walka and this website. There is no
+			company behind them. Only what the two features need is kept, there is no advertising, and no data is sold. This
+			part names every company that has a hand in it.
+		</p>
+
+		{@render inPart('Your account, if you make one', IN_ACCOUNT)}
+
+		<h3 id="account-keeps">What is kept</h3>
+		<p>
+			An account holds nothing until you tick <em>I am 18 or older</em> on its first page. Until then only the sign-in
+			itself is kept (see <a href="#signing-in">Signing in</a>), and <em>No thanks: delete this sign-in</em> on that
+			page removes that too.
+		</p>
+		<dl class="kept">
+			<div>
+				<dt><strong>Your profile</strong></dt>
+				<dd>
+					<p>
+						The name in your page's address and the name shown on it, if you chose them. Whether your page is public,
+						and which of its switches are on. Whether you want miles or kilometres.
+					</p>
+					<p>
+						When you ticked <em>I am 18 or older</em>, and when you agreed to your body numbers and your food diary being
+						kept, if you did.
+					</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>Your numbers</strong></dt>
+				<dd>
+					<p>
+						Weight, height, year of birth and sex: what the food diary makes its estimates from. All of them are
+						optional, and none is kept unless <a href="#health">you have agreed</a>.
+					</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>Your walks</strong></dt>
+				<dd>
+					<p>
+						For each walk: when it started and ended, and the calendar day it counts for. The time the belt was moving,
+						the distance, the steps, the calories, and how many of those calories were on top of sitting.
+					</p>
+					<p>
+						Whether a walking session was running in the game. How each number was come by - measured by the treadmill,
+						or estimated. And how the walk got here - from one of Walka's files, from a TCX file or typed in - with the
+						name that file has for it, such as <code>20261119-213000</code>.
+					</p>
+					<p>
+						A program that sends walks may add two things: how far its clock was from world time (UTC), and a random
+						number that tells one installation from another.
+					</p>
+					<p>
+						<strong>Left on your computer,</strong> because nothing here needs them: the second-by-second samples, the
+						heart rate, the top speed, the treadmill's name and your character.
+					</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>Your foods</strong></dt>
+				<dd>
+					<p>
+						A food you picked from a search or a scan, or made yourself, kept so that you can pick it again: its name,
+						its brand, its calories in 100 grams, the size of a serving if the source names one, and where it came from
+						- Open Food Facts (with the barcode), USDA FoodData Central (with its number there) or you.
+					</p>
+					<p>Only what you picked is kept, and only in your own account. There is no shared list of foods.</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>Your food diary</strong></dt>
+				<dd>
+					<p>
+						One entry for each thing you ate: the day, the meal if you say which, the name and the brand, the grams if
+						they are known, and the calories.
+					</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>Your goal</strong></dt>
+				<dd>
+					<p>One number: calories eaten minus calories burned, for a day. It goes no further than 500 either way.</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>Reports you send</strong></dt>
+				<dd>
+					<p>
+						If you report somebody's public page: the name of that page, which of three reasons you gave, your note if
+						you wrote one, and when.
+					</p>
+				</dd>
+			</div>
+		</dl>
+		<p>Each of these also carries when it was made and when it was last changed.</p>
+		<p>
+			<strong>Not kept:</strong> no password, no location, no contacts, no pictures, no payment details, no advertising
+			identifiers. Nothing that is not on this page.
+		</p>
+
+		<h3 id="who-sees-it">Who sees it</h3>
+		<p>
+			You. Nobody else: not a visitor, and not another person who is signed in. The database itself holds to that, with
+			a rule on every table that lets a signed-in person read, add and change their own rows and nobody else's. A
+			visitor who is not signed in can read no table at all.
+		</p>
+		<p>
+			Two things leave your account, and only if you send them: what <a href="#public-page">your public page</a>
+			shows, once you switch it on, and a report about somebody else's page, which the site's owner reads.
+		</p>
+		<p>
+			The site's owner runs the database, and as its administrator can read everything in it: the rules above do not
+			bind an administrator. The owner does not look into anyone's account, except to fix a fault or to act on a
+			report. A public page can be taken down without opening the account behind it.
+		</p>
+		<p>
+			Supabase, the company whose computers the database is on, can reach it as any host can. What it may do with it is
+			under <a href="#where-it-is-kept">Where it is kept</a>.
+		</p>
+		<p>
+			If you find a way to read or change an account that is not yours, that is a security problem. Please say so in
+			private{#if CONTACT}, to <a href="mailto:{CONTACT}">{CONTACT}</a>,{/if} and not in a public issue.
+		</p>
+
+		<h3 id="public-page">Your public page</h3>
+		<p>
+			Your account is private. If you switch your page to public, anyone who knows or guesses its name can see the name
+			you show, and in all: how many walks, how long and how far. Nothing else, unless you switch more on. The switches
+			are on <a href={resolve('account/')}>your account page</a>, and each is off at first:
+		</p>
+		<ul>
+			<li>
+				<strong>My page is public.</strong> Anyone who knows or guesses the name can see it. Switch it off and it is
+				gone at once, and the switches below go off with it.
+			</li>
+			<li>
+				<strong>Show the last twelve weeks, day by day.</strong> A reader sees on which days you walked, for how long
+				and how far, and since when you walk.
+			</li>
+			<li>
+				<strong>Show steps.</strong> If Walka estimates your steps, it does so from your height, so a reader can work
+				out roughly how tall you are.
+			</li>
+			<li>
+				<strong>Show my single walks.</strong> Your last 20 walks, one by one: the day, the time walked and the
+				distance. Never the time of day.
+			</li>
+		</ul>
+		<p>
+			Calories, your numbers and your food are never on your page, whatever is switched on. Neither is your e-mail
+			address.
+		</p>
+		<p>
+			Public means public. The address of your page has its name in it, and anyone who knows or guesses that name can
+			open the page: it is not a secret link. The site asks search engines not to list these pages, and leaves them out
+			of its sitemap. That is a request, and no more.
+		</p>
+		<p>
+			Switch your page off and it is gone at once. What somebody already saw, saved or took a picture of is not: nothing
+			can take that back.
+		</p>
+		<p>
+			The name in a page's address is one of a kind. So somebody who tries to take a name learns whether it is taken,
+			also when the page behind it is private.
+		</p>
+		<p>
+			A signed-in person can report a public page - one that pretends to be somebody, or has an offensive name. The
+			site's owner can then take the page down. That hides the page and changes nothing in the account. The reason is
+			noted with the account, and the owner can put the page back.
+		</p>
+
+		<h3 id="health">Body numbers and the food diary</h3>
+		<p>
+			Your weight, height, year of birth and sex, and what you eat, are information about your health. They are kept
+			only if you agree, in these words on your account page:
+		</p>
+		<blockquote>
+			<p>
+				Keep my body numbers and my food diary in my account. This is information about my health. Only I can see it. I
+				can take this back on this page at any time, and then all of it is deleted at once.
+			</p>
+		</blockquote>
+		<p>
+			Until you agree, the database refuses them. When you agree, it notes the moment. Your walks need no such
+			agreement, and an account works without it: it has no food diary, and that is all.
+		</p>
+		<p>
+			To take it back, use <em>Take back my agreement...</em> under <em>Your numbers</em> on your account page. That
+			deletes your body numbers, your foods, your food diary and your goal, at once. Your walks stay. It cannot be
+			undone.
+		</p>
+
+		<h3 id="where-it-is-kept">Where it is kept</h3>
+		<p>
+			In a database at Supabase, the company that runs the database and the sign-in for this site.{#if ACCOUNTS_REGION}
+				{' '}The database is in <strong>{ACCOUNTS_REGION}</strong>.{/if}
+			The website itself is still plain files on GitHub, which holds no account data.
+		</p>
+		<p>
+			Supabase keeps the data for the site's owner and on the owner's instructions. Its own words are its
+			<a href={SUPABASE.privacy}>privacy notice</a> and its
+			<a href={SUPABASE.processing}>data processing addendum</a>; the companies it uses in turn to run its service
+			are in its <a href={SUPABASE.others}>list of sub-processors</a>.
+		</p>
+		<p>
+			An account is kept until you delete it, or until accounts end in the way the
+			<a href="{resolve('terms/')}#accounts">terms</a> describe. Nothing deletes one for not being used.
+		</p>
+
+		<h3 id="signing-in">Signing in</h3>
+		<p>
+			Nobody signs in with a password here, and no password is kept. Signing in is done by a service of Supabase's,
+			called the sign-in below.
+		</p>
+		{#if byEmail}
+			<p>
+				<strong>By e-mail.</strong> You type your e-mail address on the account page, a six-digit code is sent to it,
+				and you type the code in. The mail is sent through {MAIL_SENDER || 'a mail service'}, which is given your
+				address and the mail itself in order to deliver it.
+			</p>
+		{/if}
+		{#if otherSites.length}
+			<p>
+				<strong>With {otherNames}.</strong> You go to that site, say yes there, and come back signed in. That site hands
+				the sign-in your e-mail address, and with it the name and the address of the picture you have there. This
+				website uses the e-mail address. It neither uses nor shows the name and the picture; the sign-in keeps them
+				until you delete your account. The other site, for its part, learns that you signed in here, and when.
+			</p>
+		{/if}
+		<p>What the sign-in keeps:</p>
+		<ul>
+			<li>your e-mail address, when the account was made, and when you last signed in;</li>
+			<li>
+				for each browser you are signed in on, a session: when it began, when it was last renewed, the IP address it
+				came from and what the browser calls itself;
+			</li>
+			<li>
+				a log of what it did for you - a code sent, a sign-in, a session renewed - with your e-mail address and the
+				time of each.
+			</li>
+		</ul>
+		<p>
+			Of all that, this website reads your e-mail address, which it shows you on your account page, and the two dates,
+			which go into the file you can save.
+		</p>
+		<p id="account-browser">
+			<strong>What a signed-in browser keeps.</strong> The sign-in is kept in the browser's local storage, under names
+			that begin with <code>walka-account</code>: the keys that say this browser is signed in, what the sign-in keeps
+			about you (your e-mail address and the dates above{#if otherSites.length}, and the name and picture address
+				that another site handed over{/if}), and a one-time secret for each sign-in that was begun here.
+		</p>
+		<p>
+			It is not a cookie. The keys go to Supabase with each request and to nobody else, and all of it stays until you
+			sign out.
+		</p>
+		<p>
+			The food diary also keeps a copy of your diary in that browser, so that it opens and works without a connection.
+			Signing out removes that as well.
+		</p>
+
+		<h3 id="other-services">Other services your browser talks to</h3>
+		<p>
+			A page that is not an account page asks no other company for anything: <a href="#this-website">part two</a>
+			holds for it as before. The account pages - your account, your walks, the food diary, and a walker's public page
+			- talk to these, each only when there is a reason:
+		</p>
+		<dl class="kept">
+			<div>
+				<dt><strong>Supabase</strong></dt>
+				<dd>
+					<p>
+						Every account page asks the database, and so does a walker's public page. With each request Supabase
+						receives your IP address and your browser's details, as any host does, and it keeps a log of requests for a
+						time.
+					</p>
+					<p>
+						The site's owner can read that log in Supabase's dashboard for as long as Supabase keeps it, and does so
+						only to find a fault.
+					</p>
+				</dd>
+			</div>
+			<div>
+				<dt>
+					<strong>Open Food Facts</strong>
+					<span><code>world.openfoodfacts.org</code></span>
+				</dt>
+				<dd>
+					<p>
+						When you search for a food or scan a barcode in the food diary, your browser asks Open Food Facts, an open
+						database of food products. It receives the words you searched for or the barcode, and your IP address and
+						your browser's details. Nothing about your account goes with them.
+					</p>
+					<p>What it does with a request is in <a href={OPEN_FOOD_FACTS_PRIVACY}>its privacy policy</a>.</p>
+				</dd>
+			</div>
+			<div>
+				<dt><strong>USDA FoodData Central</strong></dt>
+				<dd>
+					<p>
+						Where the food search shows foods from the U.S. Department of Agriculture's list, your browser does not ask
+						USDA itself: a small function at Supabase passes your search words on. USDA receives those words, and not
+						your IP address.
+					</p>
+				</dd>
+			</div>
+			{#each otherSites as way (way)}
+				<div>
+					<dt>
+						<strong>{WAY_NAMES[way]}</strong>
+						<span>if you sign in with it</span>
+					</dt>
+					<dd>
+						<p>
+							For that step you are on its own site, and <a href={SITE_PRIVACY[way]}>its privacy rules</a> apply
+							there. It learns that you signed in to this website, and when.
+						</p>
+					</dd>
+				</div>
+			{/each}
+			{#if byEmail}
+				<div>
+					<dt>
+						<strong>{MAIL_SENDER || 'The mail service'}</strong>
+						<span>if you sign in by e-mail</span>
+					</dt>
+					<dd>
+						<p>
+							Sends the sign-in mail. Each time you ask for a code, it receives your e-mail address and the mail with
+							the code. Your browser does not talk to it: the sign-in does.
+						</p>
+					</dd>
+				</div>
+			{/if}
+			<div>
+				<dt>
+					<strong>GitHub</strong>
+					<span>as the host</span>
+				</dt>
+				<dd><p>Serves these pages as it serves the rest of the site: see <a href="#host">part two</a>.</p></dd>
+			</div>
+		</dl>
+		<p>
+			Once a day a small job on GitHub asks the database one question, so that the database is not put to sleep for
+			lack of use. It carries nothing about anyone.
+		</p>
+		<p>No advertising network, no analytics and no tracker is among them, on these pages as on the others.</p>
+
+		<h3 id="take-out-delete">Taking it out, and deleting it</h3>
+		<p>
+			<strong>Taking it out.</strong> <em>Save everything as a file</em> on <a href={resolve('account/')}>your account
+			page</a>. Your own browser reads your rows and saves them as one file, named <code>walka-account</code> and the
+			date, in a format other programs can read (JSON). Nothing is made ready on a server, and nothing is mailed.
+		</p>
+		<p>
+			In the file: what the sign-in keeps that the site can read - your e-mail address, when the account was made, when
+			you last signed in and which ways you signed in - and everything listed under
+			<a href="#account-keeps">What is kept</a>: your profile, your numbers, your walks, your foods, your diary, your
+			goal and the reports you sent.
+		</p>
+		<p>
+			<strong>Deleting one walk, food or diary entry.</strong> It is emptied at once, and what is left is a marker: of
+			a walk, when it started and ended and how it got here; of a diary entry, its day; of a food, where it came from
+			and its number there. The marker is kept so that another device of yours hears of the deletion and does not
+			bring the entry back. Markers are in the file you can save, and they go when the account goes.
+		</p>
+		<p>
+			<strong>Deleting the account.</strong> <em>Delete my account...</em> on your account page. At once, and for
+			good, this deletes everything in your account - your page, your numbers, your walks here, your food diary, the
+			markers - and the sign-in record with it: your e-mail address, your sessions and the sign-in's log about you. It
+			cannot be undone, and there is nobody who could bring it back. The walks on your own computer, in Walka, are not
+			touched.
+		</p>
+		<p><strong>What stays,</strong> and for how long:</p>
+		<ul>
+			<li>
+				<strong>The name of your public page,</strong> if you had one, is kept free for 90 days - the name and a date,
+				with nothing else - so that a link you once passed on does not lead to a stranger at once. The same holds for
+				a name you change.
+			</li>
+			<li>
+				<strong>A report somebody else sent about your page</strong> stays in that person's account. It names the
+				page, not you.
+			</li>
+			<li>
+				<strong>What Supabase itself keeps for a time</strong> - its log of requests, and any copies it makes of the
+				database for safekeeping - is not the site's to delete. It runs out by itself.
+			</li>
+		</ul>
+
+		<h3 id="adults">For adults only</h3>
+		<p>
+			Walka is for adults, and so is an account. It holds nothing until you tick <em>I am 18 or older</em>. The
+			database notes when, and that is not taken back. A year of birth is optional, and one that could make you 17 is
+			not taken.
+		</p>
+		<p>
+			Nobody's age is checked beyond that: the site has no means to, and asks for no papers. An account that turns out
+			to be a child's is deleted when the site's owner learns of it{#if CONTACT}: write to
+				<a href="mailto:{CONTACT}">{CONTACT}</a>{/if}.
+		</p>
+
+		<h3 id="estimates">Estimates, not advice</h3>
+		<p>
+			Every calorie figure in an account is an estimate, for interest only: what a walk burned, what a body burns at
+			rest, what a food holds, what is left to walk off. None of it is medical advice - for food as for walks. Do not
+			use it to decide anything about your health, your diet, your medication or your training.
+		</p>
+		<p>
+			The food numbers come from two public lists and from what you type in. A list can be wrong about a food, and the
+			food diary is not a diet plan: it says nothing about what anyone should eat.
+		</p>
+	</section>
+	{:else}
 	<section id="planned" class="prose">
 		<p class="label part">Part three</p>
 		<h2>What is planned: accounts and food tracking</h2>
@@ -386,6 +946,7 @@
 			</li>
 		</ul>
 	</section>
+	{/if}
 
 	<section id="children" class="prose">
 		<h2>Children</h2>
@@ -393,17 +954,64 @@
 			Walka is for adults only. Its <a href={LINKS.disclaimer}>disclaimer</a> says so, and the dashboard's body profile
 			does not take an age under 18.
 		</p>
-		<p>This website is not directed at children, and the site itself collects nothing from anyone.</p>
+		{#if ACCOUNTS.on}
+			<p>
+				This website is not directed at children. An account on it is <a href="#adults">for adults only</a>, and
+				without an account the site itself collects nothing from anyone.
+			</p>
+		{:else}
+			<p>This website is not directed at children, and the site itself collects nothing from anyone.</p>
+		{/if}
 	</section>
 
 	<section id="your-rights" class="prose">
 		<h2>Your rights, and who to ask</h2>
-		<p>
-			Depending on where you live, the law may give you rights over data that is held about you: to see it, to have it
-			corrected, to have it deleted. Today the site's maker holds no data about you to show, correct or delete. Walka's
-			files are on your own computer, and this website collects nothing.
-		</p>
+		{#if ACCOUNTS.on}
+			<p>
+				Depending on where you live, the law may give you rights over data that is held about you: to see it, to have
+				it corrected, to have it deleted, to take it with you, to take back an agreement you gave.
+			</p>
+			<p>
+				Without an account, the site's owner holds no data about you to show, correct or delete. Walka's files are on
+				your own computer, and the pages of this website collect nothing.
+			</p>
+			<p>
+				With an account, you do most of it yourself, on <a href={resolve('account/')}>your account page</a>, at any time
+				and without asking anybody:
+			</p>
+			<ul>
+				<li><strong>See it, and take it with you:</strong> <em>Save everything as a file</em>.</li>
+				<li><strong>Correct it:</strong> change it where you entered it.</li>
+				<li><strong>Delete it:</strong> a single entry, or the whole account (<em>Delete my account...</em>).</li>
+				<li>
+					<strong>Take back your agreement</strong> to your body numbers and your food diary being kept
+					(<em>Take back my agreement...</em>).
+				</li>
+			</ul>
+			<p>
+				How each of them works, and what is left afterwards, is under
+				<a href="#take-out-delete">Taking it out, and deleting it</a>.
+			</p>
+			<p>
+				Where the law gives you these rights, it also lets you complain to the data-protection authority of the place
+				where you live. You do not have to write to the site first.
+			</p>
+			<p>Who to ask:</p>
+		{:else}
+			<p>
+				Depending on where you live, the law may give you rights over data that is held about you: to see it, to have it
+				corrected, to have it deleted. Today the site's maker holds no data about you to show, correct or delete. Walka's
+				files are on your own computer, and this website collects nothing.
+			</p>
+		{/if}
 		<ul>
+			{#if ACCOUNTS.on}
+				<li>
+					<strong>About your account, or about privacy, in private:</strong>
+					{#if CONTACT}write to <a href="mailto:{CONTACT}">{CONTACT}</a>.{:else}no address is set in this build.{/if}
+					The site's owner reads it. Use it for anything your account page does not do.
+				</li>
+			{/if}
 			<li>
 				<strong>For what the host keeps</strong> - GitHub's logs - ask GitHub. Start with its
 				<a href={GITHUB_PRIVACY}>privacy statement</a>.
@@ -418,20 +1026,39 @@
 				<a href={LINKS.reportVulnerability}>private vulnerability report</a>. Only the maintainer sees it.
 			</li>
 		</ul>
-		<p>
-			Walka is a hobby project with one maintainer. There is no company behind it, and no published contact e-mail. An
-			issue or a report is written with a GitHub account and kept by GitHub. Neither Walka nor this website sends
-			anything about you to Walka's maker: what reaches the maker is what you put on GitHub yourself.
-		</p>
+		{#if ACCOUNTS.on}
+			<p>
+				Walka is a hobby project with one maintainer, who is also the owner of this site and answers for its accounts.
+				There is no company behind it. An issue or a report is written with a GitHub account and kept by GitHub.
+			</p>
+			<p>
+				Walka sends nothing about you to its maker. What reaches the maker is what you put on GitHub yourself, what you
+				write to the address above, and what you put into an account.
+			</p>
+		{:else}
+			<p>
+				Walka is a hobby project with one maintainer. There is no company behind it, and no published contact e-mail. An
+				issue or a report is written with a GitHub account and kept by GitHub. Neither Walka nor this website sends
+				anything about you to Walka's maker: what reaches the maker is what you put on GitHub yourself.
+			</p>
+		{/if}
 	</section>
 
 	<section id="changes" class="prose">
 		<h2>Changes to this page</h2>
-		<p>
-			This page describes Walka and this website as they are on the date below. Every change to it is in the
-			<a href={HISTORY}>website's public history</a> on GitHub. Before any of what is <a href="#planned">planned</a> is
-			switched on, this page is updated first.
-		</p>
+		{#if ACCOUNTS.on}
+			<p>
+				This page describes Walka and this website as they are on the date below. Every change to it is in the
+				<a href={HISTORY}>website's public history</a> on GitHub. Before anything about accounts changes - what is
+				kept, who sees it, a company that is added - this page is changed first, and its date with it.
+			</p>
+		{:else}
+			<p>
+				This page describes Walka and this website as they are on the date below. Every change to it is in the
+				<a href={HISTORY}>website's public history</a> on GitHub. Before any of what is <a href="#planned">planned</a> is
+				switched on, this page is updated first.
+			</p>
+		{/if}
 		<p class="stamp">
 			<strong>Last updated: <time datetime={UPDATED.iso}>{UPDATED.text}</time>.</strong>
 		</p>

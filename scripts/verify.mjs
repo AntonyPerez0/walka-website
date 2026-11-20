@@ -29,6 +29,12 @@
 //     alt text. Nor may a page link to a withdrawn version.
 //  7. No media query is in the form "(width <= 40rem)", which the oldest
 //     browsers the site is built for cannot read.
+//  8. A site with accounts says who to write to. When the build is told
+//     where accounts are kept (SUPABASE_URL), it must also be told the
+//     contact address, the place the data is kept in and - if people sign
+//     in by e-mail - who sends that mail (CONTACT, ACCOUNTS_REGION,
+//     MAIL_SENDER: src/env.ts), and the privacy page must really name them.
+//     So this script is given the same settings as the build.
 //
 // It reads files only: no browser, nothing to install.
 
@@ -52,6 +58,22 @@ if (SUPABASE_URL) {
 	MAY_TALK_TO.add(SUPABASE_URL);
 	MAY_TALK_TO.add('https://world.openfoodfacts.org');
 }
+
+// What the privacy page and the terms of a site with accounts must name.
+// Read from the environment as the build reads them (src/env.ts).
+const setting = (name) => (process.env[name] ?? '').trim();
+const CONTACT = setting('CONTACT');
+const ACCOUNTS_REGION = setting('ACCOUNTS_REGION');
+const MAIL_SENDER = setting('MAIL_SENDER');
+// (an empty SIGN_IN means "email", as it does to the build)
+const SIGN_IN = setting('SIGN_IN')
+	.split(',')
+	.map((way) => way.trim().toLowerCase())
+	.filter((way) => ['email', 'discord', 'google', 'github'].includes(way));
+const BY_EMAIL = SIGN_IN.length === 0 || SIGN_IN.includes('email');
+// The privacy page, and the part of it that only a site with accounts has.
+const PRIVACY_PAGE = 'privacy/index.html';
+const ACCOUNT_PART = /\sid="your-account"/;
 
 // What each part of the policy may name besides the site itself.
 const POLICY = {
@@ -320,6 +342,38 @@ async function checkCss(file) {
 	if (ranged) problem(file, `a media query older browsers cannot read: "${ranged[0].trim()}". See build.cssTarget in vite.config.ts`);
 }
 
+/**
+ * A site with accounts names who to write to, where the accounts are kept and
+ * who sends its mail - in the settings, and on the privacy page as it was
+ * built. (A problem with a setting is one plain sentence, with no file in
+ * front of it: it is not a page that is wrong.)
+ */
+async function checkAccounts(files) {
+	const html = files.includes(PRIVACY_PAGE) ? await readFile(join(root, PRIVACY_PAGE), 'utf8') : '';
+	const built = ACCOUNT_PART.test(html);
+
+	if (!SUPABASE_URL) {
+		if (built) problems.push('The site was built with accounts, but this check was not told where they are kept: give it the same SUPABASE_URL as the build.');
+		return;
+	}
+	if (!built) {
+		problems.push('This check was told that the site has accounts (SUPABASE_URL), but the privacy page was built without them: build with SUPABASE_URL and SUPABASE_KEY, and check with the same settings.');
+	}
+	if (!CONTACT) problems.push('The site is built with accounts, but nobody can be reached in private about them: set CONTACT.');
+	if (!ACCOUNTS_REGION) problems.push('The site is built with accounts, but the privacy page cannot say where they are kept: set ACCOUNTS_REGION.');
+	if (BY_EMAIL && !MAIL_SENDER) {
+		problems.push('The site is built with accounts and a sign-in code by e-mail, but the privacy page cannot say who sends that mail: set MAIL_SENDER.');
+	}
+	if (!built) return;
+
+	// The page as it was built says them: a build made with other settings
+	// than this check was given would promise something else.
+	const said = decode(html.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ');
+	if (CONTACT && !decode(html).includes(`href="mailto:${CONTACT}"`)) problem(PRIVACY_PAGE, `does not give the contact address ${CONTACT}. Was the site built with another CONTACT?`);
+	if (ACCOUNTS_REGION && !said.includes(ACCOUNTS_REGION)) problem(PRIVACY_PAGE, `does not say that the accounts are kept in ${ACCOUNTS_REGION}. Was the site built with another ACCOUNTS_REGION?`);
+	if (BY_EMAIL && MAIL_SENDER && !said.includes(MAIL_SENDER)) problem(PRIVACY_PAGE, `does not name ${MAIL_SENDER}, which sends the sign-in mail. Was the site built with another MAIL_SENDER or SIGN_IN?`);
+}
+
 async function main() {
 	if (!existsSync(root)) {
 		console.error('verify: there is no build folder. Run `npm run build` first.');
@@ -329,6 +383,8 @@ async function main() {
 	const files = (await walk(root)).map(toUrlPath).sort();
 	const pages = files.filter((f) => f.endsWith('.html'));
 	const titles = new Map();
+
+	await checkAccounts(files);
 
 	for (const file of files) {
 		const kind = extname(file);

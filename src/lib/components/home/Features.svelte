@@ -23,7 +23,8 @@
 		{
 			icon: 'count',
 			title: 'Counts every walk.',
-			text: 'Time, distance, steps and calories - live on the dashboard, and in the game while you play. A walk is recorded whenever the belt moves, with a game or without.'
+			// (one sentence more than the README has: wherever the site names calories, it says what they are)
+			text: 'Time, distance, steps and calories - live on the dashboard, and in the game while you play. Calories are an estimate, not medical advice. A walk is recorded whenever the belt moves, with a game or without.'
 		},
 		{
 			own: 'character',

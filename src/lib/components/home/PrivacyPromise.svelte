@@ -1,5 +1,10 @@
 <script lang="ts">
+	// What Walka does with your data, in three facts. The line under them is
+	// about accounts on this website, and is one of two: a site built without
+	// accounts (src/env.ts) says that they are planned, a site built with
+	// them says that it has them. Neither may say the other's sentence.
 	import { resolve } from '$app/paths';
+	import { ACCOUNTS } from '#lib/account/config.ts';
 	import Ornament from '#lib/components/Ornament.svelte';
 	import { reveal } from '#lib/reveal.ts';
 
@@ -26,7 +31,7 @@
 			<Ornament />
 			<p class="label">Privacy</p>
 			<h2>Stays on your computer.</h2>
-			<p class="lede">Walka uploads nothing. No account, no tracking, no advertising.</p>
+			<p class="lede">Walka uploads nothing. It needs no account, and there is no tracking and no advertising.</p>
 		</header>
 
 		<ul class="facts">
@@ -42,8 +47,14 @@
 		</ul>
 
 		<p class="later">
-			Later, this site will offer accounts for people who want to share their progress - opt-in, private until you say
-			otherwise, and yours to export or delete.
+			{#if ACCOUNTS.on}
+				This site has accounts, for people who want to share their progress or keep a food diary:
+				<span class="together">opt-in</span>, private until you say otherwise, and yours to export or delete. Walka
+				itself needs none.
+			{:else}
+				Accounts are planned for later, and not built yet - for people who want to share their progress:
+				<span class="together">opt-in</span>, private until you say otherwise, and yours to export or delete.
+			{/if}
 			<a href={resolve('privacy/')}>Privacy, in plain words</a>
 		</p>
 	</div>
@@ -109,7 +120,9 @@
 		text-align: center;
 	}
 
-	.later a {
+	/* the link stays in one piece, and "opt-in" is not broken at its hyphen */
+	.later a,
+	.later .together {
 		white-space: nowrap;
 	}
 

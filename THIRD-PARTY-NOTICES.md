@@ -30,6 +30,25 @@ together with:
 * **Svelte** and **SvelteKit** - Copyright (c) Svelte Contributors,
   published under the MIT licence (<https://github.com/sveltejs/svelte>,
   <https://github.com/sveltejs/kit>).
+* **supabase-js** (`@supabase/supabase-js`), the library through which the
+  account pages talk to the accounts' database - Copyright (c) 2020
+  Supabase, published under the MIT licence
+  (<https://github.com/supabase/supabase-js>). It brings these with it,
+  and parts of them end up in the same file:
+  * `@supabase/auth-js`, `@supabase/functions-js`,
+    `@supabase/postgrest-js`, `@supabase/realtime-js` and
+    `@supabase/storage-js` - Copyright (c) 2020 Supabase, MIT licence;
+  * `iceberg-js` - Copyright (c) 2025 Supabase, MIT licence;
+  * `@supabase/phoenix` - Copyright (c) 2014 Chris McCord, MIT licence;
+  * `tslib` - Copyright (c) Microsoft Corporation, published under the
+    BSD Zero Clause License, which asks for no notice.
+
+  That file is in every build of the site. A browser fetches it only on
+  the account pages of a site that is built with accounts
+  ([docs/accounts-setup.md](docs/accounts-setup.md)); without accounts
+  nothing ever asks for it.
+
+Their exact versions are in `package-lock.json`. The MIT licence, in full:
 
 ```
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -51,11 +70,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+## Food data, on a site with accounts
+
+The food diary looks foods up in two public lists. Neither list is in
+this repository or in the published site: they are asked when a signed-in
+person searches for a food or gives a barcode. The page says, with every
+result, which list it came from.
+
+* **Open Food Facts** (<https://openfoodfacts.org>). Its database is made
+  available under the
+  [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/)
+  (ODbL), and its contents under the Database Contents License. The food
+  diary names Open Food Facts and that licence, with links to both,
+  wherever a result from it is on the screen.
+
+  The site keeps no copy of the database and passes none on. Of a product
+  a person picks, the name, the brand and the calories are kept in that
+  person's own account, where only that person can read them.
+* **USDA FoodData Central** (<https://fdc.nal.usda.gov>). Its data is in
+  the public domain (CC0 1.0), and it asks to be named as the source:
+  U.S. Department of Agriculture, Agricultural Research Service.
+  FoodData Central, 2019. fdc.nal.usda.gov.
+
+Both are named with their terms on the site itself as well, in its terms
+of use under "The food lists".
+
 ## Used to build the site, not part of it
 
 Vite (MIT), TypeScript (Apache License 2.0), svelte-check (MIT) and sharp
 (Apache License 2.0), which makes the smaller versions of the pictures.
 Their exact versions are in `package-lock.json`.
+
+The checks of the accounts' database (`npm run test:database`) and the
+database on a developer's own computer use the Supabase command line
+(`supabase`, MIT), fetched by `npx` when it is asked for. It is not in
+`package-lock.json`: its version is the one `scripts/accounts-env.sh`
+names.
 
 ## Pictures
 

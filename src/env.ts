@@ -61,5 +61,44 @@ export const variables = defineEnvVars({
 				.map((way) => way.trim().toLowerCase())
 				.filter((way) => ['email', 'discord', 'google', 'github'].includes(way))
 				.join(',') || 'email'
+	},
+
+	// Three things the privacy page and the terms say once the site has
+	// accounts. They are words for a page, not switches. A site with accounts
+	// that names nobody to write to would break its own promise, so
+	// scripts/verify.mjs refuses such a build and says which one is missing.
+	CONTACT: {
+		description:
+			'An e-mail address at which the owner of the site can be reached in private about an account or ' +
+			'about privacy, for example "privacy@example.org". With accounts it is shown on the privacy page and ' +
+			'in the terms, so it is public: use an address made for this. It must look like an e-mail address, ' +
+			'or be empty.',
+		public: true,
+		static: true,
+		schema: (value) => {
+			const address = (value ?? '').trim();
+			if (address && !/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>".]+$/.test(address)) {
+				throw new Error('CONTACT must be an e-mail address, like "privacy@example.org", or be left empty.');
+			}
+			return address;
+		}
+	},
+	ACCOUNTS_REGION: {
+		description:
+			'Where the Supabase project keeps its data, in the words the privacy page should use, for example ' +
+			'"Frankfurt, Germany". It is the region chosen when the project was made, written as a place and ' +
+			"not as Supabase's code for it.",
+		public: true,
+		static: true,
+		schema: (value) => (value ?? '').trim()
+	},
+	MAIL_SENDER: {
+		description:
+			'The name of the service that sends the sign-in mail, as the privacy page should name it, for example ' +
+			'"Resend": the mail service (SMTP) set up in the Supabase project. It is given the e-mail address of ' +
+			'everyone who asks for a sign-in code. Needed only when SIGN_IN has "email" in it.',
+		public: true,
+		static: true,
+		schema: (value) => (value ?? '').trim()
 	}
 });

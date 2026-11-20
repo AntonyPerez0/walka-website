@@ -3,7 +3,13 @@
 	// asked - a <details>, so it opens without scripts, and a link to the page
 	// with #<question> opens that one. Two things are never folded: the
 	// caution at the top, and "Can Walka start or stop my belt?".
+	//
+	// A site with accounts (src/env.ts) has an eleventh group, "Accounts",
+	// and a few answers under "Your data" read differently: every sentence
+	// about accounts stands inside {#if ACCOUNTS.on} ... {:else} ... {/if},
+	// so that neither build says what is not so.
 	import { resolve } from '$app/paths';
+	import { ACCOUNTS, WAY_NAMES, type Way } from '#lib/account/config.ts';
 	import Article from '#lib/components/Article.svelte';
 	import Callout from '#lib/components/Callout.svelte';
 	import Frame from '#lib/components/Frame.svelte';
@@ -22,11 +28,18 @@
 		{ id: 'in-the-game', label: 'In the game' },
 		{ id: 'safety', label: 'Safety' },
 		{ id: 'your-data', label: 'Your data' },
+		...(ACCOUNTS.on ? [{ id: 'your-account', label: 'Accounts' }] : []),
 		{ id: 'numbers', label: 'The numbers' },
 		{ id: 'sharing', label: 'Sharing' },
 		{ id: 'troubleshooting', label: 'When something is wrong' },
 		{ id: 'project', label: 'The project' }
 	];
+
+	// The ways to sign in that this build has switched on (SIGN_IN).
+	const byEmail = ACCOUNTS.ways.includes('email');
+	const otherSites = ACCOUNTS.ways.filter((way): way is Exclude<Way, 'email'> => way !== 'email').map((way) => WAY_NAMES[way]);
+	/** "Discord", "Discord or Google", "Discord, Google or GitHub" */
+	const oneOf = (names: string[]) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}`);
 </script>
 
 <Seo
@@ -249,6 +262,9 @@
 			<div class="questions">
 				<Question id="uploads" q="Does Walka upload anything?">
 					<p>No. Nothing is uploaded. Walka runs on your computer: no picture of your screen is saved or sent anywhere, the Share picture is drawn on your computer, and the road your character travels never leaves your PC. Posting a picture or importing a walk somewhere else is something you do yourself, by hand.</p>
+					{#if ACCOUNTS.on}
+						<p>That goes for an account on this website too: a walk gets into one only when <a href="#add-walks">you add it there yourself</a>.</p>
+					{/if}
 					<p class="further">More: <a href="{resolve('privacy/')}#what-leaves">Privacy</a>.</p>
 				</Question>
 				<Question id="what-it-keeps" q="What does it keep, and where?">
@@ -261,16 +277,70 @@
 					<p>No. The dashboard is only reachable from the computer Walka runs on, at <code>127.0.0.1:8787</code>. It shows your walks, weight and height and has no password, so it is not offered to other devices on your network. A way round that would be a security problem: see <a href={LINKS.security}>Reporting a security or safety problem</a>.</p>
 				</Question>
 				<Question id="website" q="Does this website track me?">
-					<p>No. This website has no accounts, no forms, no cookies, no analytics, no advertising and no trackers, and everything a page needs is served by the site itself.</p>
+					{#if ACCOUNTS.on}
+						<p>No. This website has no cookies, no analytics, no advertising and no trackers, and everything a page needs is served by the site itself. It keeps data about you only if you make <a href="#your-account">an account</a>, and then only what you put into it.</p>
+					{:else}
+						<p>No. This website has no accounts, no forms, no cookies, no analytics, no advertising and no trackers, and everything a page needs is served by the site itself.</p>
+					{/if}
 					<p>GitHub hosts it and, like any web host, receives your IP address and browser details when a page is fetched, and may keep logs; the site&#39;s maker cannot see those logs and gets no visitor statistics. The downloads page also asks GitHub which Walka version is the latest. Your choice of light or dark, if you use the switch, is kept in your own browser, and it is never sent anywhere.</p>
 					<p class="further">The whole of it: <a href="{resolve('privacy/')}#this-website">Privacy</a>.</p>
 				</Question>
-				<Question id="accounts" q="Will there be accounts?">
-					<p>They are planned, and not built yet: later this website is to offer accounts, for sharing your walking progress with others and for keeping track of food. Walka today has no accounts and uploads nothing.</p>
-					<p>Syncing and sharing will be opt-in, a profile will be private until its owner makes it public, and you will be able to export and delete your account and your data yourself. The <a href="{resolve('privacy/')}#planned">privacy page</a> and the <a href="{resolve('terms/')}#accounts">terms</a> will be updated before any of it is switched on.</p>
-				</Question>
+				{#if !ACCOUNTS.on}
+					<Question id="accounts" q="Will there be accounts?">
+						<p>They are planned, and not built yet: later this website is to offer accounts, for sharing your walking progress with others and for keeping track of food. Walka today has no accounts and uploads nothing.</p>
+						<p>Syncing and sharing will be opt-in, a profile will be private until its owner makes it public, and you will be able to export and delete your account and your data yourself. The <a href="{resolve('privacy/')}#planned">privacy page</a> and the <a href="{resolve('terms/')}#accounts">terms</a> will be updated before any of it is switched on.</p>
+					</Question>
+				{/if}
 			</div>
 		</section>
+
+		{#if ACCOUNTS.on}
+			<section id="your-account" class="group">
+				<h2>Accounts</h2>
+				<div class="questions">
+					<Question id="need-an-account" q="Do I need an account?">
+						<p>No. Walka works without one and uploads nothing, and every other page of this site is free to read. An account is only for the two things that need one: sharing your walking progress, and the food diary.</p>
+						<p class="further">More: <a href="{resolve('privacy/')}#your-account">Your account, if you make one</a>.</p>
+					</Question>
+					<Question id="account-for" q="What is an account for?">
+						<p>For a page of your own that shows how long and how far you have walked, to the people you give its address to; and for a food diary next to your walks. Both are opt-in: your account is private until you switch your page to public, and the food diary keeps nothing until you agree to that.</p>
+						<p class="further">It starts on <a href={resolve('account/')}>the account page</a>.</p>
+					</Question>
+					<Question id="sign-in" q="How do I sign in, and why is there no password?">
+						<p>
+							{#if byEmail}On <a href={resolve('account/')}>the account page</a>, type your e-mail address: a six-digit code is sent to it, and you type the code in.{:else}On <a href={resolve('account/')}>the account page</a>, choose {oneOf(otherSites)}: you go to that site, say yes there, and come back signed in.{/if}
+							{#if byEmail && otherSites.length}Or choose {oneOf(otherSites)}: you go to that site, say yes there, and come back signed in.{/if}
+							New here? Signing in makes your account.
+						</p>
+						<p>A password would be one more secret to make up, to remember and to keep safe - for you and for this site. So there is none: nobody signs in with one here, and none is kept.</p>
+						<p class="further">What signing in keeps: <a href="{resolve('privacy/')}#signing-in">Signing in</a>.</p>
+					</Question>
+					<Question id="add-walks" q="How do my walks get into it?">
+						<p>You add them yourself, on your account&#39;s <a href={resolve('account/walks/')}>Walks page</a>, from Walka&#39;s own files. Walka keeps every finished walk as a file in the <code>sessions</code> folder inside its own folder: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. A TCX file downloaded from the dashboard works too.</p>
+						<p>Walka itself uploads nothing. One day the desktop program may be able to send your walks, if you switch that on; today it cannot.</p>
+						<p class="further">Which numbers of a walk are kept, and what stays on your computer: <a href="{resolve('privacy/')}#account-keeps">What is kept</a>.</p>
+					</Question>
+					<Question id="who-sees-my-page" q="Who can see my page?">
+						<p>Nobody, until you switch it to public. Then anyone who knows or guesses its name can see the name you show, and in all: how many walks, how long and how far. The last twelve weeks day by day, your steps and your single walks are each a switch of their own, off at first.</p>
+						<p>Calories, your numbers and your food are never on your page, whatever is switched on. Switch the page off and it is gone at once.</p>
+						<p class="further">More: <a href="{resolve('privacy/')}#public-page">Your public page</a>.</p>
+					</Question>
+					<Question id="food-diary" q="What does the food diary do, and what are its numbers worth?">
+						<p>You enter what you eat, and <a href={resolve('food/')}>the food diary</a> shows calories eaten against calories burned - your walks plus an estimate of what your body burns at rest - and how much is left to walk off toward a goal you set yourself. On a phone it can be put on the home screen as an app of its own.</p>
+						<p>Every one of those figures is an estimate, for interest only, and not medical advice. The food diary is not a diet plan, and it says nothing about what anyone should eat.</p>
+						<p class="further">More: <a href="{resolve('terms/')}#estimates">Estimates, not advice</a>.</p>
+					</Question>
+					<Question id="take-out-delete" q="How do I take my data out, or delete my account?">
+						<p>Both are on <a href={resolve('account/')}>your account page</a>, under <em>Your data</em>. <em>Save everything as a file</em> gives you one file with everything your account holds. <em>Delete my account...</em> deletes the account and everything in it, at once, and cannot be undone. The walks on your own computer, in Walka, are not touched.</p>
+						<p class="further">What is in the file, and the little that stays after deleting: <a href="{resolve('privacy/')}#take-out-delete">Taking it out, and deleting it</a>.</p>
+					</Question>
+					<Question id="account-free" q="Is an account free?">
+						<p>Yes. An account is free, like Walka: nothing to buy, and no advertising. It runs on services that are free as well, so it comes with no promise that it stays. Accounts may be unavailable for a while, and may end one day - with notice, and time to take your data out.</p>
+						<p class="further">More: <a href="{resolve('terms/')}#free-and-may-end">Free, and with no promise that it stays</a>.</p>
+					</Question>
+				</div>
+			</section>
+		{/if}
 
 		<section id="numbers" class="group">
 			<h2>The numbers</h2>
@@ -300,7 +370,7 @@
 				</Question>
 				<Question id="garmin-strava" q="Can I send walks to Garmin Connect or Strava?">
 					<p>Not automatically - Walka uploads nothing. Each walk can be downloaded as a <strong>TCX</strong> file (dashboard → <em>History</em> → a walk → <em>TCX</em>) and imported by hand: on connect.garmin.com, <em>Activities</em> → <em>Import</em>.</p>
-					<p>Imported walks show time, distance, calories and heart rate; Garmin does not add their steps to your daily step total. The dashboard says the same file imports into Strava and most fitness sites; the README spells out the steps for Garmin only.</p>
+					<p>Imported walks show time, distance, calories and heart rate; Garmin does not add their steps to your daily step total. The dashboard&#39;s <em>Download TCX</em> button says the file imports into Garmin Connect, Strava and most fitness sites; the README spells out the steps for Garmin only.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#tcx">Garmin Connect, Strava and others</a>.</p>
 				</Question>
 			</div>
@@ -408,7 +478,7 @@
 				</Question>
 				<Question id="report" q="How do I report a bug, or a security problem?">
 					<p>Ordinary bugs - a walk is not recorded, a number is wrong, a treadmill is not found - go to the <a href={LINKS.issues}>issue tracker</a>, which is public.</p>
-					<p>Walka only listens to a treadmill, so the worst thing that could be wrong with it is that this is not true. If you have found a way to make Walka send a treadmill anything at all, or to get at what it stores, please say so in private first: <a href={LINKS.reportVulnerability}>report a vulnerability</a> on GitHub, where only the maintainer sees the report. There is no bounty and no promised time to answer, and a report that concerns the belt is looked at before everything else. There is no published contact e-mail.</p>
+					<p>Walka only listens to a treadmill, so the worst thing that could be wrong with it is that this is not true. If you have found a way to make Walka send a treadmill anything at all, or to get at what it stores, please say so in private first: <a href={LINKS.reportVulnerability}>report a vulnerability</a> on GitHub, where only the maintainer sees the report. There is no bounty and no promised time to answer, and a report that concerns the belt is looked at before everything else. {#if ACCOUNTS.on}For a private word about an account on this website, or a way you found into somebody else&#39;s, there is an e-mail address on the <a href="{resolve('privacy/')}#your-rights">privacy page</a>.{:else}There is no published contact e-mail.{/if}</p>
 					<p class="further">What counts and what does not: <a href={LINKS.security}>Reporting a security or safety problem</a>.</p>
 				</Question>
 				<Question id="help-test" q="Can I help test it on a real treadmill?">

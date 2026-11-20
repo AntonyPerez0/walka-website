@@ -12,6 +12,10 @@ has no server of its own, no cookies, no analytics, and it loads nothing
 from anyone else: fonts, scripts and pictures all come from the site
 itself.
 
+It can also have accounts and a food diary. They are in this repository
+and switched off: the live site is built without them, and says so. See
+[Accounts and the food diary](#accounts-and-the-food-diary).
+
 ## What is in it
 
 | Page | Address | What it is for |
@@ -23,6 +27,7 @@ itself.
 | Downloads | `/downloads/` | The files, which treadmills work, is the download safe |
 | Privacy | `/privacy/` | What Walka and this site do with data: nothing is uploaded |
 | Terms | `/terms/` | The terms of the website, in plain words |
+| The account pages | `/account/`, `/account/walks/`, `/food/`, `/u/` | A person's account, their walks, the food diary, a walker's public page. Without accounts they say "not open yet". |
 
 Everything the site says about Walka is taken from Walka's own
 `README.md`, `DISCLAIMER.md` and `docs/`. When those change, the site
@@ -59,9 +64,11 @@ npm run preview -- --base /     # ... and as a domain of its own would
   Blizzard" line, the download buttons are the links Walka's README uses,
   nothing that looks like a secret key is in it, and no media query in the
   styles is in the form `(width <= 40rem)`, which the oldest browsers the
-  site is built for cannot read (the list is in `vite.config.ts`). The
-  rules, and the short list of outside addresses the site's code may talk
-  to, are at the top of [`scripts/verify.mjs`](scripts/verify.mjs).
+  site is built for cannot read (the list is in `vite.config.ts`). A site
+  built with accounts must also name who to write to, where the accounts
+  are kept and who sends its sign-in mail. The rules, and the short list
+  of outside addresses the site's code may talk to, are at the top of
+  [`scripts/verify.mjs`](scripts/verify.mjs).
 
 ## How it is published
 
@@ -102,25 +109,78 @@ Try both before changing how links are written: `npm run preview` serves
 the build under `/walka-website/`, `npm run preview -- --base /` at the
 root.
 
+## What to do by hand
+
+Three things the repository cannot do for itself. They are done in
+GitHub's settings, at the place the domain is kept, and in Supabase's
+dashboard.
+
+1. **GitHub Pages.** *Settings → Pages → Build and deployment → Source:*
+   **GitHub Actions**. This is done already: it is why the site is live.
+
+2. **The domain,** once there is one.
+   1. *Settings → Pages → Custom domain:* type the domain, **Save**.
+   2. Where the domain's DNS is kept - at Cloudflare: *DNS → Records* -
+      add these, each with the proxy **off** ("DNS only", the grey cloud):
+
+      | Type | Name | Points to |
+      |---|---|---|
+      | `A` | `@` | `185.199.108.153` |
+      | `A` | `@` | `185.199.109.153` |
+      | `A` | `@` | `185.199.110.153` |
+      | `A` | `@` | `185.199.111.153` |
+      | `AAAA` | `@` | `2606:50c0:8000::153` |
+      | `AAAA` | `@` | `2606:50c0:8001::153` |
+      | `AAAA` | `@` | `2606:50c0:8002::153` |
+      | `AAAA` | `@` | `2606:50c0:8003::153` |
+      | `CNAME` | `www` | `antonyperez0.github.io` |
+
+   3. Back under *Settings → Pages*, wait until the check of the domain
+      is green, then tick **Enforce HTTPS**. (GitHub fetches the
+      certificate itself; that can take a while after the records are in.)
+   4. *Actions → Site → Run workflow*, once, so that the sitemap and the
+      link previews name the new address.
+   5. If the site has accounts: in Supabase, *Authentication → URL
+      Configuration*, change the *Site URL* to the new address and add
+      the new addresses of the account pages to the *Redirect URLs*
+      ([docs/accounts-setup.md](docs/accounts-setup.md), step 3). People
+      who were signed in at the old address sign in once more at the new
+      one.
+
+3. **Accounts.** Making the database, its sign-in settings and the
+   settings of the build: [docs/accounts-setup.md](docs/accounts-setup.md),
+   step by step.
+
 ## Changing the site
 
 It is [SvelteKit](https://svelte.dev/docs/kit) with the static adapter:
 every page is a `.svelte` file that is turned into plain HTML at build
 time. A page is mostly ordinary HTML.
 
+SvelteKit was chosen because it writes every page out as plain HTML at
+build time, which is all GitHub Pages can serve, while the header, the
+footer and the styles are written once.
+
 ```
 src/
+  env.ts                the settings the build reads from the environment
   routes/               one folder per page: safety/+page.svelte is /safety/
     +layout.svelte      what every page is wrapped in: fonts, styles, header, footer
+    (app)/              the account pages: account/, account/walks/, food/, u/
   lib/
     site.ts             names and addresses: the download links, links into Walka's repository
     nav.ts              the pages in the navigation
     components/         the header, the footer, the frame, pictures, callouts ...
+    account/            accounts: the one connection to the database, who is signed in, the rows
     styles/tokens.css   the colours, the type, the spacing - once, for dark and light
     styles/base.css     what plain HTML looks like, and a few shared classes
+    styles/app.css      the forms and panels of the account pages
   images/               the pictures, as they came out of Walka
 static/                 files that are published as they are (icons, the 404 page)
 scripts/                the build's helpers: pictures, the preview server, the checks
+supabase/               the database of the accounts: its tables and rules, the sign-in mail
+docs/                   the data model, and how to switch accounts on
+tests/                  the promises of the database, tried against a real one
 ```
 
 **A new page:** add `src/routes/<name>/+page.svelte`, starting from an
@@ -184,18 +244,72 @@ fonts, icons or screenshots of Blizzard's, and nothing that imitates them
 or suggests that Blizzard endorses Walka. The line that says so is in the
 footer of every page, and `npm run verify` fails without it.
 
-## What comes later
+## Accounts and the food diary
 
-The site is planned to grow in two steps, neither of which is built yet:
+Two things are built and switched off:
 
 1. **Accounts**, for people who want to share their walking progress.
-2. **Food tracking** for signed-in people, as a web app that can be
-   installed on a phone.
+2. **A food diary** for signed-in people, as a web app that can be put on
+   a phone's home screen.
 
-GitHub Pages cannot hold data, so both will keep theirs in a hosted
-database (Supabase), with rules that let each person read and write only
-their own rows. Only that database's public key will ever be in this
-repository. The promises that go with it are on the
+GitHub Pages cannot hold data, so both keep theirs in a hosted database
+(Supabase), with rules that let each person read and write only their own
+rows. The site is told where that database is by three settings of the
+build - `SUPABASE_URL`, `SUPABASE_KEY` and `SIGN_IN`
+([`src/env.ts`](src/env.ts)). Until they are there, the site has no
+accounts: the account pages say "not open yet", the pages that speak of
+accounts say that they are planned and not built, and nothing talks to a
+database.
+Switching them on is done by hand:
+[docs/accounts-setup.md](docs/accounts-setup.md).
+
+**One code, two sites.** Every page that speaks of accounts says one
+thing when the site is built without them and another when it is built
+with them (`ACCOUNTS.on` in `src/lib/account/config.ts`). The privacy
+page and the terms are the long cases. After changing such a page, build
+it both ways and read both.
+
+**Only the database's public key** is ever in this repository's settings
+or in the pages: the one Supabase calls *publishable*. What protects a
+person's rows is the rules in the database, not the key. The build
+refuses a secret key.
+
+Where the pieces are:
+
+* [`supabase/migrations/`](supabase/migrations/) - the tables and their
+  rules. They are the truth about what is kept;
+  [docs/data-model.md](docs/data-model.md) explains them.
+* [`supabase/config.toml`](supabase/config.toml) and
+  [`supabase/templates/`](supabase/templates/) - the database on your own
+  computer, and the sign-in mail. (The settings of the real project are
+  set in Supabase's dashboard: the guide says which.)
+* [`src/lib/account/`](src/lib/account/) - the one connection to the
+  database, who is signed in, the rows as the site reads them, the food
+  diary's arithmetic, and the file a person can save.
+* `src/routes/(app)/` - the account pages, and
+  [`src/lib/components/account/`](src/lib/components/account/), what they
+  show before their own content: "not open yet", "temporarily
+  unavailable", the sign-in.
+* [`tests/`](tests/) - each promise the site makes about the database,
+  tried against a real one.
+* [`.github/workflows/keep-alive.yml`](.github/workflows/keep-alive.yml) -
+  asks the database one small thing a day, so that a free project is not
+  put to sleep.
+
+To try them on your own computer you need [Docker](https://www.docker.com),
+which runs a whole Supabase there:
+
+```sh
+npx supabase@3.2.0 start     # the database, the sign-in and a test mailbox, on this computer
+. scripts/accounts-env.sh    # points this shell's builds at it
+npm run dev                  # the site with accounts, at http://localhost:5173
+npm run test:database        # the promises of the database, tried
+```
+
+The sign-in mail does not leave your computer: it lands in the test
+mailbox at <http://127.0.0.1:54324>. `npx supabase@3.2.0 stop` ends it.
+
+The promises that go with accounts are on the
 [privacy page](src/routes/privacy/+page.svelte): opt-in, private until you
 say otherwise, and yours to export and delete.
 
