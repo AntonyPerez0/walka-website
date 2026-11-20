@@ -75,11 +75,18 @@ jobs:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
           SIGN_IN: ${{ vars.SIGN_IN }}
+          CONTACT: ${{ vars.CONTACT }}
+          ACCOUNTS_REGION: ${{ vars.ACCOUNTS_REGION }}
+          MAIL_SENDER: ${{ vars.MAIL_SENDER }}
         run: npm run build
       - name: Check the built site
         env:
           SITE_URL: ${{ steps.pages.outputs.site_url }}
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SIGN_IN: ${{ vars.SIGN_IN }}
+          CONTACT: ${{ vars.CONTACT }}
+          ACCOUNTS_REGION: ${{ vars.ACCOUNTS_REGION }}
+          MAIL_SENDER: ${{ vars.MAIL_SENDER }}
         run: npm run verify
 
       - name: Hand the site to GitHub Pages
