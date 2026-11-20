@@ -1,0 +1,343 @@
+{
+	"count": 15629,
+	"page": 1,
+	"page_count": 20,
+	"page_size": 20,
+	"products": [
+		{
+			"brands": "Danone Belux nv",
+			"code": "5411188124689",
+			"product_name": "Oat No Sugars",
+			"serving_quantity": 100,
+			"serving_size": "1 portion (100 ml)",
+			"nutriments": {
+				"carbohydrates_100g": 6.4,
+				"energy-kcal_100g": 44,
+				"energy-kj_100g": 183.5,
+				"energy_100g": 183.5,
+				"fat_100g": 1.5,
+				"proteins_100g": 0.8,
+				"salt_100g": 0.1,
+				"sugars_100g": 0
+			}
+		},
+		{
+			"brands": "alpro",
+			"code": "5411188115366",
+			"product_name": "Alpro smooth subtle creamy oat",
+			"serving_quantity": 100,
+			"serving_size": "100 g",
+			"nutriments": {
+				"carbohydrates_100g": 6,
+				"energy-kcal_100g": 42,
+				"energy-kj_100g": 177,
+				"energy_100g": 177,
+				"fat_100g": 1.5,
+				"proteins_100g": 0.8,
+				"salt_100g": 0.1,
+				"sugars_100g": 3.1
+			}
+		},
+		{
+			"brands": "Crownfield",
+			"code": "20003166",
+			"product_name": "FLOCONS D'AVOINE",
+			"serving_quantity": 100,
+			"serving_size": "100.0g",
+			"nutriments": {
+				"carbohydrates_100g": 58.7,
+				"energy-kcal_100g": 372,
+				"energy-kj_100g": 1566,
+				"energy_100g": 1566,
+				"fat_100g": 7,
+				"proteins_100g": 13.5,
+				"salt_100g": 0.02,
+				"sugars_100g": 0.7
+			}
+		},
+		{
+			"brands": "Quaker",
+			"code": "3168930003632",
+			"product_name": "Quaker Oats",
+			"serving_quantity": 40,
+			"serving_size": "40g",
+			"nutriments": {
+				"carbohydrates_100g": 60,
+				"energy-kcal_100g": 375,
+				"energy-kj_100g": 1570,
+				"energy_100g": 1570,
+				"fat_100g": 8,
+				"proteins_100g": 11,
+				"salt_100g": 0.01,
+				"sugars_100g": 1.1
+			}
+		},
+		{
+			"brands": "CARREFOUR FRANCE",
+			"code": "3560070614202",
+			"product_name": "Copos de Avena Integral",
+			"nutriments": {
+				"carbohydrates_100g": 59,
+				"energy-kcal_100g": 372,
+				"energy-kj_100g": 1566,
+				"energy_100g": 1566,
+				"fat_100g": 7,
+				"proteins_100g": 14,
+				"salt_100g": 0,
+				"sugars_100g": 0.7
+			}
+		},
+		{
+			"brands": "Nature Valley, GENERAL MILLS IBERICA S.A.U.",
+			"code": "8410076801197",
+			"product_name": "Crunchy Oats & Dark Chocolate",
+			"serving_quantity": 42,
+			"serving_size": "42 g",
+			"nutriments": {
+				"carbohydrates_100g": 61.5,
+				"energy-kcal_100g": 473,
+				"energy-kj_100g": 1981,
+				"energy_100g": 1981,
+				"fat_100g": 19.8,
+				"proteins_100g": 8.7,
+				"salt_100g": 0.65,
+				"sugars_100g": 26.8
+			}
+		},
+		{
+			"brands": "Oatly",
+			"code": "7394376616228",
+			"product_name": "The original oat-ly barista edition oat drink",
+			"serving_quantity": 100,
+			"serving_size": "1 serving (100 ml)",
+			"nutriments": {
+				"carbohydrates_100g": 7.1,
+				"energy-kcal_100g": 61,
+				"energy-kj_100g": 257,
+				"energy_100g": 257,
+				"fat_100g": 3,
+				"proteins_100g": 1.1,
+				"salt_100g": 0.0975,
+				"sugars_100g": 3.4
+			}
+		},
+		{
+			"brands": "Emco",
+			"code": "8595229901075",
+			"product_name": "Musli Oat biscuits (Blueberry)",
+			"nutriments": {
+				"carbohydrates_100g": 62,
+				"energy-kcal_100g": 439,
+				"energy-kj_100g": 1838,
+				"energy_100g": 1838,
+				"fat_100g": 17,
+				"proteins_100g": 7.3,
+				"salt_100g": 0.19,
+				"sugars_100g": 23
+			}
+		},
+		{
+			"brands": "Emco",
+			"code": "8595229900504",
+			"product_name": "Müsli oat biscuits",
+			"serving_quantity": 30,
+			"serving_size": "30 g",
+			"nutriments": {
+				"carbohydrates_100g": 56.6666666666667,
+				"energy-kcal_100g": 466.666666666667,
+				"energy-kj_100g": 1926.66666666667,
+				"energy_100g": 1926.66666666667,
+				"fat_100g": 20,
+				"proteins_100g": 10,
+				"salt_100g": 0.166666666666667,
+				"sugars_100g": 20
+			}
+		},
+		{
+			"brands": "LIQUATS VEGETALS S.A.",
+			"code": "8423352861402",
+			"product_name": "Bebida de Avena",
+			"nutriments": {
+				"carbohydrates_100g": 8.2,
+				"energy-kcal_100g": 47,
+				"energy-kj_100g": 198,
+				"energy_100g": 198,
+				"fat_100g": 0.7,
+				"proteins_100g": 1.6,
+				"salt_100g": 0.03,
+				"sugars_100g": 5.4
+			}
+		},
+		{
+			"brands": "Nature Valley",
+			"code": "8410076600448",
+			"product_name": "Nature valley crunchy oats and berries",
+			"serving_quantity": 42,
+			"serving_size": "2 sachets de 42 g",
+			"nutriments": {
+				"carbohydrates_100g": 71.42,
+				"energy-kcal_100g": 452.38,
+				"energy-kj_100g": 1900,
+				"energy_100g": 1900,
+				"fat_100g": 16.9,
+				"proteins_100g": 7.38,
+				"salt_100g": 0.66667,
+				"sugars_100g": 30.2381
+			}
+		},
+		{
+			"brands": "Nature Valley",
+			"code": "8410076600837",
+			"product_name": "Crunchy Oats & Honey",
+			"serving_quantity": 42,
+			"serving_size": "1 portion (42 g)",
+			"nutriments": {
+				"carbohydrates_100g": 64.3,
+				"energy-kcal_100g": 466.6666666667,
+				"energy-kj_100g": 1961.9,
+				"energy_100g": 1961.9,
+				"fat_100g": 18.1,
+				"proteins_100g": 8.7,
+				"salt_100g": 0.85,
+				"sugars_100g": 26.8
+			}
+		},
+		{
+			"brands": "Terres & Céréales Bio",
+			"code": "3421557910210",
+			"product_name": "Flocons d'avoine complets",
+			"serving_quantity": 50,
+			"serving_size": "50 g",
+			"nutriments": {
+				"carbohydrates_100g": 60,
+				"energy-kcal_100g": 371,
+				"energy-kj_100g": 1564,
+				"energy_100g": 1564,
+				"fat_100g": 7,
+				"proteins_100g": 12,
+				"salt_100g": 0.01,
+				"sugars_100g": 1
+			}
+		},
+		{
+			"brands": "Crownfield",
+			"code": "4056489195917",
+			"product_name": "Oat Flakes Fine",
+			"serving_quantity": 100,
+			"serving_size": "100g",
+			"nutriments": {
+				"carbohydrates_100g": 62,
+				"energy-kcal_100g": 372,
+				"energy-kj_100g": 1571,
+				"energy_100g": 1571,
+				"fat_100g": 5.7,
+				"proteins_100g": 14,
+				"salt_100g": 0,
+				"sugars_100g": 0.7
+			}
+		},
+		{
+			"brands": "Nature Valley, General Mills",
+			"code": "8410076600790",
+			"product_name": "Nature Valley Crunchy Oats & Honey",
+			"serving_quantity": 42,
+			"serving_size": "2 bars (42g)",
+			"nutriments": {
+				"carbohydrates_100g": 64.3,
+				"energy-kcal_100g": 467,
+				"energy-kj_100g": 1960,
+				"energy_100g": 1960,
+				"fat_100g": 18.1,
+				"proteins_100g": 8.7,
+				"salt_100g": 0.85,
+				"sugars_100g": 26.8
+			}
+		},
+		{
+			"brands": "Quaker",
+			"code": "5000108478119",
+			"product_name": "Quaker White Oats",
+			"serving_quantity": 40,
+			"serving_size": "1 portion (40 g)",
+			"nutriments": {
+				"carbohydrates_100g": 60,
+				"energy-kcal_100g": 374,
+				"energy-kj_100g": 1565,
+				"energy_100g": 1565,
+				"fat_100g": 8,
+				"proteins_100g": 11,
+				"salt_100g": 1,
+				"sugars_100g": 1.1
+			}
+		},
+		{
+			"brands": "Flahavan's",
+			"code": "5099801003339",
+			"product_name": "Organic Jumbo Oats",
+			"serving_quantity": 40,
+			"serving_size": "1 serving (40 g)",
+			"nutriments": {
+				"carbohydrates_100g": 65,
+				"energy-kcal_100g": 370,
+				"energy-kj_100g": 1575,
+				"energy_100g": 1575,
+				"fat_100g": 5.75,
+				"proteins_100g": 11.25,
+				"salt_100g": 0.0125,
+				"sugars_100g": 1
+			}
+		},
+		{
+			"brands": "Bjorg",
+			"code": "3229820780566",
+			"product_name": "Son d'Avoine Bio",
+			"serving_quantity": 20,
+			"serving_size": "Deux cuillières à soupe (20 g)",
+			"nutriments": {
+				"carbohydrates_100g": 50,
+				"energy-kcal_100g": 353,
+				"energy-kj_100g": 1482.5,
+				"energy_100g": 1482.5,
+				"fat_100g": 6.5,
+				"proteins_100g": 16,
+				"salt_100g": 0.01,
+				"sugars_100g": 1.7
+			}
+		},
+		{
+			"brands": "Quaker",
+			"code": "5000108022152",
+			"product_name": "PORRIDGE OATS",
+			"serving_quantity": 40,
+			"serving_size": "1 serving (40 g)",
+			"nutriments": {
+				"carbohydrates_100g": 60,
+				"energy-kcal_100g": 375,
+				"energy-kj_100g": 1575,
+				"energy_100g": 1575,
+				"fat_100g": 8,
+				"proteins_100g": 11,
+				"salt_100g": 0,
+				"sugars_100g": 1
+			}
+		},
+		{
+			"brands": "Crownfield",
+			"code": "4056489254157",
+			"product_name": "Био овесени ядки",
+			"serving_quantity": 40,
+			"serving_size": "40g",
+			"nutriments": {
+				"carbohydrates_100g": 55.1,
+				"energy-kcal_100g": 365,
+				"energy-kj_100g": 1532,
+				"energy_100g": 1532,
+				"fat_100g": 6.9,
+				"proteins_100g": 14.2,
+				"salt_100g": 0.01,
+				"sugars_100g": 1.2
+			}
+		}
+	],
+	"skip": 0
+}
