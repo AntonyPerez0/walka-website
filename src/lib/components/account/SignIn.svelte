@@ -103,7 +103,11 @@
 			<div class="panel">
 				<header>
 					<h2>{byEmail ? 'Or sign in with' : 'Sign in with'}</h2>
-					<p>You go to that site, say yes there, and come back signed in. Walka's website gets your e-mail address from it, and nothing else is kept.</p>
+					<p>
+						You go to that site, say yes there, and come back signed in. Walka's website gets your e-mail address from
+						it. The sign-in service also notes the name and the picture address that site hands over; the website does
+						not use them.
+					</p>
 				</header>
 				<div class="panel-foot">
 					{#each others as way (way)}
@@ -113,7 +117,7 @@
 			</div>
 		{/if}
 
-		{#if problem}<p class="notice notice--bad" role="alert">{problem}</p>{/if}
+		{#if problem || account.returned}<p class="notice notice--bad" role="alert">{problem || account.returned}</p>{/if}
 
 		<p class="estimate">
 			What an account keeps, who can see it, and how to take it out or delete it is on the

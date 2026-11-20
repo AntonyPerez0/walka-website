@@ -61,6 +61,8 @@ class Account {
 	profile = $state<Profile | null>(null);
 	/** True once the profile has been asked for (it may still be null: a new account). */
 	asked = $state(false);
+	/** Why signing in through another site did not go through, if it did not: that site's own words. */
+	returned = $state('');
 	/** If the site's owner has taken this person's public page down: why. */
 	held = $state<string | null>(null);
 
@@ -70,6 +72,18 @@ class Account {
 	async start(): Promise<void> {
 		if (!ACCOUNTS.on || this.#started) return;
 		this.#started = true;
+		// Coming back from Discord, Google or GitHub without having said yes
+		// there: the address says so. The page says it in a sentence, and the
+		// address is put back to what it was.
+		try {
+			const came = new URLSearchParams(location.search || location.hash.replace(/^#/, '?'));
+			if (came.get('error')) {
+				this.returned = came.get('error') === 'access_denied' ? 'Signing in was not finished: the other site was not told yes.' : `Signing in was not finished. The other site says: ${(came.get('error_description') ?? came.get('error') ?? '').slice(0, 200)}`;
+				history.replaceState(history.state, '', location.pathname);
+			}
+		} catch {
+			// no address to read
+		}
 		try {
 			const db = await database();
 			// Is the database there? A free project is put to sleep when it is
