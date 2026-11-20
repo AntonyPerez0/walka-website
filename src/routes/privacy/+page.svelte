@@ -539,8 +539,9 @@
 						name that file has for it, such as <code>20261119-213000</code>.
 					</p>
 					<p>
-						A program that sends walks may add two things: how far its clock was from world time (UTC), and a random
-						number that tells one installation from another.
+						Each walk also carries how far your clock was from world time (UTC) when it started, where the file or your
+						browser says so. A program that sends walks may add a random number that tells one installation from
+						another.
 					</p>
 					<p>
 						<strong>Left on your computer,</strong> because nothing here needs them: the second-by-second samples, the
@@ -856,7 +857,8 @@
 		</p>
 		<p>
 			<strong>Deleting one walk, food or diary entry.</strong> It is emptied at once, and what is left is a marker: of
-			a walk, when it started and ended and how it got here; of a diary entry, its day; of a food, where it came from
+			a walk, when it started and ended, its day, how far the clock was from world time, and how it got here; of a
+			diary entry, its day; of a food, where it came from
 			and its number there. The marker is kept so that another device of yours hears of the deletion and does not
 			bring the entry back. Markers are in the file you can save, and they go when the account goes.
 		</p>

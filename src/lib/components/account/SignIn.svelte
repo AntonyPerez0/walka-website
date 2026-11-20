@@ -23,6 +23,8 @@
 			sent = true;
 		} catch (error) {
 			problem = say(error);
+			// (a code went out a moment ago: the place to type it is offered again)
+			if (/less than a minute ago/.test(problem)) sent = true;
 		}
 		busy = false;
 	}
