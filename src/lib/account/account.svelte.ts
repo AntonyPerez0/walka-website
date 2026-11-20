@@ -10,7 +10,6 @@
 //   in           somebody is
 
 import type { Session } from '@supabase/supabase-js';
-import { resolve } from '$app/paths';
 import { database, within } from './client.ts';
 import { ACCOUNTS, type Way } from './config.ts';
 import type { Profile } from './types.ts';
@@ -89,9 +88,13 @@ class Account {
 		this.asked = true;
 	}
 
-	/** Where signing in comes back to: the account page, wherever the site is served from. */
+	/**
+	 * Where signing in comes back to: the page it was asked from (the account
+	 * page, or the food diary - which, put on a phone's home screen, must come
+	 * back to itself). Without what was after the "?" or the "#".
+	 */
 	#back(): string {
-		return new URL(resolve('account/'), location.href).href;
+		return location.origin + location.pathname;
 	}
 
 	/** Sends a six-digit code to the address. */

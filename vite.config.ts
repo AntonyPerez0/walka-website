@@ -76,6 +76,11 @@ export default defineConfig({
 				}
 			},
 
+			// The food diary has a service worker (src/service-worker.ts), so that
+			// it opens without a connection. Only that page starts it, and only
+			// for itself: the public pages are never served from a cache of ours.
+			serviceWorker: { register: false },
+
 			prerender: {
 				// A link to a page or an anchor that does not exist stops the build.
 				handleHttpError: 'fail',

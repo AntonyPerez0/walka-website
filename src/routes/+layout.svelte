@@ -9,10 +9,17 @@
 	import '#lib/styles/tokens.css';
 	import '#lib/styles/base.css';
 	import { afterNavigate, onNavigate } from '$app/navigation';
+	import { asset } from '$app/paths';
+	import { page } from '$app/state';
 	import Footer from '#lib/components/Footer.svelte';
 	import Header from '#lib/components/Header.svelte';
 
 	let { children } = $props();
+
+	// What a phone is told when the site is put on its home screen. The food
+	// diary is an app of its own there (it opens at the diary, without the
+	// browser's bars); every other page describes the site.
+	const manifest = $derived(page.route.id === '/(app)/food' ? 'food.webmanifest' : 'site.webmanifest');
 
 	// A line of code or a table that is wider than the screen scrolls sideways
 	// inside its own box. Such a box is given a place in the Tab order, so
@@ -77,6 +84,10 @@
 		});
 	});
 </script>
+
+<svelte:head>
+	<link rel="manifest" href={asset(manifest)} />
+</svelte:head>
 
 <a class="skip" href="#main">Skip to the page</a>
 <Header />
