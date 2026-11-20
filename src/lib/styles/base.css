@@ -22,8 +22,12 @@ html {
 	background: var(--bg);
 }
 
+/* A jump inside a page glides - once the page has started (the class is
+   set in src/routes/+layout.svelte). Arriving at a page, or coming back to
+   one after a reload, puts it in its place in one step. */
 @media (prefers-reduced-motion: no-preference) {
-	html {
+	html:not(.js),
+	html.ready {
 		scroll-behavior: smooth;
 	}
 }
@@ -538,7 +542,11 @@ tbody tr:last-child > * {
 		opacity: 0;
 		transform: translateY(16px);
 	}
+}
 
+/* (not only on a screen: or what has come up would come up once more
+   after the page was printed) */
+@media (prefers-reduced-motion: no-preference) {
 	[data-reveal='in'] {
 		animation: reveal 0.8s var(--ease) both;
 		animation-delay: var(--reveal-delay, 0ms);

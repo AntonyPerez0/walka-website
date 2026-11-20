@@ -184,7 +184,7 @@
 	/* On a narrow screen the heading stands on two lines. */
 	@media (max-width: 40rem) {
 		h1 {
-			max-width: 11ch;
+			max-width: 5.5em;
 		}
 	}
 

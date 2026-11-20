@@ -24,7 +24,9 @@ export type Release = {
 export async function latestRelease(): Promise<Release | null> {
 	try {
 		const kept = JSON.parse(sessionStorage.getItem(KEY) ?? 'null');
-		if (kept && Date.now() - kept.at < AN_HOUR && typeof kept.release?.version === 'string') return kept.release as Release;
+		if (kept && Date.now() - kept.at < AN_HOUR && typeof kept.release?.version === 'string' && kept.release.version) {
+			return kept.release as Release;
+		}
 	} catch {
 		// no storage, or nothing kept
 	}
@@ -32,12 +34,13 @@ export async function latestRelease(): Promise<Release | null> {
 		const response = await fetch(API, { headers: { accept: 'application/vnd.github+json' } });
 		if (!response.ok) return null;
 		const data = await response.json();
-		if (typeof data?.tag_name !== 'string') return null;
+		const version = typeof data?.tag_name === 'string' ? data.tag_name.replace(/^v/, '').trim() : '';
+		if (!version) return null;
 		const release: Release = {
-			version: data.tag_name.replace(/^v/, ''),
+			version,
 			// (only what is what it should be is taken: a date that is a date,
 			// sizes that are numbers)
-			published: typeof data.published_at === 'string' && isDate(data.published_at) ? data.published_at : '',
+			published: isDate(data.published_at) ? data.published_at : '',
 			url: typeof data.html_url === 'string' ? data.html_url : '',
 			sizes: Object.fromEntries(
 				(Array.isArray(data.assets) ? data.assets : [])
@@ -59,12 +62,15 @@ export async function latestRelease(): Promise<Release | null> {
 	}
 }
 
-/** Whether a text is a date: "2026-11-19T21:30:00Z" is, "soon" is not. */
+/**
+ * Whether a text is a date as GitHub writes one: "2026-11-19T21:30:00Z" is,
+ * "soon" is not - and neither is "soon 5", which a browser would read as a date.
+ */
 export function isDate(text: unknown): text is string {
-	return typeof text === 'string' && Number.isFinite(Date.parse(text));
+	return typeof text === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(text) && Number.isFinite(Date.parse(text));
 }
 
-/** "13 MB", "1.2 MB", "114 KB" - or nothing, for anything that is not a size. */
+/** "13 MB", "1.2 MB", "114 KB" - or nothing, for anything that is not a size of at least 1 KB. */
 export function megabytes(bytes: number | undefined): string {
 	if (typeof bytes !== 'number' || !Number.isFinite(bytes) || bytes < 1024) return '';
 	const mb = bytes / (1024 * 1024);

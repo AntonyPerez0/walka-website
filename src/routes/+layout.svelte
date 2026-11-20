@@ -31,26 +31,41 @@
 		return () => window.removeEventListener('resize', reachByKeyboard);
 	});
 
+	// A jump inside a page glides (base.css) - but only once the page has
+	// started: a page that is opened far down, or reloaded there, is put in
+	// its place in one step.
+	$effect(() => {
+		const frame = requestAnimationFrame(() => document.documentElement.classList.add('ready'));
+		return () => cancelAnimationFrame(frame);
+	});
+
 	// Going from one page to another, the old page fades into the new one -
 	// where the browser can do that, and unless the visitor asked for less
 	// motion (the styles in base.css switch it off then).
 	//
 	// The new page is put at its top (or, going back, where it was left) in
-	// one step. A jump inside a page glides (base.css); that gliding is
-	// switched off for the length of a page change, or the new page would
-	// arrive far down and roll to its place for a second and more.
+	// one step. The gliding is switched off for the length of a page change,
+	// or the new page would arrive far down and roll to its place for a
+	// second and more. Page changes can overlap (Back, pressed twice): it is
+	// switched on again when the last of them has settled.
+	let changing = 0;
+
 	onNavigate((navigation) => {
 		if (navigation.from?.url.pathname === navigation.to?.url.pathname) return;
 		const root = document.documentElement;
-		root.style.scrollBehavior = 'auto';
 		// (a page change that is cut short by the next one is not an error)
-		navigation.complete.catch(() => {}).finally(() => (root.style.scrollBehavior = ''));
+		const settled = navigation.complete.catch(() => {});
+		changing += 1;
+		root.style.scrollBehavior = 'auto';
+		settled.finally(() => {
+			changing -= 1;
+			if (changing === 0) root.style.scrollBehavior = '';
+		});
 		if (!document.startViewTransition) return;
 		return new Promise((resolve) => {
 			const transition = document.startViewTransition(async () => {
 				resolve();
-				// (a page change that is cut short by the next one is not an error)
-				await navigation.complete.catch(() => {});
+				await settled;
 			});
 			transition.finished.catch(() => {});
 			transition.ready.catch(() => {});

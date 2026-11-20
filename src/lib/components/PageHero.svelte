@@ -32,7 +32,9 @@
 	}
 
 	h1 {
-		max-width: 18ch;
+		/* (in em, not in ch: a "0" is not the same width in every font, and
+		   the heading's own font arrives a moment after the page) */
+		max-width: 9em;
 		margin-top: 1rem;
 	}
 

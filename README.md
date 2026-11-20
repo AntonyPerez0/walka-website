@@ -135,7 +135,9 @@ from `$app/paths` - never `href="/safety/"`, which would break under
 **The words.** Plain words, short sentences, as Walka's README has them.
 Say what Walka is built to do, not what it guarantees. Wherever the page
 invites someone to download or to walk, "experimental, and at your own
-risk" is near by, with the disclaimer.
+risk" is near by, with the disclaimer. It is in such a page's description
+too (what a search result and a link preview show): `npm run verify`
+checks the pages listed as `INVITING` in `scripts/verify.mjs`.
 
 ### Pictures
 

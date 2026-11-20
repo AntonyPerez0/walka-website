@@ -16,7 +16,10 @@
 //     script checks that policy: the few outside addresses a page's scripts
 //     may talk to are listed in MAY_TALK_TO below, and nothing else is let in.
 //  3. Every page has what a page needs: a language, a title, a description,
-//     one main heading - and the line that says Walka is not Blizzard's.
+//     one main heading - and the line that says Walka is not Blizzard's. On
+//     the pages that invite someone to download or to walk (INVITING below)
+//     the description says "at your own risk": it is what a search result
+//     and a link preview show.
 //  4. The download buttons are the links Walka's README uses.
 //  5. Nothing that looks like a secret key is in what gets published.
 //  6. Nothing says that Walka moves a belt. Since version 0.7 Walka only
@@ -65,7 +68,8 @@ const DOWNLOADS = [
 ];
 const PAGES_WITH_DOWNLOADS = ['index.html', 'downloads/index.html'];
 
-// The pages that invite someone to download or to walk.
+// The pages that invite someone to download or to walk. (A new page that
+// does belongs in this list.)
 const INVITING = ['index.html', 'how-it-works/index.html', 'safety/index.html', 'downloads/index.html'];
 
 // What the site said about the Walka that drove the belt (up to 0.6.1).
@@ -229,7 +233,7 @@ async function checkHtml(file) {
 		// The description is what a search result and a link preview say. On
 		// the pages that invite someone to download or to walk, it says the
 		// warning as well.
-		else if (INVITING.includes(file) && !/\bown risk\b/i.test(description)) {
+		if (description && INVITING.includes(file) && !/\bown risk\b/i.test(description)) {
 			problem(file, 'the meta description invites without saying "at your own risk"');
 		}
 	}
