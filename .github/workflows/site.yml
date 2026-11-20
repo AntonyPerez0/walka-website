@@ -65,13 +65,21 @@ jobs:
 
       - name: Check the code
         run: npm run check
+      # Accounts: where they are kept. These are repository VARIABLES, not
+      # secrets (Settings > Secrets and variables > Actions > Variables):
+      # the key is the project's public key and ends up in the pages. Left
+      # unset, the site is built without accounts.
       - name: Build
         env:
           SITE_URL: ${{ steps.pages.outputs.site_url }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+          SIGN_IN: ${{ vars.SIGN_IN }}
         run: npm run build
       - name: Check the built site
         env:
           SITE_URL: ${{ steps.pages.outputs.site_url }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
         run: npm run verify
 
       - name: Hand the site to GitHub Pages

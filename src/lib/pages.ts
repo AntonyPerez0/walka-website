@@ -4,6 +4,8 @@ const files = import.meta.glob('/src/routes/**/+page.svelte');
 
 /** Paths like "" (the home page), "safety/", "how-it-works/". */
 export const PAGE_PATHS: string[] = Object.keys(files)
+	// (the account pages are a person's own: they are not for a sitemap)
+	.filter((file) => !file.includes('/(app)/'))
 	.map((file) => file.replace('/src/routes/', '').replace('+page.svelte', ''))
 	// (group) folders are not part of the address
 	.map((path) => path.replace(/\([^)]*\)\//g, ''))

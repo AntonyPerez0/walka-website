@@ -45,6 +45,13 @@ const root = fileURLToPath(new URL('../build', import.meta.url));
 const MAY_TALK_TO = new Set([
 	'https://api.github.com' // the downloads page asks which version is the latest
 ]);
+// With accounts (the build is told where they are kept: src/env.ts), the
+// account pages talk to that database, and to Open Food Facts about foods.
+const SUPABASE_URL = (process.env.SUPABASE_URL ?? '').trim().replace(/\/+$/, '');
+if (SUPABASE_URL) {
+	MAY_TALK_TO.add(SUPABASE_URL);
+	MAY_TALK_TO.add('https://world.openfoodfacts.org');
+}
 
 // What each part of the policy may name besides the site itself.
 const POLICY = {

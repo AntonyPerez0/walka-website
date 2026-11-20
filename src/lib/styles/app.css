@@ -1,0 +1,510 @@
+/* The account pages: forms, panels, numbers.
+ *
+ * The public pages are for reading; these are for doing. They use the same
+ * tokens (tokens.css) and the same buttons (base.css), and add what a form
+ * needs. Only the pages under src/routes/(app) load this file.
+ */
+
+/* ---- the page ------------------------------------------------------------ */
+
+.app {
+	padding-block: clamp(2rem, 5vw, 3.5rem) var(--section);
+}
+
+.app > .container {
+	display: grid;
+	gap: clamp(1.25rem, 3vw, 2rem);
+	max-width: calc(46rem + 2 * var(--gutter));
+}
+
+.app--wide > .container {
+	max-width: calc(64rem + 2 * var(--gutter));
+}
+
+.app-head {
+	display: grid;
+	gap: 0.6rem;
+	padding-top: clamp(1.5rem, 4vw, 3rem);
+}
+
+.app-head h1 {
+	font-size: var(--text-h2);
+}
+
+.app-head .lede {
+	max-width: var(--measure);
+}
+
+/* ---- panels -------------------------------------------------------------- */
+
+.panel {
+	display: grid;
+	gap: 1.25rem;
+	padding: clamp(1.25rem, 4vw, 2rem);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--surface);
+}
+
+.panel > h2,
+.panel > header > h2 {
+	font-size: var(--text-h3);
+}
+
+.panel > header {
+	display: grid;
+	gap: 0.4rem;
+}
+
+.panel > header > p,
+.panel > p {
+	color: var(--ink-2);
+	font-size: var(--text-small);
+	line-height: 1.6;
+}
+
+.panel--quiet {
+	background: none;
+}
+
+.panel-foot {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1.25rem;
+}
+
+/* ---- fields -------------------------------------------------------------- */
+
+.fields {
+	display: grid;
+	gap: 1.1rem;
+}
+
+.fields--two {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 36rem) {
+	.fields--two {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.field {
+	display: grid;
+	align-content: start;
+	gap: 0.4rem;
+	min-width: 0;
+}
+
+.field > label,
+.field > .field-name {
+	color: var(--ink);
+	font-size: var(--text-small);
+	font-weight: 600;
+}
+
+.field .hint {
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+	line-height: 1.5;
+}
+
+.input,
+.field input:not([type='checkbox'], [type='radio'], [type='file']),
+.field select,
+.field textarea {
+	width: 100%;
+	min-height: 3rem;
+	padding: 0.6rem 0.85rem;
+	border: 1px solid var(--line-strong);
+	border-radius: var(--radius-s);
+	background: var(--bg);
+	color: var(--ink);
+	font: 400 1rem/1.4 var(--font-text); /* 16px: a phone does not zoom in on it */
+	appearance: none;
+}
+
+.field select {
+	padding-right: 2.25rem;
+	background-image:
+		linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+	background-position:
+		calc(100% - 1.15rem) 55%,
+		calc(100% - 0.8rem) 55%;
+	background-size:
+		0.35rem 0.35rem,
+		0.35rem 0.35rem;
+	background-repeat: no-repeat;
+}
+
+.input:hover,
+.field input:hover,
+.field select:hover {
+	border-color: var(--ink-3);
+}
+
+.input:focus-visible,
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+	border-color: var(--ring);
+	outline: 2px solid var(--ring);
+	outline-offset: 1px;
+}
+
+.input[aria-invalid='true'],
+.field input[aria-invalid='true'] {
+	border-color: var(--bad);
+}
+
+.input::placeholder,
+.field input::placeholder {
+	color: var(--ink-3);
+	opacity: 1;
+}
+
+/* a number with its unit beside it: [ 72.5 ] [kg v] */
+.with-unit {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 0.5rem;
+}
+
+.with-unit > select {
+	width: auto;
+	min-width: 5rem;
+}
+
+/* the six digits of a code */
+.code-input {
+	font: 600 1.5rem/1.2 var(--font-mono) !important;
+	letter-spacing: 0.35em;
+	text-align: center;
+}
+
+/* ---- a switch: one thing, on or off ---------------------------------------- */
+
+.switch {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 0.2rem 0.9rem;
+	align-items: start;
+	cursor: pointer;
+}
+
+.switch input {
+	position: relative;
+	grid-row: span 2;
+	width: 2.75rem;
+	height: 1.6rem;
+	margin: 0.1rem 0 0;
+	border: 1px solid var(--line-strong);
+	border-radius: 1rem;
+	background: var(--bg);
+	appearance: none;
+	cursor: pointer;
+	transition:
+		background 0.2s,
+		border-color 0.2s;
+}
+
+.switch input::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 0.2rem;
+	width: 1.1rem;
+	height: 1.1rem;
+	border-radius: 50%;
+	background: var(--ink-3);
+	translate: 0 -50%;
+	transition:
+		left 0.2s var(--ease),
+		background 0.2s;
+}
+
+.switch input:checked {
+	border-color: var(--accent);
+	background: var(--accent);
+}
+
+.switch input:checked::after {
+	left: calc(100% - 1.3rem);
+	background: var(--bg);
+}
+
+.switch input:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 2px;
+}
+
+.switch input:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+.switch .switch-name {
+	color: var(--ink);
+	font-weight: 600;
+}
+
+.switch .hint {
+	grid-column: 2;
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+	line-height: 1.5;
+}
+
+/* a plain tick box with its sentence */
+.tick {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 0.75rem;
+	align-items: start;
+	color: var(--ink-2);
+	cursor: pointer;
+}
+
+.tick input {
+	width: 1.25rem;
+	height: 1.25rem;
+	margin: 0.2rem 0 0;
+	accent-color: var(--accent);
+}
+
+/* ---- buttons that are not the one gold button -------------------------------- */
+
+.plain-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	min-height: 2.75rem;
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--line-strong);
+	border-radius: var(--radius-s);
+	background: none;
+	color: var(--ink);
+	font: 600 0.9375rem/1.2 var(--font-text);
+	text-decoration: none;
+	cursor: pointer;
+	transition:
+		border-color 0.2s,
+		background 0.2s;
+}
+
+.plain-button:hover {
+	border-color: var(--ink-3);
+	background: var(--surface-2);
+	color: var(--ink);
+}
+
+.plain-button:disabled,
+.button:disabled {
+	opacity: 0.55;
+	cursor: default;
+	pointer-events: none;
+}
+
+.plain-button--danger {
+	border-color: var(--bad);
+	color: var(--bad);
+}
+
+.plain-button--danger:hover {
+	background: var(--bad-tint);
+	color: var(--bad);
+}
+
+.link-button {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--accent);
+	font: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+	cursor: pointer;
+}
+
+.link-button:hover {
+	color: var(--accent-hover);
+}
+
+/* ---- what the page has to say about what just happened ------------------------ */
+
+.notice {
+	padding: 0.8rem 1rem;
+	border: 1px solid var(--line-strong);
+	border-radius: var(--radius-s);
+	background: var(--note-tint);
+	color: var(--ink);
+	font-size: var(--text-small);
+	line-height: 1.55;
+}
+
+.notice--bad {
+	border-color: var(--bad);
+	background: var(--bad-tint);
+}
+
+.notice--ok {
+	border-color: var(--ok);
+}
+
+/* ---- numbers ------------------------------------------------------------------ */
+
+.stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+	gap: 1px;
+	overflow: hidden;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--line);
+}
+
+.stat {
+	display: grid;
+	gap: 0.2rem;
+	padding: 1.1rem 1.25rem;
+	background: var(--surface);
+}
+
+.stat dt {
+	order: 2;
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+	line-height: 1.4;
+}
+
+.stat dd {
+	margin: 0;
+	color: var(--ink);
+	font: 600 1.625rem/1.15 var(--font-text);
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.01em;
+}
+
+.stat dd small {
+	color: var(--ink-3);
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: 0;
+}
+
+/* ---- a list of rows: walks, diary entries --------------------------------------- */
+
+.rows {
+	display: grid;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.rows > li {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 0.15rem 1rem;
+	align-items: center;
+	padding: 0.85rem 0;
+	border-top: 1px solid var(--line);
+}
+
+.rows > li:first-child {
+	border-top: 0;
+}
+
+.rows .row-main {
+	color: var(--ink);
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.rows .row-sub {
+	grid-column: 1;
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+}
+
+.rows .row-side {
+	grid-row: 1 / span 2;
+	grid-column: 2;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	color: var(--ink);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.icon-button {
+	display: grid;
+	place-items: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	border: 0;
+	border-radius: var(--radius-s);
+	background: none;
+	color: var(--ink-3);
+	cursor: pointer;
+}
+
+.icon-button:hover {
+	background: var(--surface-2);
+	color: var(--ink);
+}
+
+/* ---- tabs: one of a few views ------------------------------------------------------ */
+
+.tabs {
+	display: flex;
+	gap: 0.25rem;
+	padding: 0.25rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--surface);
+}
+
+.tabs > button,
+.tabs > a {
+	flex: 1;
+	min-height: 2.75rem;
+	padding: 0.4rem 0.75rem;
+	border: 0;
+	border-radius: var(--radius-s);
+	background: none;
+	color: var(--ink-2);
+	font: 600 0.9375rem/1.2 var(--font-text);
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.tabs > [aria-selected='true'],
+.tabs > [aria-current='page'],
+.tabs > [aria-pressed='true'] {
+	background: var(--surface-2);
+	color: var(--ink);
+	box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+/* ---- small things ---------------------------------------------------------------- */
+
+.app .estimate {
+	color: var(--ink-3);
+	font-size: var(--text-fine);
+	line-height: 1.55;
+}
+
+.app :is(button, [type='submit'], select, .plain-button, .icon-button):focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 2px;
+}
+
+.busy {
+	opacity: 0.6;
+	pointer-events: none;
+}

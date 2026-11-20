@@ -12,6 +12,15 @@ const OLDEST = [
 	['ios_saf', 'ios', 15, 6]
 ] as const;
 
+// Accounts, if the build was told where they are kept (src/env.ts). Then -
+// and only then - a page may talk to that database, and to Open Food Facts,
+// which the food diary asks about foods.
+const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env ?? {};
+const SUPABASE_URL = (env.SUPABASE_URL ?? '').trim().replace(/\/+$/, '');
+// (typed as 'self' only because the policy's own type wants one of its known
+// forms, and an address read at build time is just a string to it)
+const ACCOUNT_HOSTS = (SUPABASE_URL ? [SUPABASE_URL, 'https://world.openfoodfacts.org'] : []) as 'self'[];
+
 export default defineConfig({
 	// Styles are written once, in today's CSS (nesting, light-dark()), and
 	// lowered at build time for browsers a few years old.
@@ -59,7 +68,7 @@ export default defineConfig({
 					'img-src': ['self', 'data:'],
 					'font-src': ['self'],
 					// The downloads page asks GitHub which version is the latest.
-					'connect-src': ['self', 'https://api.github.com'],
+					'connect-src': ['self', 'https://api.github.com', ...ACCOUNT_HOSTS],
 					'manifest-src': ['self'],
 					'object-src': ['none'],
 					'base-uri': ['self'],
