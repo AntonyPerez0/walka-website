@@ -256,15 +256,17 @@ function activities(xml: string): { walks: NewWalk[]; refused: Refusal[] } {
 		}
 		end = Math.max(end, start + seconds * 1000);
 
+		const zone = /^\d{4}-\d\d-\d\dT.*[+-]\d\d:\d\d$/.test(id);
 		const walk: NewWalk = {
 			origin: 'file',
 			client_id: id,
 			started_at: new Date(start).toISOString(),
 			// (a walk that is refused for its length need not have an end that can be written)
 			ended_at: new Date(Math.min(end, 8.64e15)).toISOString(),
-			// The file says the moment, not where the walker was: the day is
-			// the day that moment fell on here, on this computer.
-			local_day: localDay(new Date(start)),
+			// If the file says how far its clock was from UTC ("...+09:00"), the
+			// day is the day written in the file. If it only says the moment
+			// ("...Z"), the day is the day that moment fell on here.
+			local_day: zone ? id.slice(0, 10) : localDay(new Date(start)),
 			seconds: tenth(seconds),
 			distance_m: tenth(metres),
 			steps: Math.round(steps),

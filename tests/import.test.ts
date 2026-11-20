@@ -345,10 +345,11 @@ test('a walk from a TCX file counts for the day it started on this computer', ()
 	assert.equal(berlin.ended_at, '2026-11-14T23:00:25.000Z');
 	assert.equal(inZone('America/Los_Angeles', () => fromTcx(MIDNIGHT_TCX))[0].local_day, '2026-11-14');
 	assert.equal(inZone('Asia/Tokyo', () => fromTcx(MIDNIGHT_TCX))[0].local_day, '2026-11-15');
-	// a time written with its own zone is that moment all the same
+	// a time written with its own zone is that moment all the same - and the
+	// day is the day the file itself says, wherever it is read
 	const zoned = inZone('Europe/Berlin', () => fromTcx(OLD_TCX.replaceAll('2025-03-02T07:15:00Z', '2025-03-02T23:45:00.000-08:00')))[0];
 	assert.equal(zoned.started_at, '2025-03-03T07:45:00.000Z');
-	assert.equal(zoned.local_day, '2025-03-03');
+	assert.equal(zoned.local_day, '2025-03-02');
 	assert.equal(zoned.client_id, '2025-03-02T23:45:00.000-08:00');
 });
 

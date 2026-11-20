@@ -290,8 +290,19 @@ Where the pieces are:
   [`src/lib/components/account/`](src/lib/components/account/), what they
   show before their own content: "not open yet", "temporarily
   unavailable", the sign-in.
+* [`src/lib/food/`](src/lib/food/) and
+  [`src/lib/components/food/`](src/lib/components/food/) - the food
+  diary: its copy on the device, what waits to be sent, the two food
+  lists. [`src/service-worker.ts`](src/service-worker.ts) keeps the
+  diary's own files, so that it opens without a connection (it belongs
+  to that page alone), and `static/food.webmanifest` makes it an app on
+  a phone's home screen.
+* [`supabase/functions/usda/`](supabase/functions/usda/) - the way to
+  USDA's food list: its key stays on the database's side.
 * [`tests/`](tests/) - each promise the site makes about the database,
-  tried against a real one.
+  tried against a real one (`npm run test:database`), and the tests that
+  need none: the food diary's arithmetic, the reading of walk files, the
+  USDA function (`npm run test:unit`).
 * [`.github/workflows/keep-alive.yml`](.github/workflows/keep-alive.yml) -
   asks the database one small thing a day, so that a free project is not
   put to sleep.

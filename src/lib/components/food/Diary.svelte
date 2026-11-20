@@ -127,6 +127,15 @@
 		asking = false;
 	}
 	const refusedFoods = $derived(diary.waiting.filter((item) => item.kind === 'food' && item.refused));
+	// (an entry refused for its day - a device clock that was wrong - would
+	// otherwise be seen only on that wrong day)
+	const refusedElsewhere = $derived(
+		diary.waiting
+			.filter((item) => item.kind === 'entry' && item.refused)
+			.map((item) => ({ item, row: diary.entries.find((entry) => entry.id === item.id) }))
+			// (on the day shown, the entry itself says that it was refused)
+			.filter(({ row }) => !row || row.local_day !== diary.day)
+	);
 
 	// ---- one line about what was just done ----------------------------------------------
 	let done = $state('');
@@ -208,6 +217,12 @@
 		{/if}
 
 		{#if view === 'day'}
+			{#each refusedElsewhere as { item, row } (item.key)}
+				<p class="notice" role="alert">
+					{#if row}"{row.name}", about {Math.round(row.kcal)} kcal, written down for {dayName(row.local_day)},{:else}Something written down for
+						another day{/if} is on this device only: the database did not take it. {item.refused}
+				</p>
+			{/each}
 			{#each refusedFoods as item (item.key)}
 				<p class="notice" role="alert">
 					A food of yours is on this device only: the database did not take it. {item.refused}

@@ -405,6 +405,43 @@ on where you and your walkers live: this page cannot tell you, and is not
 legal advice. The contact address on the privacy page is where their
 questions will come.
 
+## What the first set-up taught (20 November 2026)
+
+The site's accounts were switched on that day, by this list. A few things
+were not as it says above, or are not in it:
+
+* **The sign-in's own log.** *Authentication → Audit Logs → Write audit
+  logs to the database.* It is off in a new project. Leave it off: no
+  page needs that log, and with it on the database keeps a line, with the
+  e-mail address, for every sign-in. (Either way, deleting an account
+  removes what there is of it.)
+* **The mail's words** cannot be changed on a free project until it has a
+  mail service of its own (custom SMTP): the templates are read-only till
+  then. That only matters for the six-digit code by e-mail, which needs
+  the mail service anyway.
+* **Data API → Exposed schemas:** a new project lists `public` and
+  `graphql_public`. Take `graphql_public` out.
+* **Google** does not let an app be published until its *Branding* page
+  names a home page, a privacy page and the terms: give it the site's
+  three addresses. Until Google has verified the app (it wants proof that
+  the site's address is yours, and takes its time), its own screen says
+  "to continue to `<project-ref>.supabase.co`", not "Walka". Signing in
+  works all the same.
+* **Two sites, one address.** A person whose Discord and GitHub accounts
+  have the same e-mail address comes to ONE Walka account by either. A
+  site with another address makes a second account.
+* **The USDA key** is not shown on the page that is asked for it: it
+  comes by e-mail.
+* **The command-line tool** (`npx supabase@3.2.0`), run by a program and
+  not typed into a terminal, will not ask its questions unless it is
+  given `--agent no --output-format text`; `functions deploy` wants
+  `--yes`.
+* **The tables were made by pasting the file** into the SQL Editor, so the
+  project does not know that the migration was applied. Before the tool's
+  `db push` is ever used: `npx supabase@3.2.0 migration repair --status
+  applied 20261120000000`. And from now on a change to the tables is a
+  NEW file in `supabase/migrations/`, never a change to the first one.
+
 ## Switching accounts off again
 
 Remove the variables (`SUPABASE_URL` is enough) and run **Actions → Site

@@ -482,7 +482,7 @@
 		<h2>Your account, if you make one</h2>
 		<p class="lead">
 			An account is for sharing your walking progress and for the food diary. Walka itself needs none, and neither do
-			the other pages of this site. An account exists only if you make one, and it holds only what you put into it.
+			the other pages of this site. An account exists only if you make one. It holds what you put into it, and the record of your signing in.
 		</p>
 		<p>
 			Walka, the program, still uploads nothing. A walk gets into an account when you add it on this website yourself.
@@ -863,7 +863,7 @@
 		<p>
 			<strong>Deleting the account.</strong> <em>Delete my account...</em> on your account page. At once, and for
 			good, this deletes everything in your account - your page, your numbers, your walks here, your food diary, the
-			markers - and the sign-in record with it: your e-mail address, your sessions and the sign-in's log about you. It
+			markers - and the sign-in record with it: your e-mail address, your sessions and whatever the sign-in noted about you in the database. It
 			cannot be undone, and there is nobody who could bring it back. The walks on your own computer, in Walka, are not
 			touched.
 		</p>

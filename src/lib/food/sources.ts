@@ -189,6 +189,8 @@ export async function lookUpBarcode(code: string, fetcher: typeof fetch = fetch)
 // page quietly shows Open Food Facts results only, and does not ask again
 // until it is loaded anew.
 let usdaThere = true;
+// (requests in a row that got no answer at all: two, and it is taken to be not there)
+let usdaMisses = 0;
 
 /** A food as the function sends it, checked again: nothing is taken on trust. */
 export function fromUsda(food: Partial<Record<keyof FoundFood, unknown>> | null | undefined): FoundFood | null {
@@ -225,11 +227,14 @@ export async function searchUsda(words: string, project: Project, fetcher: typeo
 		// 404: not deployed. 503: deployed, but no key set.
 		if (answer.status === 404 || answer.status === 503) usdaThere = false;
 		if (!answer.ok) return [];
+		usdaMisses = 0;
 		const body = (await answer.json()) as { foods?: unknown[] };
 		return (Array.isArray(body.foods) ? body.foods : []).map((food) => fromUsda(food as Partial<FoundFood>)).filter((food) => food !== null);
 	} catch {
-		// (a function that is not deployed may answer in a way a browser does not let through at all)
-		usdaThere = false;
+		// (a function that is not deployed may answer in a way a browser does
+		// not let through at all - but so does a connection that dropped for a
+		// moment: only the second miss in a row counts)
+		if (++usdaMisses >= 2) usdaThere = false;
 		return [];
 	} finally {
 		clearTimeout(timer);

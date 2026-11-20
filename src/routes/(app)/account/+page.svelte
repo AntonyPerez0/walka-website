@@ -229,7 +229,10 @@
 						<div class="field">
 							<label for="handle">The name in your page's address</label>
 							<input id="handle" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" minlength="3" maxlength="20" pattern="[a-z0-9][a-z0-9_\-]*" bind:value={handle} />
-							<p class="hint">3 to 20 small letters, digits, - or _. Needed for a public page.</p>
+							<p class="hint">
+								3 to 20 small letters, digits, - or _. Needed for a public page. If you change it, the old name is kept
+								free for 90 days, and you cannot take it back in that time either.
+							</p>
 						</div>
 						<div class="field">
 							<label for="display-name">The name shown on it</label>

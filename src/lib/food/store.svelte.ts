@@ -242,12 +242,24 @@ class Diary {
 		window.addEventListener('offline', () => (this.online = false));
 		document.addEventListener('visibilitychange', () => {
 			if (document.visibilityState === 'hidden') return this.#leaving();
-			this.today = localDay();
+			this.#newDay();
 			void this.sync();
 		});
 		window.addEventListener('pagehide', () => this.#leaving());
 		// (a diary left open over midnight learns that it is tomorrow)
-		setInterval(() => (this.today = localDay()), 60_000);
+		setInterval(() => this.#newDay(), 60_000);
+	}
+
+	// When the day turns: a diary that was showing "today" shows the new
+	// today (or breakfast would be written down for yesterday); one that was
+	// showing another day stays on it.
+	#newDay(): void {
+		const was = this.today;
+		this.today = localDay();
+		if (this.today !== was && this.day === was) {
+			this.day = this.today;
+			void this.#refreshDay(this.day);
+		}
 	}
 
 	#save(steps: Step[]): void {

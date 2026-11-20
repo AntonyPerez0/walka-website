@@ -297,7 +297,7 @@
 			A signed-in person can report a public page. The site's owner can hide a page that breaks this rule: the page is
 			taken down, the account stays as it is, and the owner can put the page back.
 		</p>
-		<p>A name you give up is not handed to anybody else for 90 days.</p>
+		<p>A name you give up is kept free for 90 days. In that time nobody can take it, and neither can you.</p>
 
 		<h3 id="what-you-put-in">What you put in</h3>
 		<p>
