@@ -42,7 +42,7 @@
 		pageBusy = false;
 	}
 
-	async function flip(what: 'is_public' | 'show_walks' | 'show_kcal', on: boolean) {
+	async function flip(what: 'is_public' | 'show_days' | 'show_steps' | 'show_walks', on: boolean) {
 		pageProblem = pageSaved = '';
 		try {
 			await account.saveProfile({ [what]: on });
@@ -76,7 +76,7 @@
 	const round1 = (n: number) => Math.round(n * 10) / 10;
 
 	$effect(() => {
-		if (account.where !== 'in' || !account.profile || bodyLoaded) return;
+		if (account.where !== 'in' || !account.profile?.body_food_consent_at || bodyLoaded) return;
 		bodyLoaded = true;
 		const imperial = account.profile.units === 'mi';
 		weightUnit = imperial ? 'lb' : 'kg';
@@ -117,21 +117,34 @@
 			bodySaved = 'Saved.';
 		} catch (error) {
 			const text = say(error);
-			bodyProblem = /check|violates/i.test(text) ? 'One of these numbers is outside what Walka takes: weight 30 to 250 kg, height 120 to 230 cm, and an age of 18 or more.' : text;
+			bodyProblem = /outside what Walka takes/.test(text) ? 'One of these numbers is outside what Walka takes: weight 30 to 250 kg, height 120 to 230 cm, and an age of 18 or more.' : text;
 		}
 		bodyBusy = false;
 	}
 
-	async function forgetBody() {
+	let agreed = $state(false);
+	let withdrawing = $state(false);
+
+	async function agree(event: SubmitEvent) {
+		event.preventDefault();
+		bodyBusy = true;
+		bodyProblem = '';
+		try {
+			await account.agree();
+		} catch (error) {
+			bodyProblem = say(error);
+		}
+		bodyBusy = false;
+	}
+
+	async function withdraw() {
 		bodyBusy = true;
 		bodyProblem = bodySaved = '';
 		try {
-			const db = await database();
-			const { error } = await db.from('body').delete().eq('user_id', account.userId);
-			if (error) throw error;
+			await account.withdraw();
 			weight = heightCm = heightFt = heightIn = birthYear = '';
 			sex = '';
-			bodySaved = 'Deleted.';
+			agreed = withdrawing = false;
 		} catch (error) {
 			bodyProblem = say(error);
 		}
@@ -185,8 +198,8 @@
 				<header>
 					<h2>Your page</h2>
 					<p>
-						Your account is private. If you switch your page to public, anyone with its address can see your name and your
-						walking totals - and nothing else, unless you switch more on below.
+						Your account is private. If you switch your page to public, anyone who knows or guesses its name can see the
+						name you show, and how long and how far you have walked in all. Nothing else, unless you switch more on below.
 					</p>
 				</header>
 
@@ -213,19 +226,25 @@
 					<input type="checkbox" role="switch" checked={profile?.is_public} disabled={!profile?.handle} onchange={(e) => flip('is_public', e.currentTarget.checked)} />
 					<span class="switch-name">My page is public</span>
 					<span class="hint">
-						{#if !profile?.handle}Save a name for the address first.{:else if profile.is_public}Anyone with the address can see it. Switch it off and it is gone at once.{:else}Nobody can see it.{/if}
+						{#if !profile?.handle}Save a name for the address first.{:else if profile.is_public}Anyone who knows or guesses the name can see it. Switch it off and it is gone at once, and the switches below go off with it.{:else}Nobody can see it.{/if}
 					</span>
 				</label>
 				<label class="switch">
-					<input type="checkbox" role="switch" checked={profile?.show_walks} onchange={(e) => flip('show_walks', e.currentTarget.checked)} />
-					<span class="switch-name">Show my single walks</span>
-					<span class="hint">The day, the time walked, distance and steps of your last 20 walks. Never the time of day, the treadmill, a character or a heart rate.</span>
+					<input type="checkbox" role="switch" checked={profile?.show_days} disabled={!profile?.is_public} onchange={(e) => flip('show_days', e.currentTarget.checked)} />
+					<span class="switch-name">Show the last twelve weeks, day by day</span>
+					<span class="hint">A reader sees on which days you walked and for how long, and since when you walk.</span>
 				</label>
 				<label class="switch">
-					<input type="checkbox" role="switch" checked={profile?.show_kcal} onchange={(e) => flip('show_kcal', e.currentTarget.checked)} />
-					<span class="switch-name">Show calories</span>
-					<span class="hint">Calories walked, in the totals and with each walk. Nothing about food is ever public.</span>
+					<input type="checkbox" role="switch" checked={profile?.show_steps} disabled={!profile?.is_public} onchange={(e) => flip('show_steps', e.currentTarget.checked)} />
+					<span class="switch-name">Show steps</span>
+					<span class="hint">If Walka estimates your steps, it does so from your height, so a reader can work out roughly how tall you are.</span>
 				</label>
+				<label class="switch">
+					<input type="checkbox" role="switch" checked={profile?.show_walks} disabled={!profile?.is_public} onchange={(e) => flip('show_walks', e.currentTarget.checked)} />
+					<span class="switch-name">Show my single walks</span>
+					<span class="hint">Your last 20 walks, one by one: the day, the time walked and the distance. Never the time of day.</span>
+				</label>
+				<p class="estimate">Calories, your numbers and your food are never on your page, whatever is switched on.</p>
 
 				{#if pageProblem}<p class="notice notice--bad" role="alert">{pageProblem}</p>{/if}
 				{#if profile?.is_public && publicLink}
@@ -241,64 +260,98 @@
 				</div>
 			</div>
 
-			<form class="panel" onsubmit={saveBody}>
-				<header>
-					<h2>Your numbers</h2>
-					<p>
-						The food page makes its estimates from these. They are kept in your account, only you can see them, and they
-						are never on your public page. All of them are optional; by saving them you agree that they are kept here.
-					</p>
-				</header>
-				<div class="fields fields--two">
-					<div class="field">
-						<label for="weight">Weight</label>
-						<div class="with-unit">
-							<input id="weight" type="number" inputmode="decimal" step="0.1" min="0" bind:value={weight} />
-							<select aria-label="Weight in" bind:value={weightUnit}>
-								<option value="kg">kg</option>
-								<option value="lb">lb</option>
+			{#if !profile?.body_food_consent_at}
+				<form class="panel" onsubmit={agree}>
+					<header>
+						<h2>Your numbers, and the food diary</h2>
+						<p>
+							The food diary makes its estimates from your weight and height. Before any of that is kept, the choice is
+							yours.
+						</p>
+					</header>
+					<label class="tick">
+						<input type="checkbox" bind:checked={agreed} required />
+						<span>
+							Keep my body numbers and my food diary in my account. This is information about my health. Only I can see
+							it. I can take this back on this page at any time, and then all of it is deleted at once.
+						</span>
+					</label>
+					{#if bodyProblem}<p class="notice notice--bad" role="alert">{bodyProblem}</p>{/if}
+					<div class="panel-foot">
+						<button class="plain-button" type="submit" disabled={bodyBusy || !agreed}>I agree</button>
+					</div>
+				</form>
+			{:else}
+				<form class="panel" onsubmit={saveBody}>
+					<header>
+						<h2>Your numbers</h2>
+						<p>
+							The food diary makes its estimates from these. They are kept in your account, only you can see them, and
+							they are never on your public page. All of them are optional.
+						</p>
+					</header>
+					<div class="fields fields--two">
+						<div class="field">
+							<label for="weight">Weight</label>
+							<div class="with-unit">
+								<input id="weight" type="number" inputmode="decimal" step="0.1" min="0" bind:value={weight} />
+								<select aria-label="Weight in" bind:value={weightUnit}>
+									<option value="kg">kg</option>
+									<option value="lb">lb</option>
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label for={heightUnit === 'cm' ? 'height-cm' : 'height-ft'}>Height</label>
+							<div class="with-unit">
+								{#if heightUnit === 'cm'}
+									<input id="height-cm" type="number" inputmode="decimal" step="0.1" min="0" bind:value={heightCm} />
+								{:else}
+									<span class="with-unit">
+										<input id="height-ft" type="number" inputmode="numeric" min="0" max="8" aria-label="Height, feet" placeholder="ft" bind:value={heightFt} />
+										<input type="number" inputmode="numeric" min="0" max="11" aria-label="Height, inches" placeholder="in" bind:value={heightIn} />
+									</span>
+								{/if}
+								<select aria-label="Height in" bind:value={heightUnit}>
+									<option value="cm">cm</option>
+									<option value="ft">ft, in</option>
+								</select>
+							</div>
+						</div>
+						<div class="field">
+							<label for="birth-year">Year of birth</label>
+							<input id="birth-year" type="number" inputmode="numeric" min="1900" max={new Date().getFullYear() - 19} bind:value={birthYear} />
+							<p class="hint">Walka is for adults.</p>
+						</div>
+						<div class="field">
+							<label for="sex">Sex, for the resting estimate</label>
+							<select id="sex" bind:value={sex}>
+								<option value="">Rather not say</option>
+								<option value="female">Female</option>
+								<option value="male">Male</option>
 							</select>
+							<p class="hint">The formula knows only these two. Without it the estimate is rougher.</p>
 						</div>
 					</div>
-					<div class="field">
-						<label for={heightUnit === 'cm' ? 'height-cm' : 'height-ft'}>Height</label>
-						<div class="with-unit">
-							{#if heightUnit === 'cm'}
-								<input id="height-cm" type="number" inputmode="decimal" step="0.1" min="0" bind:value={heightCm} />
-							{:else}
-								<span class="with-unit">
-									<input id="height-ft" type="number" inputmode="numeric" min="0" max="8" aria-label="Height, feet" placeholder="ft" bind:value={heightFt} />
-									<input type="number" inputmode="numeric" min="0" max="11" aria-label="Height, inches" placeholder="in" bind:value={heightIn} />
-								</span>
-							{/if}
-							<select aria-label="Height in" bind:value={heightUnit}>
-								<option value="cm">cm</option>
-								<option value="ft">ft, in</option>
-							</select>
+					{#if bodyProblem}<p class="notice notice--bad" role="alert">{bodyProblem}</p>{/if}
+					<div class="panel-foot">
+						<button class="plain-button" type="submit" disabled={bodyBusy}>Save numbers</button>
+						{#if bodySaved}<span class="estimate" role="status">{bodySaved}</span>{/if}
+					</div>
+					{#if !withdrawing}
+						<p><button class="link-button" type="button" onclick={() => (withdrawing = true)}>Take back my agreement...</button></p>
+					{:else}
+						<p class="notice notice--bad">
+							This deletes your body numbers, your foods, your food diary and your goal, at once. Your walks stay. It
+							cannot be undone.
+						</p>
+						<div class="panel-foot">
+							<button class="plain-button plain-button--danger" type="button" onclick={withdraw} disabled={bodyBusy}>Delete them, and keep none</button>
+							<button class="link-button" type="button" onclick={() => (withdrawing = false)}>Keep them</button>
 						</div>
-					</div>
-					<div class="field">
-						<label for="birth-year">Year of birth</label>
-						<input id="birth-year" type="number" inputmode="numeric" min="1900" max={new Date().getFullYear() - 18} bind:value={birthYear} />
-						<p class="hint">Walka is for adults.</p>
-					</div>
-					<div class="field">
-						<label for="sex">Sex, for the resting estimate</label>
-						<select id="sex" bind:value={sex}>
-							<option value="">Rather not say</option>
-							<option value="female">Female</option>
-							<option value="male">Male</option>
-						</select>
-						<p class="hint">The formula knows only these two. Without it the estimate is rougher.</p>
-					</div>
-				</div>
-				{#if bodyProblem}<p class="notice notice--bad" role="alert">{bodyProblem}</p>{/if}
-				<div class="panel-foot">
-					<button class="plain-button" type="submit" disabled={bodyBusy}>Save numbers</button>
-					<button class="link-button" type="button" onclick={forgetBody} disabled={bodyBusy}>Delete them</button>
-					{#if bodySaved}<span class="estimate" role="status">{bodySaved}</span>{/if}
-				</div>
-			</form>
+					{/if}
+				</form>
+			{/if}
 
 			<div class="panel">
 				<header>

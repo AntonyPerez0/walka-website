@@ -3,7 +3,7 @@
 
 import { database } from './client.ts';
 
-const TABLES = ['profiles', 'body', 'walks', 'foods', 'food_entries', 'food_settings'] as const;
+const TABLES = ['profiles', 'body', 'walks', 'foods', 'food_entries', 'food_settings', 'reports'] as const;
 const PAGE = 1000; // the database gives at most this many rows at a time
 
 export async function everything(): Promise<Record<string, unknown>> {
@@ -13,11 +13,23 @@ export async function everything(): Promise<Record<string, unknown>> {
 		made: new Date().toISOString(),
 		explained: 'https://github.com/AntonyPerez0/walka-website/blob/HEAD/docs/data-model.md'
 	};
+	// what the sign-in itself keeps: the address, when the account was made, the last sign-in, the ways in
+	const { data: signIn } = await db.auth.getUser();
+	out.sign_in = signIn.user
+		? {
+				email: signIn.user.email,
+				created_at: signIn.user.created_at,
+				last_sign_in_at: signIn.user.last_sign_in_at,
+				ways: signIn.user.identities?.map((identity) => identity.provider) ?? []
+			}
+		: null;
 	for (const table of TABLES) {
 		const rows: unknown[] = [];
 		for (let from = 0; ; from += PAGE) {
 			// (rows marked as deleted are in it too: they are still kept, until the account is deleted)
-			const { data, error } = await db.from(table).select('*').order('created_at').range(from, from + PAGE - 1);
+			// (in an order that is the same every time, so that no page of it skips a row)
+			const key = table === 'profiles' || table === 'body' || table === 'food_settings' ? 'user_id' : 'id';
+			const { data, error } = await db.from(table).select('*').order('created_at').order(key).range(from, from + PAGE - 1);
 			if (error) throw error;
 			rows.push(...(data ?? []));
 			if (!data || data.length < PAGE) break;
