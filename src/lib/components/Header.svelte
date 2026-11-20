@@ -9,12 +9,17 @@
 	import Icon from './Icon.svelte';
 	import Logo from './Logo.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import { ACCOUNTS } from '#lib/account/config.ts';
 	import { NAV } from '#lib/nav.ts';
 
 	let scrolled = $state(false);
 	let menu = $state<HTMLDetailsElement>();
 
-	const current = (path: string) => page.route.id === `/${path.replace(/\/$/, '')}`;
+	// (a route's name may carry a folder in brackets that is not part of the address)
+	const here = $derived((page.route.id ?? '').replace(/\/\([^)]*\)/g, ''));
+	const current = (path: string) => here === `/${path.replace(/\/$/, '')}`;
+	// The account pages: the account itself, its walks, the food diary.
+	const inAccount = $derived(here.startsWith('/account') || here === '/food');
 
 	$effect(() => {
 		const update = () => (scrolled = window.scrollY > 8);
@@ -49,6 +54,10 @@
 				{#each NAV as item (item.path)}
 					<li><a href={resolve(item.path)} aria-current={current(item.path) ? 'page' : undefined}>{item.label}</a></li>
 				{/each}
+				<!-- only on a site that has accounts (src/env.ts) -->
+				{#if ACCOUNTS.on}
+					<li><a href={resolve('account/')} aria-current={inAccount ? 'page' : undefined}>Account</a></li>
+				{/if}
 			</ul>
 		</nav>
 
@@ -66,6 +75,9 @@
 						{#each NAV as item (item.path)}
 							<li><a href={resolve(item.path)} aria-current={current(item.path) ? 'page' : undefined}>{item.label}</a></li>
 						{/each}
+						{#if ACCOUNTS.on}
+							<li><a href={resolve('account/')} aria-current={inAccount ? 'page' : undefined}>Account</a></li>
+						{/if}
 					</ul>
 				</nav>
 			</details>

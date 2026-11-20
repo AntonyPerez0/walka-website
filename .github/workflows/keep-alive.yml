@@ -1,0 +1,58 @@
+name: Keep the accounts database awake
+
+# A free Supabase project is put to sleep when it sees too little use for
+# about a week. This asks the database one small thing a day, so that it
+# counts as used, and tells you when it does not answer.
+#
+# It does nothing until the repository has the variables that say where the
+# accounts are kept (Settings > Secrets and variables > Actions > Variables:
+# SUPABASE_URL and SUPABASE_KEY - the same two the site is built with; the
+# key is the project's PUBLIC key, so these are variables, not secrets).
+#
+# Two things to know:
+#  - If the job fails, the database did not answer: GitHub sends you a mail.
+#    Open the Supabase dashboard; a sleeping project is woken there with one
+#    click ("Restore").
+#  - GitHub itself switches scheduled jobs off in a repository that has had
+#    no activity for 60 days, and sends a mail before it does. A push, or
+#    the button "Enable workflow" on this workflow's page, keeps it going.
+#
+# Nothing is checked out and no action is used: there is nothing to pin.
+
+on:
+  schedule:
+    - cron: "17 5 * * *" # every day at 05:17 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ask:
+    name: Ask the database one small thing
+    if: vars.SUPABASE_URL != '' && vars.SUPABASE_KEY != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ask
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
+        run: |
+          # ping() is a function in the database that answers "pong"
+          # (supabase/migrations). Three tries, a minute apart: a project
+          # that is waking up needs a moment.
+          for try in 1 2 3; do
+            code=$(curl --silent --show-error --max-time 30 --output answer.txt --write-out '%{http_code}' \
+              --request POST "${SUPABASE_URL%/}/rest/v1/rpc/ping" \
+              --header "apikey: $SUPABASE_KEY" \
+              --header 'content-type: application/json' \
+              --data '{}' || true)
+            if [ "$code" = "200" ] && grep -q pong answer.txt; then
+              echo "The database answered."
+              exit 0
+            fi
+            echo "Try $try: no good answer (HTTP ${code:-none})."
+            [ "$try" = 3 ] || sleep 60
+          done
+          echo "::error::The accounts database did not answer. If the project is paused, restore it in the Supabase dashboard."
+          exit 1

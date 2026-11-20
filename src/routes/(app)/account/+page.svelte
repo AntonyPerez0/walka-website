@@ -3,6 +3,7 @@
 	// the estimates are made from, and the way out with everything.
 	import { resolve } from '$app/paths';
 	import Gate from '#lib/components/account/Gate.svelte';
+	import Tabs from '#lib/components/account/Tabs.svelte';
 	import Seo from '#lib/components/Seo.svelte';
 	import { account, say } from '#lib/account/account.svelte.ts';
 	import { database } from '#lib/account/client.ts';
@@ -178,11 +179,7 @@
 				<p class="lede">Signed in{account.email ? ` as ${account.email}` : ''}.</p>
 			</header>
 
-			<nav class="tabs" aria-label="Your account">
-				<a href={resolve('account/')} aria-current="page">Account</a>
-				<a href={resolve('account/walks/')}>Walks</a>
-				<a href={resolve('food/')}>Food</a>
-			</nav>
+			<Tabs current="account" />
 
 			<div class="panel">
 				<header>
