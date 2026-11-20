@@ -197,7 +197,7 @@
 		<ol class="steps">
 			<li>
 				<h3><code>Walka.exe probe</code></h3>
-				<p>On a Mac it is typed in Terminal: drag the <code>Walka</code> application into a Terminal window (that types where it is), then - with no space in between - type <code>/Contents/MacOS/Walka probe</code> and press Return. How to type a command on Windows is under <a href="{resolve('how-it-works/')}#walkas-window">Walka's window</a>.</p>
+				<p>On a Mac it is typed in Terminal: drag the <code>Walka</code> application into a Terminal window (that types where it is), then - with no space in between - type <code class="path">/Contents/MacOS/Walka probe</code> and press Return. How to type a command on Windows is under <a href="{resolve('how-it-works/')}#walkas-window">Walka's window</a>.</p>
 				<p>It lists what the pad exposes and listens while you operate it with the remote. It sends the treadmill no commands. Keep the report - it settles the open questions in the <a href={LINKS.hardware}>hardware notes</a>.</p>
 			</li>
 			<li>

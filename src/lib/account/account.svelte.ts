@@ -23,7 +23,7 @@ export function say(error: unknown): string {
 	if (/only request this after|security purposes/i.test(text)) return 'A code went to this address less than a minute ago. Use that one, or wait a minute and ask for a new one.';
 	if (/rate limit|too many|over_email_send/i.test(text)) return 'Too many tries in a short time. Wait a few minutes and try again.';
 	if (/expired|invalid.*(otp|token)|otp.*invalid/i.test(text)) return 'That code is not right, or it is too old. Ask for a new one.';
-	if (/not free|profiles_handle_key/i.test(text)) return 'That name is not free.';
+	if (/not free|profiles_handle_key/i.test(text)) return 'That name is not free: somebody has it, or had it in the last 90 days, or it is one the site keeps to itself (a name with "walka" in it, for one).';
 	if (/display_name/i.test(text)) return 'That name cannot be shown: use plain letters, and not a name the site itself could have.';
 	if (/only after you have agreed/i.test(text)) return 'Body and food numbers are kept only after you have agreed to that.';
 	if (/cannot be below zero/i.test(text)) return 'With these body numbers, a goal below zero is not offered here.';

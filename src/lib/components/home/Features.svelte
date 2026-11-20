@@ -132,4 +132,17 @@
 			gap: 2rem;
 		}
 	}
+
+	/* On paper each of the six is a plain block. Chromium moves a grid whose
+	   items are grids to the next sheet whole, and the heading above it was
+	   left alone on a sheet of its own. */
+	@media print {
+		li {
+			display: block;
+		}
+
+		li > * + * {
+			margin-top: 0.6rem;
+		}
+	}
 </style>

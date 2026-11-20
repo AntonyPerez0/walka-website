@@ -714,9 +714,10 @@
 		{#if otherSites.length}
 			<p>
 				<strong>With {otherNames}.</strong> You go to that site, say yes there, and come back signed in. That site hands
-				the sign-in your e-mail address, and with it the name and the address of the picture you have there. This
-				website uses the e-mail address. It neither uses nor shows the name and the picture; the sign-in keeps them
-				until you delete your account. The other site, for its part, learns that you signed in here, and when.
+				the sign-in your e-mail address, and with it your name and user name there, the number that site knows your
+				account by, and the address of the picture you have there. This website uses the e-mail address. It neither
+				uses nor shows the rest; the sign-in keeps it until you delete your account. The other site, for its part,
+				learns that you signed in here, and when.
 			</p>
 		{/if}
 		<p>What the sign-in keeps:</p>
@@ -738,8 +739,9 @@
 		<p id="account-browser">
 			<strong>What a signed-in browser keeps.</strong> The sign-in is kept in the browser's local storage, under names
 			that begin with <code>walka-account</code>: the keys that say this browser is signed in, what the sign-in keeps
-			about you (your e-mail address and the dates above{#if otherSites.length}, and the name and picture address
-				that another site handed over{/if}), and a one-time secret for each sign-in that was begun here.
+			about you (your e-mail address and the dates above{#if otherSites.length}, and what another site handed over:
+				name, user name, account number and picture address{/if}), and a one-time secret for each sign-in that was
+			begun here.
 		</p>
 		<p>
 			It is not a cookie. The keys go to Supabase with each request and to nobody else, and all of it stays until you

@@ -105,8 +105,8 @@
 					<h2>{byEmail ? 'Or sign in with' : 'Sign in with'}</h2>
 					<p>
 						You go to that site, say yes there, and come back signed in. Walka's website gets your e-mail address from
-						it. The sign-in service also notes the name and the picture address that site hands over; the website does
-						not use them.
+						it. The sign-in service also notes the name, the user name, the account number and the picture address
+						that site hands over; the website does not use them.
 					</p>
 				</header>
 				<div class="panel-foot">
