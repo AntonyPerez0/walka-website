@@ -3,7 +3,7 @@
 
 import { database } from './client.ts';
 
-const TABLES = ['profiles', 'body', 'walks', 'foods', 'food_entries', 'food_settings', 'reports'] as const;
+const TABLES = ['profiles', 'body', 'walks', 'foods', 'food_entries', 'food_settings', 'reports', 'profile_holds'] as const;
 const PAGE = 1000; // the database gives at most this many rows at a time
 
 export async function everything(): Promise<Record<string, unknown>> {
@@ -28,8 +28,8 @@ export async function everything(): Promise<Record<string, unknown>> {
 		for (let from = 0; ; from += PAGE) {
 			// (rows marked as deleted are in it too: they are still kept, until the account is deleted)
 			// (in an order that is the same every time, so that no page of it skips a row)
-			const key = table === 'profiles' || table === 'body' || table === 'food_settings' ? 'user_id' : 'id';
-			const { data, error } = await db.from(table).select('*').order('created_at').order(key).range(from, from + PAGE - 1);
+			const key = table === 'profiles' || table === 'body' || table === 'food_settings' || table === 'profile_holds' ? 'user_id' : 'id';
+			const { data, error } = await db.from(table).select('*').order(table === 'profile_holds' ? 'hidden_at' : 'created_at').order(key).range(from, from + PAGE - 1);
 			if (error) throw error;
 			rows.push(...(data ?? []));
 			if (!data || data.length < PAGE) break;

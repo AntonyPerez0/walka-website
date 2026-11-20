@@ -11,7 +11,7 @@
 	const FACTS = [
 		{
 			title: 'Nothing is uploaded.',
-			text: 'Your walks, your weight and height and your heart rate are kept on your own computer, and nowhere else.'
+			text: 'Walka keeps your walks, your weight and height and your heart rate on your own computer, and sends them nowhere.'
 		},
 		{
 			title: 'It looks at one corner.',
@@ -52,7 +52,7 @@
 				<span class="together">opt-in</span>, private until you say otherwise, and yours to export or delete. Walka
 				itself needs none.
 			{:else}
-				Accounts are planned for later, and not built yet - for people who want to share their progress:
+				Accounts are planned, and not open yet - for people who want to share their progress:
 				<span class="together">opt-in</span>, private until you say otherwise, and yours to export or delete.
 			{/if}
 			<a href={resolve('privacy/')}>Privacy, in plain words</a>

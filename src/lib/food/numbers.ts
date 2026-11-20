@@ -24,6 +24,9 @@ export function clean(text: unknown, max: number): string {
 	const plain = String(text ?? '')
 		// eslint-disable-next-line no-control-regex
 		.replace(/[\u0000-\u001f\u007f-\u009f]+/g, ' ')
+		// marks that turn the direction of the text, and letters nobody can see:
+		// a food list anybody can edit must not be able to make a line read wrong
+		.replace(/[\u00ad\u061c\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff]/g, '')
 		.replace(/\s+/g, ' ')
 		.trim();
 	// (cut by characters, as the database counts them - never through the middle of one)

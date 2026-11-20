@@ -116,6 +116,7 @@ test('names that would pass for the site, or run the wrong way, are not taken', 
 test('"I am 18" comes first, carries the database\'s clock, and is not taken back', async () => {
 	const a = await signIn('adult');
 	assert.equal((await ask('POST', '/rest/v1/walks', walk(daysAgo(1)), a.token)).status, 400, 'no walk before the tick');
+	assert.equal((await ask('POST', '/rest/v1/reports', { handle: 'somebody', why: 'something else' }, a.token)).status, 400, 'no report before the tick');
 	const made = await ask('POST', '/rest/v1/profiles', { adult_confirmed_at: '1970-01-01T00:00:00Z' }, a.token);
 	assert.ok(made.body[0].adult_confirmed_at > '2020', 'the moment is the database\'s');
 	const back = await ask('PATCH', `/rest/v1/profiles?user_id=eq.${a.id}`, { adult_confirmed_at: null }, a.token);
@@ -187,6 +188,7 @@ test('a deleted walk is emptied, stays deleted, and does not come back', async (
 	// another device, which never heard of it, sends its old copy
 	const old = await ask('PATCH', `/rest/v1/walks?id=eq.${row.id}`, { deleted_at: null, steps: 1600 }, a.token);
 	assert.ok(old.body[0].deleted_at, 'deleted stays deleted');
+	assert.deepEqual([old.body[0].steps, old.body[0].seconds, old.body[0].kcal], [0, 0, 0], 'and stays empty: the old numbers are not kept again');
 	const again = await ask('POST', '/rest/v1/walks?on_conflict=user_id,start_key', walk(start), a.token, { prefer: 'resolution=ignore-duplicates,return=representation' });
 	assert.equal(again.body.length, 0, 'the same walk sent again does not bring it back');
 });
@@ -235,7 +237,7 @@ test('deleting the account deletes everything, the sign-in and its log', async (
 	await ask('POST', '/rest/v1/body', { weight_kg: 80 }, a.token);
 	assert.equal((await ask('POST', '/rest/v1/rpc/delete_my_account', {})).status, 401, 'not for a visitor');
 	assert.equal((await ask('POST', '/rest/v1/rpc/delete_my_account', {}, a.token)).status, 204);
-	const left = await admin(`select (select count(*) from auth.users where id = '${a.id}') + (select count(*) from public.profiles where user_id = '${a.id}') + (select count(*) from public.walks where user_id = '${a.id}') + (select count(*) from public.body where user_id = '${a.id}') + (select count(*) from auth.audit_log_entries where payload::text like '%${a.id}%' or payload::text ilike '%${a.email}%')`);
+	const left = await admin(`select (select count(*) from auth.users where id = '${a.id}') + (select count(*) from public.profiles where user_id = '${a.id}') + (select count(*) from public.walks where user_id = '${a.id}') + (select count(*) from public.body where user_id = '${a.id}') + (select count(*) from auth.audit_log_entries where payload::text like '%${a.id}%' or payload::text ilike '%${a.email}%') + (select count(*) from auth.flow_state where user_id = '${a.id}') + (select count(*) from auth.identities where user_id = '${a.id}') + (select count(*) from auth.sessions where user_id = '${a.id}')`);
 	assert.equal(left, '0');
 });
 

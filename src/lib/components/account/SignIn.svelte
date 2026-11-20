@@ -88,7 +88,7 @@
 								required
 								bind:value={code}
 							/>
-							<p class="hint">Sent to {email}. It can take a minute, and it works for an hour.</p>
+							<p class="hint">Sent to {email}. It can take a minute, and it works for 15 minutes.</p>
 						</div>
 						<div class="panel-foot">
 							<button class="button" type="submit" disabled={busy}>{busy ? 'Checking...' : 'Sign in'}</button>

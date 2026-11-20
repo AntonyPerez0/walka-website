@@ -34,7 +34,7 @@
 	<label class="tick">
 		<input type="checkbox" bind:checked={agreed} required />
 		<span>
-			Keep my body numbers and my food diary in my account. This is information about my health. Only I can see it. I can take
+			Keep my body numbers and my food diary in my account. This is information about my health. No visitor and no other walker can see it. The site's owner, who runs the database, can: the privacy page says when. I can take
 			this back on the account page at any time, and then all of it is deleted at once.
 		</span>
 	</label>

@@ -16,6 +16,7 @@ export function distance(metres: number, units: Units): string {
 
 /** "45 min", "1 h 05 min" */
 export function duration(seconds: number): string {
+	if (seconds > 0 && seconds < 30) return 'under 1 min';
 	const minutes = Math.round(seconds / 60);
 	if (minutes < 60) return `${minutes} min`;
 	return `${Math.floor(minutes / 60)} h ${String(minutes % 60).padStart(2, '0')} min`;

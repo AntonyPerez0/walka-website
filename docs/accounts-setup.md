@@ -118,13 +118,12 @@ cannot set them. Each has its reason next to it.
 
 - [ ] **Confirm email: on.** *Sign In / Providers → Email.* With it off,
       a sign-up for somebody else's address counts as confirmed at once.
-- [ ] **The code: 6 digits, good for one hour.** Same place: *Email OTP
-      Length* 6, *Email OTP Expiration* 3600 seconds. The sign-in page
-      and the mail both tell people that the code works for an hour. The
-      security review would rather have 600 to 900 seconds. If you
-      shorten it, change the two sentences that say "an hour" at the same
-      time: in `supabase/templates/sign-in-code.html` and in
-      `src/lib/components/account/SignIn.svelte`.
+- [ ] **The code: 6 digits, good for 15 minutes.** Same place: *Email OTP
+      Length* 6, *Email OTP Expiration* 900 seconds. The sign-in page and
+      the mail both tell people that the code works for 15 minutes
+      (`src/lib/components/account/SignIn.svelte` and
+      `supabase/templates/sign-in-code.html`): if you choose another
+      time, change those two sentences with it.
 - [ ] **Passwords.** Nobody signs in with one, and the database keeps
       none (a rule in the migration blanks any that is set). Set the
       *minimum password length* to 12 and *Secure password change* on all

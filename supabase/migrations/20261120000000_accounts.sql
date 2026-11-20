@@ -387,6 +387,8 @@ create policy "see your own" on public.reports for select to authenticated
 	using ((select auth.uid()) = user_id);
 revoke all on public.reports from anon, authenticated, public;
 grant select, insert on public.reports to authenticated;
+create trigger reports_adult before insert on public.reports
+	for each row execute function public.need_adult();
 create trigger reports_limit after insert on public.reports
 	referencing new table as added for each statement execute function public.limit_rows('20');
 
@@ -526,7 +528,10 @@ create trigger walks_keep before update on public.walks
 	for each row execute function public.keep_owner();
 create trigger walks_keep_synced before update on public.walks
 	for each row execute function public.keep_synced();
-create trigger walks_empty before insert or update on public.walks
+-- (named to run LAST of the row's triggers - they run in the order of their
+-- names: after keep_synced has put the mark back, so that a deleted row
+-- that is sent again with its old numbers is emptied again)
+create trigger walks_zz_empty before insert or update on public.walks
 	for each row execute function public.empty_deleted();
 create trigger walks_touch before insert or update on public.walks
 	for each row execute function public.touch_updated_at();
@@ -573,7 +578,10 @@ create trigger foods_keep before update on public.foods
 	for each row execute function public.keep_owner();
 create trigger foods_keep_synced before update on public.foods
 	for each row execute function public.keep_synced('may come back');
-create trigger foods_empty before insert or update on public.foods
+-- (named to run LAST of the row's triggers - they run in the order of their
+-- names: after keep_synced has put the mark back, so that a deleted row
+-- that is sent again with its old numbers is emptied again)
+create trigger foods_zz_empty before insert or update on public.foods
 	for each row execute function public.empty_deleted();
 create trigger foods_touch before insert or update on public.foods
 	for each row execute function public.touch_updated_at();
@@ -637,7 +645,10 @@ create trigger food_entries_keep before update on public.food_entries
 	for each row execute function public.keep_owner();
 create trigger food_entries_keep_synced before update on public.food_entries
 	for each row execute function public.keep_synced();
-create trigger food_entries_empty before insert or update on public.food_entries
+-- (named to run LAST of the row's triggers - they run in the order of their
+-- names: after keep_synced has put the mark back, so that a deleted row
+-- that is sent again with its old numbers is emptied again)
+create trigger food_entries_zz_empty before insert or update on public.food_entries
 	for each row execute function public.empty_deleted();
 create trigger food_entries_touch before insert or update on public.food_entries
 	for each row execute function public.touch_updated_at();
@@ -827,6 +838,7 @@ begin
 		raise exception 'Not signed in.' using errcode = 'insufficient_privilege';
 	end if;
 	select email into mail from auth.users where id = me;
+	delete from auth.flow_state where user_id = me;
 	delete from auth.users where id = me;
 	delete from auth.audit_log_entries
 		where payload ->> 'actor_id' = me::text

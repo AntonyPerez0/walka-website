@@ -211,7 +211,7 @@
 		{#if searching}
 			Searching...
 		{:else if found}
-			{found.length === 0 ? `Nothing found for "${foundFor}".` : found.length === 1 ? `1 food for "${foundFor}".` : `${found.length} foods for "${foundFor}".`}
+			{found.length === 0 ? (searchProblem ? '' : `Nothing found for "${foundFor}".`) : found.length === 1 ? `1 food for "${foundFor}".` : `${found.length} foods for "${foundFor}".`}
 		{/if}
 	</p>
 

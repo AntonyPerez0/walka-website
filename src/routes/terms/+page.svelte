@@ -363,7 +363,7 @@
 	{:else}
 	<section id="accounts" class="prose">
 		<h2>Accounts, later</h2>
-		<p>This site has no accounts today. They are planned for later, and not built yet.</p>
+		<p>This site has no accounts today. They are planned, and not open yet.</p>
 		<p>
 			If they are added, terms for them will be added here, and the
 			<a href={resolve('privacy/')}>privacy page</a> updated, before they open. Syncing and sharing will be opt-in, a

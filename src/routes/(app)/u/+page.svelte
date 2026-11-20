@@ -208,7 +208,7 @@
 
 				<div class="about">
 					<p class="estimate">
-						A public page that its owner chose to show. It shows walking totals and nothing else.
+						A public page that its owner chose to show. It shows what its owner switched on, and nothing else.
 						<a href={resolve('privacy/')}>Privacy, in plain words</a>
 					</p>
 					{#if !mine}<Report handle={walker.handle} />{/if}

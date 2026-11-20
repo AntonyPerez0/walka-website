@@ -155,7 +155,7 @@
 					</li>
 					<li><strong>The site's maker gets no visitor statistics</strong> and holds no data about you.</li>
 					<li>
-						<strong>Accounts are planned for later, and are not built.</strong> If they come, they will be opt-in, private
+						<strong>Accounts are planned, and are not open yet.</strong> If they come, they will be opt-in, private
 						by default, and yours to export and delete.
 					</li>
 				</ul>
@@ -668,7 +668,7 @@
 		</p>
 		<blockquote>
 			<p>
-				Keep my body numbers and my food diary in my account. This is information about my health. Only I can see it. I
+				Keep my body numbers and my food diary in my account. This is information about my health. No visitor and no other walker can see it. The site's owner, who runs the database, can: the privacy page says when. I
 				can take this back on this page at any time, and then all of it is deleted at once.
 			</p>
 		</blockquote>
@@ -747,7 +747,10 @@
 		</p>
 		<p>
 			The food diary also keeps a copy of your diary in that browser, so that it opens and works without a connection.
-			Signing out removes that as well.
+			Signing out removes that as well. That copy holds what the diary shows: your entries, your foods, your body numbers, your goal, and the time and
+			calories of your recent walks. Taking back your agreement, and deleting your account, remove it too. So that the
+			diary opens without a connection, the browser also keeps the diary's own files - scripts, styles and icons,
+			nothing about you - until the site's data is cleared in the browser's settings.
 		</p>
 
 		<h3 id="other-services">Other services your browser talks to</h3>
@@ -907,7 +910,7 @@
 		<p class="label part">Part three</p>
 		<h2>What is planned: accounts and food tracking</h2>
 		<div class="not-built">
-			<Callout kind="note" title="Not built yet">
+			<Callout kind="note" title="Not open yet">
 				<p>
 					Nothing in this section exists today. There are no accounts and nothing to sign up for, and Walka uploads
 					nothing.

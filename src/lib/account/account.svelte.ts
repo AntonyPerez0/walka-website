@@ -10,6 +10,7 @@
 //   in           somebody is
 
 import type { Session } from '@supabase/supabase-js';
+import { forgetDiary } from '#lib/food/local.ts';
 import { database, within } from './client.ts';
 import { ACCOUNTS, type Way } from './config.ts';
 import type { Profile } from './types.ts';
@@ -19,6 +20,7 @@ export type Where = 'off' | 'starting' | 'unavailable' | 'out' | 'in';
 /** What went wrong, in plain words. */
 export function say(error: unknown): string {
 	const text = String((error as { message?: string })?.message ?? error ?? '');
+	if (/only request this after|security purposes/i.test(text)) return 'A code went to this address less than a minute ago. Use that one, or wait a minute and ask for a new one.';
 	if (/rate limit|too many|over_email_send/i.test(text)) return 'Too many tries in a short time. Wait a few minutes and try again.';
 	if (/expired|invalid.*(otp|token)|otp.*invalid/i.test(text)) return 'That code is not right, or it is too old. Ask for a new one.';
 	if (/not free|profiles_handle_key/i.test(text)) return 'That name is not free.';
@@ -35,6 +37,22 @@ export function say(error: unknown): string {
 	return text ? `That did not work: ${text}` : 'That did not work.';
 }
 
+/**
+ * Nothing of the food diary stays on this device: its copy (entries, foods,
+ * body numbers, what was not sent yet) and the small marks it kept. Called
+ * whenever nobody is signed in any more, and when the agreement to keep
+ * body and food data is not there (any more).
+ */
+async function forgetHere(): Promise<void> {
+	await forgetDiary().catch(() => {});
+	try {
+		localStorage.removeItem('walka-food-quiet');
+		for (const key of Object.keys(sessionStorage)) if (key.startsWith('walka-food-')) sessionStorage.removeItem(key);
+	} catch {
+		// no storage: nothing was kept
+	}
+}
+
 class Account {
 	where = $state<Where>(ACCOUNTS.on ? 'starting' : 'off');
 	userId = $state<string | null>(null);
@@ -43,6 +61,8 @@ class Account {
 	profile = $state<Profile | null>(null);
 	/** True once the profile has been asked for (it may still be null: a new account). */
 	asked = $state(false);
+	/** If the site's owner has taken this person's public page down: why. */
+	held = $state<string | null>(null);
 
 	#started = false;
 
@@ -74,7 +94,8 @@ class Account {
 
 	async #took(session: Session | null): Promise<void> {
 		if (!session) {
-			this.userId = this.email = this.profile = null;
+			await forgetHere();
+			this.userId = this.email = this.profile = this.held = null;
 			this.asked = false;
 			this.where = 'out';
 			return;
@@ -91,8 +112,22 @@ class Account {
 		const db = await database();
 		const { data, error } = await db.from('profiles').select('*').eq('user_id', this.userId).maybeSingle();
 		if (error) throw error;
+		if (!data) {
+			// No row: a new account - or one that was deleted on another device
+			// while this one still held its sign-in. The sign-in service knows.
+			const { error: gone } = await db.auth.getUser();
+			if (gone) {
+				await db.auth.signOut({ scope: 'local' }).catch(() => {});
+				await this.#took(null);
+				return;
+			}
+		}
 		this.profile = data as Profile | null;
 		this.asked = true;
+		// without the agreement, nothing of the diary is kept here either
+		if (!this.profile?.body_food_consent_at) await forgetHere();
+		const { data: hold } = await db.from('profile_holds').select('reason').maybeSingle();
+		this.held = (hold as { reason: string } | null)?.reason ?? null;
 	}
 
 	/**
@@ -163,6 +198,7 @@ class Account {
 		const db = await database();
 		const { data, error } = await db.from('profiles').update({ body_food_consent_at: null }).eq('user_id', this.userId).select().single();
 		if (error) throw error;
+		await forgetHere();
 		this.profile = data as Profile;
 	}
 

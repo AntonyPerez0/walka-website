@@ -287,7 +287,7 @@
 				</Question>
 				{#if !ACCOUNTS.on}
 					<Question id="accounts" q="Will there be accounts?">
-						<p>They are planned, and not built yet: later this website is to offer accounts, for sharing your walking progress with others and for keeping track of food. Walka today has no accounts and uploads nothing.</p>
+						<p>They are planned, and not open yet: later this website is to offer accounts, for sharing your walking progress with others and for keeping track of food. Walka today has no accounts and uploads nothing.</p>
 						<p>Syncing and sharing will be opt-in, a profile will be private until its owner makes it public, and you will be able to export and delete your account and your data yourself. The <a href="{resolve('privacy/')}#planned">privacy page</a> and the <a href="{resolve('terms/')}#accounts">terms</a> will be updated before any of it is switched on.</p>
 					</Question>
 				{/if}

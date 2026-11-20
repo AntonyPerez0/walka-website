@@ -157,6 +157,27 @@
 	let deleting = $state(false);
 	let typed = $state('');
 
+	// Signing out removes the food diary's copy from this device. If that
+	// copy holds something that was not sent yet, the page asks first.
+	let unsent = $state(0);
+
+	async function signOut(allTheSame = false) {
+		dataProblem = '';
+		if (!allTheSame && account.profile?.body_food_consent_at && account.userId) {
+			try {
+				const { diary } = await import('#lib/food/store.svelte.ts');
+				await diary.open(account.userId);
+				await diary.connect().catch(() => {});
+				unsent = diary.waiting.length;
+				if (unsent) return;
+			} catch {
+				// no copy on this device
+			}
+		}
+		unsent = 0;
+		await account.signOut();
+	}
+
 	async function takeOut() {
 		dataBusy = true;
 		dataProblem = '';
@@ -232,7 +253,7 @@
 				<label class="switch">
 					<input type="checkbox" role="switch" checked={profile?.show_days} disabled={!profile?.is_public} onchange={(e) => flip('show_days', e.currentTarget.checked)} />
 					<span class="switch-name">Show the last twelve weeks, day by day</span>
-					<span class="hint">A reader sees on which days you walked and for how long, and since when you walk.</span>
+					<span class="hint">A reader sees on which days you walked, for how long and how far, and since when you walk.</span>
 				</label>
 				<label class="switch">
 					<input type="checkbox" role="switch" checked={profile?.show_steps} disabled={!profile?.is_public} onchange={(e) => flip('show_steps', e.currentTarget.checked)} />
@@ -247,7 +268,12 @@
 				<p class="estimate">Calories, your numbers and your food are never on your page, whatever is switched on.</p>
 
 				{#if pageProblem}<p class="notice notice--bad" role="alert">{pageProblem}</p>{/if}
-				{#if profile?.is_public && publicLink}
+				{#if account.held}
+					<p class="notice notice--bad" role="status">
+						The site's owner has taken your page down: {account.held}. Nobody can see it. The privacy page says who to
+						write to about it.
+					</p>
+				{:else if profile?.is_public && publicLink}
 					<p class="notice notice--ok">Your page is public: <a href={publicLink}>see it as others do</a>.</p>
 				{/if}
 
@@ -272,8 +298,7 @@
 					<label class="tick">
 						<input type="checkbox" bind:checked={agreed} required />
 						<span>
-							Keep my body numbers and my food diary in my account. This is information about my health. Only I can see
-							it. I can take this back on this page at any time, and then all of it is deleted at once.
+							Keep my body numbers and my food diary in my account. This is information about my health. No visitor and no other walker can see it. The site's owner, who runs the database, can: the privacy page says when. I can take this back on this page at any time, and then all of it is deleted at once.
 						</span>
 					</label>
 					{#if bodyProblem}<p class="notice notice--bad" role="alert">{bodyProblem}</p>{/if}
@@ -286,8 +311,7 @@
 					<header>
 						<h2>Your numbers</h2>
 						<p>
-							The food diary makes its estimates from these. They are kept in your account, only you can see them, and
-							they are never on your public page. All of them are optional.
+							The food diary makes its estimates from these. They are kept in your account, no other walker can see them, and they are never on your public page. All of them are optional.
 						</p>
 					</header>
 					<div class="fields fields--two">
@@ -360,8 +384,18 @@
 				</header>
 				<div class="panel-foot">
 					<button class="plain-button" type="button" onclick={takeOut} disabled={dataBusy}>Save everything as a file</button>
-					<button class="plain-button" type="button" onclick={() => account.signOut()}>Sign out</button>
+					<button class="plain-button" type="button" onclick={() => signOut()}>Sign out</button>
 				</div>
+				{#if unsent}
+					<p class="notice notice--bad" role="alert">
+						{unsent === 1 ? 'One thing in your food diary has' : `${unsent} things in your food diary have`} not been sent yet from this device. Signing
+						out now loses {unsent === 1 ? 'it' : 'them'}.
+					</p>
+					<div class="panel-foot">
+						<button class="plain-button plain-button--danger" type="button" onclick={() => signOut(true)}>Sign out all the same</button>
+						<button class="link-button" type="button" onclick={() => (unsent = 0)}>Stay signed in</button>
+					</div>
+				{/if}
 				{#if !deleting}
 					<p><button class="link-button" type="button" onclick={() => (deleting = true)}>Delete my account...</button></p>
 				{:else}
