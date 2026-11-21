@@ -441,6 +441,39 @@ were not as it says above, or are not in it:
   `db push` is ever used: `npx supabase@3.2.0 migration repair --status
   applied 20261120000000`. And from now on a change to the tables is a
   NEW file in `supabase/migrations/`, never a change to the first one.
+* **Google's verification** is for a site at an address of its own.
+  `github.io` belongs to GitHub, so Google will not take it as yours.
+  When the site has its domain: verify the domain in Google Search
+  Console, put it on the app's *Branding* page, and ask for verification
+  there.
+
+## What the first phone taught (21 November 2026)
+
+With the diary on the phone's home screen, "Sign out" on the account
+page in the browser did nothing: the page stood at "One moment" for ever.
+
+The diary keeps a copy of itself on the device, and signing out used to
+*delete* that database. A browser deletes a database only when every tab
+has let go of it. A tab that the phone has put to sleep (the diary, in
+the background) never answers that - the browser then says neither "done"
+nor "blocked" - and the page waited. Worse, the sleeping tab still
+*hears* that somebody signed out, starts emptying its copy, and cannot
+finish: its unfinished work held the copy against every other tab.
+
+What the site does now (`forgetDiary()` in
+[`src/lib/food/local.ts`](../src/lib/food/local.ts)): the copy is
+emptied, not deleted - that needs nobody's leave - the emptying is told
+to finish without waiting to be answered, and no page waits longer than
+four seconds for it. A database with nothing in it stays in the browser.
+
+To see it again, a test has to really put a tab to sleep, and a headless
+browser will not: there every tab counts as looked at, and a tab that is
+looked at is never put to sleep. It takes a browser with a window (on a
+server: `xvfb-run`), the diary in one tab, the account page opened as a
+second tab of the same window - so that the first is in the background -
+and then `Page.setWebLifecycleState {state: "frozen"}` sent to the first
+over the browser's remote debugging port. Playwright's own pages will not
+do either: it keeps each of them "in front".
 
 ## Switching accounts off again
 

@@ -91,6 +91,22 @@ function open(): Promise<IDBDatabase> {
 	});
 }
 
+/**
+ * "That was all": the browser finishes the work without waiting to be told
+ * so after each answer. It matters for a tab that the phone has put to
+ * sleep. Such a tab still hears that somebody signed out in another one,
+ * and starts emptying its copy - and then cannot take the answers. Without
+ * this, its unfinished work would hold every shelf, and no other tab could
+ * read or empty the copy until the sleeping one woke.
+ */
+const settle = (work: IDBTransaction) => {
+	try {
+		work.commit?.();
+	} catch {
+		// an older browser, or already finished: it ends by itself, as it always did
+	}
+};
+
 let opened: Promise<Local> | null = null;
 
 /** The copy on this device. Opened once; every caller gets the same. */
@@ -121,6 +137,7 @@ export function openLocal(): Promise<Local> {
 			async wipe() {
 				const work = db.transaction(Object.keys(SHELVES), 'readwrite');
 				for (const shelf of Object.keys(SHELVES)) work.objectStore(shelf).clear();
+				settle(work);
 				await finished(work);
 			},
 			close: () => db.close()
@@ -129,37 +146,94 @@ export function openLocal(): Promise<Local> {
 	return opened;
 }
 
-/**
- * Removes the copy from this device, whole. For signing out, for another
- * person signing in, and for the agreement taken back.
- */
-export async function forgetDiary(): Promise<void> {
-	const local = await opened?.catch(() => null);
-	opened = null;
-	// (emptied first: if the database itself cannot be deleted just now - another tab holds it - nothing is left in it)
-	await local?.wipe().catch(() => {});
-	local?.close();
-	if (typeof indexedDB === 'undefined') return;
-	await new Promise<void>((resolve) => {
-		const request = indexedDB.deleteDatabase(NAME);
-		request.onsuccess = request.onerror = request.onblocked = () => resolve();
+/** The copy, if this device has one. Asking never makes one. */
+function existing(): Promise<IDBDatabase | null> {
+	return new Promise((resolve) => {
+		let late = false;
+		const timer = setTimeout(() => {
+			late = true;
+			resolve(null);
+		}, 3000);
+		const request = indexedDB.open(NAME);
+		// (there was none, and the browser is about to make one: not wanted)
+		request.onupgradeneeded = () => request.transaction?.abort();
+		request.onsuccess = () => {
+			clearTimeout(timer);
+			if (late) return request.result.close();
+			resolve(request.result);
+		};
+		request.onerror = (event) => {
+			event.preventDefault();
+			clearTimeout(timer);
+			resolve(null);
+		};
 	});
+}
+
+let forgetting: Promise<void> | null = null;
+
+/**
+ * Nothing of the diary stays on this device. For signing out, for another
+ * person signing in, and for the agreement taken back.
+ *
+ * Every shelf is emptied; the database itself, then holding nothing, is
+ * left where it is. Deleting it would need every other tab to let go of it
+ * first, and one that the phone has put to sleep - the diary on the home
+ * screen, in the background - never answers: the browser then says neither
+ * "done" nor "blocked", this page would wait for ever, and until that tab
+ * wakes nobody could open the copy again. Emptying needs nobody's leave.
+ */
+export function forgetDiary(): Promise<void> {
+	forgetting ??= (async () => {
+		const mine = await opened?.catch(() => null);
+		opened = null;
+		const work = (async () => {
+			// through this page's own connection, if it has one that still works
+			let emptied = false;
+			if (mine?.kept) {
+				emptied = await mine.wipe().then(
+					() => true,
+					() => false
+				);
+				mine.close();
+			}
+			if (emptied || typeof indexedDB === 'undefined') return;
+			// otherwise through a new one - if there is a copy at all
+			const db = await existing();
+			if (!db) return;
+			try {
+				const shelves = [...db.objectStoreNames];
+				if (shelves.length) {
+					const emptying = db.transaction(shelves, 'readwrite');
+					for (const shelf of shelves) emptying.objectStore(shelf).clear();
+					settle(emptying);
+					await finished(emptying);
+				}
+			} finally {
+				db.close();
+			}
+		})().catch(() => {});
+		// (a browser that does not answer must not keep the page standing still)
+		await Promise.race([work, new Promise<void>((resolve) => setTimeout(resolve, 4000))]);
+	})().finally(() => (forgetting = null));
+	return forgetting;
 }
 
 /**
  * Whose diary this device holds, if any - asked before anybody has said who
- * is signed in. (Without opening a copy where there is none.)
+ * is signed in. (Without making a copy where there is none.)
  */
 export async function holder(): Promise<string | null> {
 	if (typeof indexedDB === 'undefined') return null;
 	try {
-		// (where the browser can say which databases there are, none is made just for asking)
-		const names = await indexedDB.databases?.();
-		if (names && !names.some((database) => database.name === NAME)) return null;
-		const owner = (await (await openLocal()).get<string>('owner')) ?? null;
-		// (a browser that cannot say had to open one to look: an empty one is not left behind)
-		if (!owner) await forgetDiary();
-		return owner;
+		if (opened) return (await (await opened).get<string>('owner')) ?? null;
+		const db = await existing();
+		if (!db) return null;
+		try {
+			return ((await settled(db.transaction('kv').objectStore('kv').get('owner'))) as { value: string } | undefined)?.value ?? null;
+		} finally {
+			db.close();
+		}
 	} catch {
 		return null;
 	}

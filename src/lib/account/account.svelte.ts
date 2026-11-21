@@ -44,6 +44,7 @@ export function say(error: unknown): string {
  * body and food data is not there (any more).
  */
 async function forgetHere(): Promise<void> {
+	// (it never takes longer than a few seconds: see there)
 	await forgetDiary().catch(() => {});
 	try {
 		localStorage.removeItem('walka-food-quiet');

@@ -74,12 +74,17 @@
 	});
 
 	// When the connection comes back, the account is asked again - it gave up while there was none.
+	// And when the page is looked at again, it is asked whether the agreement still stands.
 	$effect(() => {
 		const again = () => {
 			if (account.where === 'unavailable') void account.retry();
 		};
 		const shown = () => {
-			if (document.visibilityState === 'visible') again();
+			if (document.visibilityState !== 'visible') return;
+			again();
+			// Looked at again after a while in the background: the agreement may
+			// have been taken back meanwhile, in another tab or on another device.
+			if (account.where === 'in' && account.asked) void account.loadProfile().catch(() => {});
 		};
 		window.addEventListener('online', again);
 		document.addEventListener('visibilitychange', shown);

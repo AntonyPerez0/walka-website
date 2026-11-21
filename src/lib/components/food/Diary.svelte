@@ -311,9 +311,12 @@
 			{/key}
 		{/if}
 
-		<footer class="foot">
-			<Sources off usda />
-		</footer>
+		<!-- (on the day only: each list of the "Add food" view names its own source) -->
+		{#if view === 'day'}
+			<footer class="foot">
+				<Sources off usda />
+			</footer>
+		{/if}
 
 		<!-- within reach of a thumb: what was just done (with "Undo"), and the page's main button -->
 		<div class="dock">
