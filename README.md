@@ -12,8 +12,9 @@ has no server of its own, no cookies, no analytics, and it loads nothing
 from anyone else: fonts, scripts and pictures all come from the site
 itself.
 
-It can also have accounts and a food diary. They are in this repository
-and switched off: the live site is built without them, and says so. See
+It also has accounts and a food diary, since 20 November 2026. They are
+switched on by settings of the build: a copy of the site that is built
+without them has neither, and says so. See
 [Accounts and the food diary](#accounts-and-the-food-diary).
 
 ## What is in it
@@ -48,9 +49,10 @@ Before you push:
 
 ```sh
 npm test          # check the code, build the site, check the built site
-npm run preview   # the built site, as GitHub Pages would serve it:
-                  #   http://127.0.0.1:4173/walka-website/
-npm run preview -- --base /     # ... and as a domain of its own would
+npm run preview -- --base /     # the built site as the live one is served,
+                                #   at the root: http://127.0.0.1:4173/
+npm run preview   # ... and one folder down, as GitHub serves a copy
+                  #   that has no domain: http://127.0.0.1:4173/walka-website/
 ```
 
 `npm test` is three steps, which also run one by one:
@@ -98,9 +100,12 @@ of a domain and one folder down, where GitHub puts a site that has none.
 Nothing in the code names either.
 
 One thing is told to the build: the full public address, for the few
-places that must name it (the sitemap, the canonical link, the picture
-for link previews). The workflow asks GitHub Pages for it at each run and
-passes it as `SITE_URL` (see [`src/env.ts`](src/env.ts)). So when a
+places that must name it (the sitemap, `robots.txt`, the canonical link,
+the picture for link previews). The privacy page and the FAQ read it too:
+they say a few things only when the site has a name of its own
+([`src/lib/own-name.ts`](src/lib/own-name.ts)). The workflow asks GitHub
+Pages for the address at each run and passes it as `SITE_URL` (see
+[`src/env.ts`](src/env.ts)). So when a
 domain is added or changed under *Settings → Pages → Custom domain*, the
 site keeps working at once, and the next run of the workflow (*Actions →
 Site → Run workflow*) puts the new address into the sitemap.
@@ -156,11 +161,31 @@ dashboard.
       link previews name the new address.
    6. If the site has accounts: change Supabase's *Site URL* to the new
       address, and the addresses that the sign-in services hold
-      ([docs/accounts-setup.md](docs/accounts-setup.md), step 4). When
+      ([docs/accounts-setup.md](docs/accounts-setup.md), step 3). When
       signing in works at the new address, take the old addresses out of
       the *Redirect URLs*. People who were signed in at the old address
       sign in once more at the new one, and a food diary on a phone's
       home screen is put there again from the new address.
+   7. **What the old address leaves behind.** A browser keeps what a site
+      stores under the site's address. Whoever signed in at the old
+      address still has, in that browser, the sign-in, the food diary's
+      copy and the diary's own files - under the old address, where every
+      page now only sends them on, so that no page of the site can ever
+      remove them. Signing out at the new address does not reach them.
+      * In Supabase, *Authentication → Users*: end every session that was
+        made before the move, so that the keys left in those browsers
+        open nothing.
+      * On your own devices: clear the site data for the old address in
+        the browser's settings, and take a food diary that was put on a
+        home screen from the old address off again (not only put a new
+        one there).
+      * The privacy page tells everybody else ("If you signed in before
+        21 November 2026"). That paragraph can go when nobody is left
+        whom it concerns: when Supabase's list of users shows no account
+        made before the move but your own. It is in
+        [`src/routes/privacy/+page.svelte`](src/routes/privacy/+page.svelte);
+        the old address and the date are in
+        [`src/lib/own-name.ts`](src/lib/own-name.ts).
 
    **Keep at Cloudflare as it is:**
    * **The proxy stays off,** on every record, for good. With it on, every
@@ -168,8 +193,22 @@ dashboard.
      that no page does - would no longer be true. For the same reason: no
      Web Analytics, no Workers, no Page Rules there. (That sentence of the
      privacy page names Cloudflare; if the domain's DNS ever moves to
-     another company, change it in
-     [`src/routes/privacy/+page.svelte`](src/routes/privacy/+page.svelte).)
+     another company, change the name in
+     [`src/lib/own-name.ts`](src/lib/own-name.ts).)
+   * **DNSSEC is on.** Before the DNS is ever moved to another company,
+     switch DNSSEC off at Cloudflare first and wait a day (or carry the
+     keys over): otherwise the name stops resolving for everybody whose
+     resolver checks.
+   * **The `TXT` record for Google stays,** and so does the domain's
+     property in Google Search Console. Google's verification of the
+     sign-in screen ("... to continue to Walka") rests on it. It is also
+     why the privacy page names one count that the site's maker can see:
+     Search Console shows the owner of a name how often its pages were
+     shown and clicked in Google's search. If the property is ever
+     removed, take that paragraph out
+     ([`src/routes/privacy/+page.svelte`](src/routes/privacy/+page.svelte),
+     "The one count the site's maker can see") and the half-sentence in
+     the FAQ.
    * **Auto-renew stays on.** The domain is paid by the year (it is the
      one thing here that costs money). If it lapsed, whoever registered
      it next would be where the site's sign-ins come back to. Should the
@@ -277,7 +316,8 @@ footer of every page, and `npm run verify` fails without it.
 
 ## Accounts and the food diary
 
-Two things are built and switched off:
+Two things are built, and the live site has had both since 20 November
+2026:
 
 1. **Accounts**, for people who want to share their walking progress.
 2. **A food diary** for signed-in people, as a web app that can be put on

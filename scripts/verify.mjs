@@ -6,9 +6,9 @@
 //
 //  1. It works from any address. No page, stylesheet or picture is asked for
 //     by a path that starts at the root of the domain ("/img/x.png"), because
-//     on GitHub Pages the site lives under /walka-website/ until it has a
-//     domain of its own. Everything is relative - and everything a page asks
-//     for is really in the build.
+//     a copy that GitHub serves without a domain of its own lives one folder
+//     down (/walka-website/). Everything is relative - and everything a page
+//     asks for is really in the build.
 //  2. It loads nothing from anyone else. Fonts, scripts, styles and pictures
 //     all come from the site itself. Links to other sites are fine; fetching
 //     from them when a page opens is not. Every page carries a

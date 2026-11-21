@@ -8,8 +8,10 @@ export const variables = defineEnvVars({
 			'The public address of the site, for example "https://walka.dev" (or, for a copy that GitHub ' +
 			'serves under its own name, "https://someone.github.io/walka-website"). ' +
 			'The deploy workflow asks GitHub Pages for it; in a local build it is empty. Only the few ' +
-			'places that must name a full address use it (the canonical link, the sitemap, the picture ' +
-			'for link previews). Every other link on the site is relative, so the same build works ' +
+			'places that must name a full address use it (the canonical link, the sitemap, robots.txt, ' +
+			'the picture for link previews) - and the privacy page and the FAQ, which say a few things ' +
+			'only when the site has a name of its own (src/lib/own-name.ts): built without it, or with a ' +
+			'github.io address, they leave those out. Every other link on the site is relative, so the same build works ' +
 			'at the root of a domain and one folder down under a github.io address.',
 		public: true,
 		static: true,

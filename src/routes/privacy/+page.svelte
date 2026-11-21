@@ -12,37 +12,22 @@
 	// What part three says is taken from docs/data-model.md and from
 	// supabase/migrations: when a table or a rule changes there, it changes
 	// here, and the date below with it.
-	import { ACCOUNTS_REGION, CONTACT, MAIL_SENDER, SITE_URL } from '$app/env/public';
+	import { ACCOUNTS_REGION, CONTACT, MAIL_SENDER } from '$app/env/public';
 	import { resolve } from '$app/paths';
 	import { ACCOUNTS, WAY_NAMES, type Way } from '#lib/account/config.ts';
 	import Article from '#lib/components/Article.svelte';
 	import Callout from '#lib/components/Callout.svelte';
 	import PageHero from '#lib/components/PageHero.svelte';
 	import Seo from '#lib/components/Seo.svelte';
+	import { BEFORE, NAME_KEPT_AT, OWN_NAME } from '#lib/own-name.ts';
 	import { LINKS } from '#lib/site.ts';
 
 	// The date of the last change to the words of this page. It stands at the
 	// top and again under "Changes": change it whenever the text changes.
-	const UPDATED = { iso: '2026-11-20', text: '20 November 2026' };
+	const UPDATED = { iso: '2026-11-21', text: '21 November 2026' };
 
 	const GITHUB_PRIVACY = 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement';
 
-	// The site's own name, when it has one (walka.dev), and who keeps it. The
-	// build knows the address it is published at; under GitHub's own address
-	// (a copy of the site, a trial) there is no name of the site's own to speak
-	// of. WHO keeps the name is not something the build can know: if the name
-	// moves away from Cloudflare, or its "proxy" is ever switched on there
-	// (pages would then pass through Cloudflare), the paragraph that uses this
-	// is no longer true and has to be rewritten. The README says so too.
-	const NAME_KEPT_AT = 'Cloudflare';
-	const ownName = (() => {
-		try {
-			const host = new URL(SITE_URL).hostname;
-			return host.endsWith('.github.io') ? '' : host;
-		} catch {
-			return '';
-		}
-	})();
 	// what has changed on this page, and when
 	const HISTORY = `${LINKS.websiteRepo}/commits/HEAD/src/routes/privacy/+page.svelte`;
 
@@ -433,14 +418,24 @@
 		</p>
 		<p>
 			Like any web host, GitHub receives your IP address and your browser's details when a page is fetched, and may keep
-			logs. The site's maker cannot see those logs and gets no visitor statistics. What GitHub does with them is in
-			<a href={GITHUB_PRIVACY}>GitHub's privacy statement</a>.
+			logs. The site's maker cannot see those logs and gets no visitor statistics{#if OWN_NAME}{' '}from GitHub{/if}.
+			What GitHub does with them is in <a href={GITHUB_PRIVACY}>GitHub's privacy statement</a>.
 		</p>
-		{#if ownName}
+		{#if OWN_NAME}
 			<p>
-				The site's name, <code>{ownName}</code>, is registered at {NAME_KEPT_AT}, whose name servers tell the internet
-				where the site is. That is all {NAME_KEPT_AT} does here. No page is fetched through it: your browser gets every
-				page from GitHub directly.
+				The site's name, <code>{OWN_NAME}</code>, is registered at {NAME_KEPT_AT}, whose name servers tell the internet
+				where the site is. No page of this site is fetched through {NAME_KEPT_AT}: your browser gets every page from
+				GitHub directly.{#if ACCOUNTS.on}
+					{' '}(The database behind the account pages is another matter: <a href="#other-services">part three</a> says
+					who carries what is sent to it.){/if}
+			</p>
+			<p>
+				<strong>The one count the site's maker can see</strong> is Google's, and it came with the name. To whoever has
+				proved that a name is theirs, Google shows how often that name's pages were shown, and how often clicked, in
+				Google's own search results. The maker of this site has proved it{#if otherSites.includes('google')}
+					{' '}(Google asks for that before its sign-in screen may say "Walka"){/if}. Those are Google's counts of what
+				happens on Google's search page. This site sends Google nothing for them, and they say nothing about what
+				anybody does here.
 			</p>
 		{/if}
 
@@ -769,8 +764,8 @@
 			begun here.
 		</p>
 		<p>
-			It is not a cookie. The keys go to Supabase with each request and to nobody else, and all of it stays until you
-			sign out.
+			It is not a cookie. The keys go to Supabase with each request and to nobody else (on the way they pass through
+			the network Supabase uses: see <a href="#other-services">below</a>), and all of it stays until you sign out.
 		</p>
 		<p>
 			The food diary also keeps a copy of your diary in that browser, so that it opens and works without a connection.
@@ -779,6 +774,16 @@
 			diary opens without a connection, the browser also keeps the diary's own files - scripts, styles and icons,
 			nothing about you - until the site's data is cleared in the browser's settings.
 		</p>
+		{#if OWN_NAME}
+			<p>
+				<strong>If you signed in before {BEFORE.until}.</strong> Until then this site was at
+				<code>{BEFORE.address}</code>, and a browser keeps what a site stores under the site's address. So the sign-in
+				and the diary's copy from that time are still in that browser, under the old address, where this site can no
+				longer reach them: signing out here does not remove them. Clear the site data for
+				<code>{BEFORE.address}</code> in the browser's settings, and take a food diary that was put on a phone's home
+				screen from the old address off again. Nothing in your account is touched by that.
+			</p>
+		{/if}
 
 		<h3 id="other-services">Other services your browser talks to</h3>
 		<p>
@@ -798,6 +803,15 @@
 					<p>
 						The site's owner can read that log in Supabase's dashboard for as long as Supabase keeps it, and does so
 						only to find a fault.
+					</p>
+					<p>
+						Those requests do not go to Supabase directly. They reach it through the network of Cloudflare, a
+						company Supabase uses for that and names in its <a href={SUPABASE.others}>list of sub-processors</a>. So
+						Cloudflare carries every request to the database and the sign-in, your IP address with it.{#if otherSites.length}
+							{' '}On the way to another site's sign-in and back, your browser is at Supabase's own address for a
+							moment; Cloudflare may set a short-lived cookie of its own there, which it uses to tell browsers from
+							programs. It is kept under Supabase's address, not this site's: no page of this site can read it, and
+							none uses it.{/if}
 					</p>
 				</dd>
 			</div>

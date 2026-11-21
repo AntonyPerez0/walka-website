@@ -18,6 +18,7 @@
 	import Picture from '#lib/components/Picture.svelte';
 	import Question from '#lib/components/Question.svelte';
 	import Seo from '#lib/components/Seo.svelte';
+	import { OWN_NAME } from '#lib/own-name.ts';
 	import { DOWNLOADS, LINKS } from '#lib/site.ts';
 
 	// The groups of questions. The list down the left of the page jumps to them.
@@ -282,7 +283,7 @@
 					{:else}
 						<p>No. This website has no accounts, no forms, no cookies, no analytics, no advertising and no trackers, and everything a page needs is served by the site itself.</p>
 					{/if}
-					<p>GitHub hosts it and, like any web host, receives your IP address and browser details when a page is fetched, and may keep logs; the site&#39;s maker cannot see those logs and gets no visitor statistics. The downloads page also asks GitHub which Walka version is the latest. Your choice of light or dark, if you use the switch, is kept in your own browser, and it is never sent anywhere.</p>
+					<p>GitHub hosts it and, like any web host, receives your IP address and browser details when a page is fetched, and may keep logs; the site&#39;s maker cannot see those logs and gets no visitor statistics{#if OWN_NAME}{' '}from GitHub (the one count the maker can see is Google&#39;s own, of how often the site is shown and clicked in Google&#39;s search results){/if}. The downloads page also asks GitHub which Walka version is the latest. Your choice of light or dark, if you use the switch, is kept in your own browser, and it is never sent anywhere.</p>
 					<p class="further">The whole of it: <a href="{resolve('privacy/')}#this-website">Privacy</a>.</p>
 				</Question>
 				{#if !ACCOUNTS.on}

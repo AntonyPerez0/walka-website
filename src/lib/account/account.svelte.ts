@@ -59,16 +59,24 @@ async function forgetHere(): Promise<void> {
  * deleted, here or on another device. There is nothing left there to sign
  * out of, and asking would only be refused (a "403" in the browser's
  * console). So what this browser holds of the sign-in is taken away first;
- * the library then finds nothing to ask about, and only says "signed out".
+ * the library then finds nothing to ask about, and only says "signed out" -
+ * to this tab and to the others.
+ *
+ * (Where a browser gives the library no local storage, the sign-in is kept
+ * in memory, which this cannot reach: there the library still asks once,
+ * and is refused. Nothing else is different.)
  */
 async function letGo(db: { auth: { signOut(options: { scope: 'local' }): Promise<unknown> } }): Promise<void> {
 	try {
 		localStorage.removeItem(KEPT_AS);
 	} catch {
-		// no storage: nothing was kept
+		// no local storage: see above
 	}
 	await db.auth.signOut({ scope: 'local' }).catch(() => {});
 }
+
+/** The sign-in service says that the account, or this sign-in, is not there (any more). */
+const saysGone = (error: unknown) => [401, 403, 404].includes((error as { status?: number })?.status ?? 0);
 
 class Account {
 	where = $state<Where>(ACCOUNTS.on ? 'starting' : 'off');
@@ -146,8 +154,10 @@ class Account {
 		if (!data) {
 			// No row: a new account - or one that was deleted on another device
 			// while this one still held its sign-in. The sign-in service knows.
-			const { error: gone } = await db.auth.getUser();
-			if (gone) {
+			// (Only its saying so counts. No answer at all - no connection, a
+			// fault there - is not a reason to sign anybody out.)
+			const { error: answer } = await db.auth.getUser();
+			if (answer && saysGone(answer)) {
 				await letGo(db);
 				await this.#took(null);
 				return;

@@ -36,8 +36,8 @@ Three decisions. Each ends up as a setting in step 5.
      built-in one is for trying things out: it sends 2 messages an hour,
      and only to the addresses of the project's own team. A mail service
      (Resend, Postmark, Brevo and others; connecting one is included in
-     Supabase's free plan) wants a domain of yours to send from, so this
-     way is easier once the site has a domain.
+     Supabase's free plan) wants a domain of yours to send from: the
+     site's own, `walka.dev`, will do.
 
    Write the ones you choose as `SIGN_IN`, with commas: `discord,google`
    or `email,discord,google,github`. Left empty, the site offers e-mail
@@ -190,8 +190,9 @@ place, and nowhere else: not into this repository, not into GitHub.
 *OAuth2* → *Redirects* → **Add Redirect**: the address above → **Save
 Changes**. Under *Client information*, copy the **Client ID** and the
 **Client Secret**. In Supabase: *Sign In / Providers → Discord* → enable,
-paste both, **Save**. Under *General Information*, give the *Terms of
-Service URL* (`https://walka.dev/terms/`) and the *Privacy Policy URL*
+paste both, **Save**. Then, back at Discord, on the application's
+*General Information* page, give the *Terms of Service URL*
+(`https://walka.dev/terms/`) and the *Privacy Policy URL*
 (`https://walka.dev/privacy/`): Discord's own screen tells people that
 the developer's terms and privacy policy apply, and should say where
 they are.
@@ -293,9 +294,15 @@ people sign in by e-mail):
 ```sh
 export SUPABASE_URL=https://abcdefghijklmnop.supabase.co SUPABASE_KEY=sb_publishable_...
 export SIGN_IN=discord,google CONTACT=privacy@example.org ACCOUNTS_REGION='Frankfurt, Germany'
+export SITE_URL=https://walka.dev
 npm ci
 npm run build && npm run verify && npm run preview
 ```
+
+(`SITE_URL` is the address the site is published at. The deploy is told
+it by GitHub; here it is said by hand, because the privacy page and the
+FAQ have a few sentences that are there only when the site has a name of
+its own. Without it you would read a page that lacks them.)
 
 Open <http://127.0.0.1:4173/walka-website/privacy/> and
 <http://127.0.0.1:4173/walka-website/terms/> and read them through. (The
@@ -458,6 +465,10 @@ has the steps and what to keep as it is at Cloudflare). For the accounts:
   ones.
 * **GitHub's OAuth app:** *Homepage URL* is `https://walka.dev/`. The
   callback address did not change: it is Supabase's, not the site's.
+* **Discord:** nothing to change for signing in. On the day of the move
+  its *General Information* page named neither the terms nor the privacy
+  page, though Discord's own screen says that both apply: they belong
+  there (step 3).
 * **Google.** *Authorized JavaScript origins:* `https://walka.dev`. On
   the *Branding* page the home page, the privacy page and the terms are
   the three `walka.dev` addresses. The domain was proved in Google Search
@@ -470,6 +481,27 @@ has the steps and what to keep as it is at Cloudflare). For the accounts:
   and the `supabase.co` address, and neither can be deleted there. The
   second is in use (signing in comes back through it); the first does no
   harm.
+  Behind the word "Walka" on its screen, Google shows everybody the
+  *User support email* of the *Branding* page. It has to be the address
+  of a Google account of yours or of a Google Group you manage: if your
+  own address is not to stand there, make a group for it and choose
+  that.
+  Having proved the domain has one more effect: Search Console shows the
+  owner of a name how often its pages were shown and clicked in Google's
+  search. The privacy page says so ("The one count the site's maker can
+  see"). The property and its `TXT` record have to stay for the
+  verification to hold.
+* **Supabase is reached through Cloudflare.** Not the site's doing, and
+  nothing to do with the domain being kept at Cloudflare: Supabase's own
+  address answers from Cloudflare's network (it is in Supabase's list of
+  sub-processors). So every request of the account pages passes through
+  Cloudflare, and on the way to another site's sign-in Cloudflare offers
+  the browser a short-lived cookie of its own on Supabase's address. The
+  privacy page says both, in part three. The site's own pages do not
+  pass through Cloudflare, as long as the proxy stays off.
+* **What the old address leaves behind** in the browsers of people who
+  signed in before the move, and what to do about it: the README, "What
+  to do by hand", step 2.7.
 * **Cloudflare's own sign-in** turns a remote-controlled browser away
   ("There was a problem with verification"). It takes an ordinary browser
   window, with the owner at the keyboard for the password.
