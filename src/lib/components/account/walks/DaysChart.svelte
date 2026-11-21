@@ -170,6 +170,7 @@
 	}
 
 	.slot.pointed {
+		background: var(--line); /* (where colours cannot be mixed) */
 		background: color-mix(in srgb, var(--accent) 12%, transparent);
 	}
 

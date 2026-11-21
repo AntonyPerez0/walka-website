@@ -93,6 +93,7 @@
 		max-width: 30rem;
 		margin-top: clamp(1.75rem, 4vw, 2.5rem);
 		padding: 1rem 1.15rem;
+		border: 1px solid var(--line-strong); /* (where colours cannot be mixed) */
 		border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent);
 		border-radius: var(--radius);
 		background: var(--warn-tint);

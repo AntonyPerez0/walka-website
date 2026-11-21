@@ -169,6 +169,9 @@ samp {
 code {
 	padding: 0.12em 0.36em;
 	border-radius: 4px;
+	/* (the first line is for a browser that cannot mix colours - Chrome before
+	   111, Safari before 16.2: it reads that one and skips the next) */
+	background: var(--line);
 	background: color-mix(in srgb, var(--ink) 8%, transparent);
 	color: var(--ink);
 	overflow-wrap: anywhere;

@@ -132,6 +132,7 @@
 		border: 1px dashed var(--accent);
 		border-top: 0;
 		border-left: 0;
+		background: var(--line); /* (where colours cannot be mixed) */
 		background: color-mix(in srgb, var(--accent) 18%, transparent);
 	}
 
@@ -174,6 +175,7 @@
 
 	.look-mark {
 		border: 1px dashed var(--accent);
+		background: var(--line); /* (where colours cannot be mixed) */
 		background: color-mix(in srgb, var(--accent) 18%, transparent);
 	}
 

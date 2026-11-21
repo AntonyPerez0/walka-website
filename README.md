@@ -316,6 +316,41 @@ fonts, icons or screenshots of Blizzard's, and nothing that imitates them
 or suggests that Blizzard endorses Walka. The line that says so is in the
 footer of every page, and `npm run verify` fails without it.
 
+### Older browsers
+
+The styles are written in today's CSS and written out, at build time, for
+browsers a few years old: Chrome and Edge 109, Firefox 115, Safari 15.6
+on a Mac and on an iPhone (the list is `OLDEST` in
+[`vite.config.ts`](vite.config.ts)). The build lowers what it can. What
+it cannot lower is written so that an older browser still gets something
+whole:
+
+* **A value an older browser cannot read gets a plain line before it.**
+  `color-mix()` is the case in point (Chrome before 111, Safari before
+  16.2): `background: var(--line);` and then `background:
+  color-mix(...)`. The older browser reads the first and skips the
+  second; the build keeps both.
+* **A selector it cannot read takes its whole rule with it.** `:has()` is
+  the case (Firefox before 121). Either the page is whole without the
+  rule, or there is an `@supports not selector(:has(a))` block beside it
+  that says what to do instead: the bar along the top has one, and the
+  Share picture on the front page.
+* **Layout that leans on something newer has a fallback in `@supports
+  not (...)`**: the three downloads (subgrid), the Share picture
+  (`overflow: clip`). Where the drawing of the signal and the FAQ's
+  picture ask their own width (`@container`, Safari from 16), the narrow
+  arrangement is the one without it, and it is whole.
+
+This was checked on 21 November 2026 without those browsers: the built
+styles and scripts were read against MDN's table of which browser knows
+what (the scripts use nothing an oldest browser lacks without asking
+first; the pages use no newer element; pictures have WebP beside AVIF),
+and the built styles were then cut down to what each older browser would
+read and looked at in today's browser. That finds what an older browser
+does not know. It does not find a fault of that browser's own: for that
+the site has to be opened in it, which has not been done for Firefox 115,
+for Safari, or on a Mac or an iPhone.
+
 ## Accounts and the food diary
 
 Two things are built, and the live site has had both since 20 November

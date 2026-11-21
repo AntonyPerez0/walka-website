@@ -35,6 +35,9 @@
 		grid-template-columns: auto minmax(0, 1fr);
 		gap: 0.9rem;
 		padding: 1.1rem 1.25rem;
+		/* (the first line is for a browser that cannot mix colours - Chrome
+		   before 111, Safari before 16.2: it reads that one and skips the next) */
+		border: 1px solid var(--line-strong);
 		border: 1px solid color-mix(in srgb, var(--tone) 40%, transparent);
 		border-left: 3px solid var(--tone);
 		border-radius: var(--radius);

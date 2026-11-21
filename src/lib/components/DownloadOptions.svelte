@@ -84,6 +84,18 @@
 		background: var(--surface);
 	}
 
+	/* A browser without subgrid (Chrome before 117, Safari before 16) reads
+	   the line about it as nothing, and each of the three keeps rows of its
+	   own. There the words in the middle take the room that is left over and
+	   the small print gets the same room in all three, so that the buttons
+	   still stand in one line. (Before the rule for a narrow screen, which
+	   has the last word there.) */
+	@supports not (grid-template-rows: subgrid) {
+		li {
+			grid-template-rows: auto auto 1fr auto minmax(6.5em, auto);
+		}
+	}
+
 	li.yours {
 		background: var(--surface-2);
 	}

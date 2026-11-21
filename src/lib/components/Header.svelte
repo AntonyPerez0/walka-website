@@ -13,6 +13,8 @@
 	import { NAV } from '#lib/nav.ts';
 
 	let scrolled = $state(false);
+	// (said by the menu itself, for a browser whose styles cannot ask: see the styles)
+	let open = $state(false);
 	let menu = $state<HTMLDetailsElement>();
 
 	// (a route's name may carry a folder in brackets that is not part of the address)
@@ -42,7 +44,7 @@
 
 <svelte:window {onkeydown} />
 
-<header class="bar" class:scrolled>
+<header class="bar" class:scrolled class:open>
 	<div class="container container--wide row">
 		<a class="brand" href={resolve('/')} aria-label="Walka - home">
 			<Logo size={32} />
@@ -65,7 +67,7 @@
 			<ThemeToggle />
 			<a class="button button--small get" href={resolve('downloads/')}>Download</a>
 
-			<details class="menu" bind:this={menu}>
+			<details class="menu" bind:this={menu} ontoggle={() => (open = menu?.open ?? false)}>
 				<summary aria-label="Menu">
 					<span class="when-closed"><Icon name="menu" /></span>
 					<span class="when-open"><Icon name="close" /></span>
@@ -110,6 +112,18 @@
 		background: none;
 		-webkit-backdrop-filter: none;
 		backdrop-filter: none;
+	}
+
+	/* A browser that does not know :has() (Firefox before 121) reads nothing
+	   of the rule above, and its bar would never be clear. There the script
+	   says when the menu is open. */
+	@supports not selector(:has(a)) {
+		:global(html.js) .bar:not(.scrolled):not(.open) {
+			border-bottom-color: transparent;
+			background: none;
+			-webkit-backdrop-filter: none;
+			backdrop-filter: none;
+		}
 	}
 
 	.row {

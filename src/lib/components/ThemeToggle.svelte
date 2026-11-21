@@ -36,6 +36,7 @@
 	}
 
 	.toggle:hover {
+		background: var(--line); /* (where colours cannot be mixed) */
 		background: color-mix(in srgb, var(--ink) 9%, transparent);
 		color: var(--ink);
 	}
