@@ -348,8 +348,15 @@ first; the pages use no newer element; pictures have WebP beside AVIF),
 and the built styles were then cut down to what each older browser would
 read and looked at in today's browser. That finds what an older browser
 does not know. It does not find a fault of that browser's own: for that
-the site has to be opened in it, which has not been done for Firefox 115,
-for Safari, or on a Mac or an iPhone.
+the site has to be opened in it. A current Firefox (157, on Linux) was
+walked through that day - the pages, signing in, a diary entry, signing
+out, deleting the account - and all of it worked. It showed one thing no
+table could: that browser did not draw the blur under the bar along the
+top, though it said it could, and the page's words ran through the
+menu's. The bar's ground is now strong enough to be read on without the
+blur (`--scrim` in [`src/lib/styles/tokens.css`](src/lib/styles/tokens.css)):
+nothing on the site may need an effect to be legible. Not opened in yet:
+Firefox 115, Safari, Edge, and anything on a Mac or an iPhone.
 
 ## Accounts and the food diary
 

@@ -84,7 +84,12 @@
 	--arc: light-dark(rgba(104, 72, 34, 0.1), rgba(214, 228, 255, 0.07));
 	--shadow: light-dark(rgba(96, 62, 20, 0.2), rgba(0, 0, 8, 0.6));
 	--shadow-glow: light-dark(rgba(150, 110, 40, 0.16), rgba(70, 120, 255, 0.24));
-	--scrim: light-dark(rgba(250, 246, 234, 0.82), rgba(5, 7, 26, 0.78)); /* behind the header once the page has moved */
+	/* Behind the header once the page has moved. Strong enough to be read
+	   on by itself: the header also blurs what passes under it, but not
+	   every browser draws that (a Firefox on a small Linux computer did
+	   not, though it said it could), and the page's words must not run
+	   through the menu's there. */
+	--scrim: light-dark(rgba(250, 246, 234, 0.92), rgba(5, 7, 26, 0.9));
 
 	/* ---- type -------------------------------------------------------------- */
 	--font-display: 'Spectral', 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
