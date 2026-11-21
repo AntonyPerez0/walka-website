@@ -81,8 +81,10 @@ type Failure = { message?: string; code?: string; status?: number };
  */
 function kindOf(error: Failure): 'rule' | 'away' {
 	const code = error.code ?? '';
-	// no answer at all; the connection to the database, or the sign-in, is the trouble; or the account is gone (23503)
+	// no answer at all; the connection to the database, or the sign-in, is the trouble; or the account is gone
+	// (23503 - or, for a row sent to an account without its first step, 23514 "Walka is for adults.")
 	if (!code || /^(PGRST0|PGRST3|08|53|57|58|XX)/.test(code) || code === '23503' || code === '42501') return 'away';
+	if (code === '23514' && /for adults/i.test(error.message ?? '')) return 'away';
 	return 'rule';
 }
 

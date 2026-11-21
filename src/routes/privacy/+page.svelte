@@ -554,7 +554,8 @@
 					</p>
 					<p>
 						Whether a walking session was running in the game. How each number was come by - measured by the treadmill,
-						or estimated. And how the walk got here - from one of Walka's files, from a TCX file or typed in - with the
+						or estimated, and for the calories whether the estimate was made from your speed or from your heart rate
+						(the word, not the heart rate itself). And how the walk got here - from one of Walka's files, from a TCX file or typed in - with the
 						name that file has for it, such as <code>20261119-213000</code>.
 					</p>
 					<p>

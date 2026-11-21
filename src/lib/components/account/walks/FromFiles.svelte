@@ -159,7 +159,8 @@
 	<p>
 		The files are read here, in your browser, and only each walk's numbers are sent to your account: when it started and
 		ended, the day and the time zone your computer was in, how long the belt moved, how far, steps and calories, how
-		each number was come by, and whether a walking session was running in the game. The second-by-second samples, the
+		each number was come by (for the calories: from your speed, or from your heart rate), and whether a walking session
+		was running in the game. The second-by-second samples, the
 		heart rate, the top speed, the treadmill's name and your character stay on your computer.
 	</p>
 

@@ -160,13 +160,24 @@ type Failure = { code?: string; message?: string };
  */
 function refusal(error: Failure): boolean {
 	const code = String(error.code ?? '');
-	// 22...: a value that cannot be; 23...: a rule of the table. (23503 is not about the row: the account is gone.)
-	return /^(22|23)/.test(code) && code !== '23503';
+	// 22...: a value that cannot be; 23...: a rule of the table - unless it is about the account, not the row.
+	return /^(22|23)/.test(code) && !gone(error);
+}
+
+/**
+ * The account is not there (any more). A walk sent to an account that was
+ * deleted - on another device, say - is answered with 23514 and "Walka is
+ * for adults.": the rule that asks for the first step finds no profile. (On
+ * this site nobody gets as far as sending a walk without that step, so here
+ * the answer means only this.) 23503 says the same when a profile is written.
+ */
+function gone(error: Failure): boolean {
+	return error.code === '23503' || (error.code === '23514' && /for adults/i.test(error.message ?? ''));
 }
 
 /** Why the database would not go on, in plain words. */
 function stopped(error: Failure): string {
-	if (error.code === '23503') return 'This account is not there any more. Sign in again.';
+	if (gone(error)) return 'This account is not there any more. Sign in again.';
 	return say(error);
 }
 

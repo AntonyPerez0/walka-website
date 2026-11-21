@@ -140,7 +140,13 @@ cannot set them. Each has its reason next to it.
 
       Signing in through another site comes back to the page it was asked
       from, and these three are the pages that ask. No `localhost` and no
-      `127.0.0.1` here. (Until 21 November 2026 these were the three
+      `127.0.0.1` here. (The list does not decide everything: the sign-in
+      service lets a sign-in come back to any page of the Site URL's own
+      host, and to an address on this computer written as a number -
+      `http://127.0.0.1:<any port>/...` - whatever the list says. Only
+      the NAME `localhost` is kept out by leaving it off. That is how a
+      program on a person's own computer signs in: see
+      [data-model.md](data-model.md), "Signing in from a program".) (Until 21 November 2026 these were the three
       addresses under `https://antonyperez0.github.io/walka-website/`.
       If the site ever moves again, the new three are added first and
       the old taken out last: see the README, "What to do by hand".)
