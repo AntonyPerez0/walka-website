@@ -161,7 +161,8 @@ not. It sends the person to their account page.
      (`PGRST204`): name the columns you send.
    * `steps` is a whole number in the JSON itself: `66`, not `66.0`
      (`22P02`). Times are text with a zone, not seconds since 1970
-     (`22008`); a time without a zone is read as UTC.
+     (`22008`, or `22007` when the number has a fraction); a time
+     without a zone is read as UTC.
    * Not `resolution=merge-duplicates` for walks: it writes the account's
      row over with this device's copy. Not `return=minimal`: added and
      already-there then look the same.
@@ -300,12 +301,13 @@ Keeping the sign-in:
   `POST /auth/v1/token?grant_type=refresh_token {"refresh_token": ...}`.
   Every refresh gives a NEW refresh token; write it down before using
   the access token. An old one used again later answers 400
-  `refresh_token_already_used` and ends the whole sign-in.
+  `refresh_token_already_used` and can end the whole sign-in.
 * The sign-in is over - stop sending, keep the walks on the computer,
   ask the person to sign in again - when a refresh answers 400 with
   `refresh_token_not_found` or `refresh_token_already_used`.
   `GET /auth/v1/user` then says why: 403 `session_not_found` (signed
-  out) or 403 `user_not_found` (the account is deleted). A push of walks
+  out) or 403 `user_not_found` (the account is deleted) - or still 200,
+  when the keys were used twice and the account is there. A push of walks
   does NOT say it: a deleted account answers `23514` "Walka is for
   adults.", the same as an account that has not taken the first step.
 * **Signing out is forgetting first.** The program throws away the keys
@@ -322,7 +324,10 @@ project has none: `/otp` answers there, but no mail a person could get
 is sent.
 
 Syncing from the desktop program will be a switch the person turns on.
-Until it exists, Walka uploads nothing, and the site says so.
+Until it exists, Walka uploads nothing, and the site says so. The brief
+for whoever builds it - what is decided, what is the owner's, and the
+order in which Walka's words and the website's have to change - is
+[brief-walka-sends-walks.md](brief-walka-sends-walks.md).
 
 ## Changing the tables later
 
