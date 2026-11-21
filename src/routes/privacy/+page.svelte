@@ -19,7 +19,7 @@
 	import Callout from '#lib/components/Callout.svelte';
 	import PageHero from '#lib/components/PageHero.svelte';
 	import Seo from '#lib/components/Seo.svelte';
-	import { BEFORE, NAME_KEPT_AT, OWN_NAME } from '#lib/own-name.ts';
+	import { NAME_KEPT_AT, OWN_NAME } from '#lib/own-name.ts';
 	import { LINKS } from '#lib/site.ts';
 
 	// The date of the last change to the words of this page. It stands at the
@@ -774,16 +774,6 @@
 			diary opens without a connection, the browser also keeps the diary's own files - scripts, styles and icons,
 			nothing about you - until the site's data is cleared in the browser's settings.
 		</p>
-		{#if OWN_NAME}
-			<p>
-				<strong>If you signed in before {BEFORE.until}.</strong> Until then this site was at
-				<code>{BEFORE.address}</code>, and a browser keeps what a site stores under the site's address. So the sign-in
-				and the diary's copy from that time are still in that browser, under the old address, where this site can no
-				longer reach them: signing out here does not remove them. Clear the site data for
-				<code>{BEFORE.address}</code> in the browser's settings, and take a food diary that was put on a phone's home
-				screen from the old address off again. Nothing in your account is touched by that.
-			</p>
-		{/if}
 
 		<h3 id="other-services">Other services your browser talks to</h3>
 		<p>

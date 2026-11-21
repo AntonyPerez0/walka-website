@@ -465,10 +465,10 @@ has the steps and what to keep as it is at Cloudflare). For the accounts:
   ones.
 * **GitHub's OAuth app:** *Homepage URL* is `https://walka.dev/`. The
   callback address did not change: it is Supabase's, not the site's.
-* **Discord:** nothing to change for signing in. On the day of the move
-  its *General Information* page named neither the terms nor the privacy
-  page, though Discord's own screen says that both apply: they belong
-  there (step 3).
+* **Discord:** nothing to change for signing in. Its *General
+  Information* page named neither the terms nor the privacy page, though
+  Discord's own screen says that both apply. They were given that day:
+  `https://walka.dev/terms/` and `https://walka.dev/privacy/` (step 3).
 * **Google.** *Authorized JavaScript origins:* `https://walka.dev`. On
   the *Branding* page the home page, the privacy page and the terms are
   the three `walka.dev` addresses. The domain was proved in Google Search
@@ -483,9 +483,14 @@ has the steps and what to keep as it is at Cloudflare). For the accounts:
   harm.
   Behind the word "Walka" on its screen, Google shows everybody the
   *User support email* of the *Branding* page. It has to be the address
-  of a Google account of yours or of a Google Group you manage: if your
-  own address is not to stand there, make a group for it and choose
-  that.
+  of a Google account of yours or of a Google Group you manage. It is a
+  group now, made for this (only its members can find or read it, anyone
+  can write to it, and the owner is its one member), so that nobody's
+  own address stands there.
+  **Any change to the *Branding* page un-verifies it** ("Your branding
+  was verified previously, but it has been modified"): press *Verify
+  branding* and then *Publish branding* again, and look at the sign-in
+  screen afterwards.
   Having proved the domain has one more effect: Search Console shows the
   owner of a name how often its pages were shown and clicked in Google's
   search. The privacy page says so ("The one count the site's maker can
@@ -501,7 +506,13 @@ has the steps and what to keep as it is at Cloudflare). For the accounts:
   pass through Cloudflare, as long as the proxy stays off.
 * **What the old address leaves behind** in the browsers of people who
   signed in before the move, and what to do about it: the README, "What
-  to do by hand", step 2.7.
+  to do by hand", step 2.7. Here it concerned one account, the owner's
+  own: the one sign-in from before the move was ended in Supabase (*SQL
+  Editor:* `delete from auth.sessions where created_at < '<the moment of
+  the move>'`), and the owner's own browsers are cleared by hand.
+* **Walka's own repository** names the site as well: its README and the
+  *About* box of the repository. Both say `https://walka.dev/` since that
+  day.
 * **Cloudflare's own sign-in** turns a remote-controlled browser away
   ("There was a problem with verification"). It takes an ordinary browser
   window, with the owner at the keyboard for the password.

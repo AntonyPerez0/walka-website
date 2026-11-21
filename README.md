@@ -179,13 +179,15 @@ dashboard.
         the browser's settings, and take a food diary that was put on a
         home screen from the old address off again (not only put a new
         one there).
-      * The privacy page tells everybody else ("If you signed in before
-        21 November 2026"). That paragraph can go when nobody is left
-        whom it concerns: when Supabase's list of users shows no account
-        made before the move but your own. It is in
-        [`src/routes/privacy/+page.svelte`](src/routes/privacy/+page.svelte);
-        the old address and the date are in
-        [`src/lib/own-name.ts`](src/lib/own-name.ts).
+      * Everybody else has to be told, on the privacy page, for as long
+        as anybody is left whom it concerns. On 21 November 2026 nobody
+        was: Supabase's list of users showed one account from before the
+        move, the owner's own, and the one sign-in from before it was
+        ended there. So the privacy page says nothing about the old
+        address. (For a day it did: the paragraph "If you signed in
+        before 21 November 2026" is in the history of
+        [`src/routes/privacy/+page.svelte`](src/routes/privacy/+page.svelte),
+        for the day a site with other people's accounts moves.)
 
    **Keep at Cloudflare as it is:**
    * **The proxy stays off,** on every record, for good. With it on, every
