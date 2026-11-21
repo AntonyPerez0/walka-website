@@ -5,11 +5,12 @@ import { defineEnvVars } from '@sveltejs/kit/env';
 export const variables = defineEnvVars({
 	SITE_URL: {
 		description:
-			'The public address of the site, for example "https://antonyperez0.github.io/walka-website". ' +
+			'The public address of the site, for example "https://walka.dev" (or, for a copy that GitHub ' +
+			'serves under its own name, "https://someone.github.io/walka-website"). ' +
 			'The deploy workflow asks GitHub Pages for it; in a local build it is empty. Only the few ' +
 			'places that must name a full address use it (the canonical link, the sitemap, the picture ' +
 			'for link previews). Every other link on the site is relative, so the same build works ' +
-			'under the github.io address and on a domain of its own.',
+			'at the root of a domain and one folder down under a github.io address.',
 		public: true,
 		static: true,
 		schema: (value) => (value ?? '').trim().replace(/\/+$/, '')

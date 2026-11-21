@@ -24,7 +24,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { say } from '#lib/account/account.svelte.ts';
-import { database } from '#lib/account/client.ts';
+import { database, KEPT_AS } from '#lib/account/client.ts';
 import { ACCOUNTS } from '#lib/account/config.ts';
 import { localDay, shiftDay } from '#lib/account/format.ts';
 import type { Body, Food, FoodEntry, FoundFood, Meal, Walk } from '#lib/account/types.ts';
@@ -89,7 +89,7 @@ function kindOf(error: Failure): 'rule' | 'away' {
 /** The session supabase-js keeps in this browser's local storage: whose it is. (client.ts names the key.) */
 function storedPerson(): string | null {
 	try {
-		const kept = JSON.parse(localStorage.getItem('walka-account') ?? 'null');
+		const kept = JSON.parse(localStorage.getItem(KEPT_AS) ?? 'null');
 		return typeof kept?.user?.id === 'string' ? kept.user.id : null;
 	} catch {
 		return null;

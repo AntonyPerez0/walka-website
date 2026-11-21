@@ -88,18 +88,22 @@ published.
 
 ### The address, and a domain of its own
 
-The site is built without knowing where it will be served from. Every
-link in it is relative to the page it is on, so the same files work at
-`https://antonyperez0.github.io/walka-website/` and at the root of a
-domain. Nothing in the code names either.
+The site is at **<https://walka.dev/>**. (It started at
+`https://antonyperez0.github.io/walka-website/`; GitHub sends that
+address, and every page under it, on to the domain.)
+
+It is built without knowing where it will be served from. Every link in
+it is relative to the page it is on, so the same files work at the root
+of a domain and one folder down, where GitHub puts a site that has none.
+Nothing in the code names either.
 
 One thing is told to the build: the full public address, for the few
 places that must name it (the sitemap, the canonical link, the picture
 for link previews). The workflow asks GitHub Pages for it at each run and
-passes it as `SITE_URL` (see [`src/env.ts`](src/env.ts)). So when the
-domain is added under *Settings → Pages → Custom domain*, the site keeps
-working at once, and the next run of the workflow (*Actions → Site → Run
-workflow*) puts the new address into the sitemap.
+passes it as `SITE_URL` (see [`src/env.ts`](src/env.ts)). So when a
+domain is added or changed under *Settings → Pages → Custom domain*, the
+site keeps working at once, and the next run of the workflow (*Actions →
+Site → Run workflow*) puts the new address into the sitemap.
 
 `static/404.html` is the one page written by hand: GitHub shows it at any
 address that is not there, so it cannot use relative links, and it works
@@ -118,9 +122,18 @@ dashboard.
 1. **GitHub Pages.** *Settings → Pages → Build and deployment → Source:*
    **GitHub Actions**. This is done already: it is why the site is live.
 
-2. **The domain,** once there is one.
-   1. *Settings → Pages → Custom domain:* type the domain, **Save**.
-   2. Where the domain's DNS is kept - at Cloudflare: *DNS → Records* -
+2. **The domain.** Done on 21 November 2026: `walka.dev`, registered at
+   Cloudflare, where its DNS is kept too. What was done, in the order
+   that never breaks signing in - for the day the site moves again:
+   1. If the site has accounts: in Supabase, *Authentication → URL
+      Configuration → Redirect URLs*, **add** the account pages' new
+      addresses ([docs/accounts-setup.md](docs/accounts-setup.md),
+      step 3). Adding is harmless.
+   2. On GitHub, under your own *Settings → Pages → Add a domain*: GitHub
+      shows a `TXT` record. Put it where the DNS is kept and press
+      **Verify**. Nobody else can then point a site of theirs at the
+      domain.
+   3. Where the domain's DNS is kept - at Cloudflare: *DNS → Records* -
       add these, each with the proxy **off** ("DNS only", the grey cloud):
 
       | Type | Name | Points to |
@@ -135,17 +148,35 @@ dashboard.
       | `AAAA` | `@` | `2606:50c0:8003::153` |
       | `CNAME` | `www` | `antonyperez0.github.io` |
 
-   3. Back under *Settings → Pages*, wait until the check of the domain
-      is green, then tick **Enforce HTTPS**. (GitHub fetches the
+   4. In the repository, *Settings → Pages → Custom domain:* type the
+      domain (without `www`), **Save**. Wait until the check of the
+      domain is green, then tick **Enforce HTTPS**. (GitHub fetches the
       certificate itself; that can take a while after the records are in.)
-   4. *Actions → Site → Run workflow*, once, so that the sitemap and the
+   5. *Actions → Site → Run workflow*, once, so that the sitemap and the
       link previews name the new address.
-   5. If the site has accounts: in Supabase, *Authentication → URL
-      Configuration*, change the *Site URL* to the new address and add
-      the new addresses of the account pages to the *Redirect URLs*
-      ([docs/accounts-setup.md](docs/accounts-setup.md), step 3). People
-      who were signed in at the old address sign in once more at the new
-      one.
+   6. If the site has accounts: change Supabase's *Site URL* to the new
+      address, and the addresses that the sign-in services hold
+      ([docs/accounts-setup.md](docs/accounts-setup.md), step 4). When
+      signing in works at the new address, take the old addresses out of
+      the *Redirect URLs*. People who were signed in at the old address
+      sign in once more at the new one, and a food diary on a phone's
+      home screen is put there again from the new address.
+
+   **Keep at Cloudflare as it is:**
+   * **The proxy stays off,** on every record, for good. With it on, every
+     page would pass through Cloudflare, and the privacy page - which says
+     that no page does - would no longer be true. For the same reason: no
+     Web Analytics, no Workers, no Page Rules there. (That sentence of the
+     privacy page names Cloudflare; if the domain's DNS ever moves to
+     another company, change it in
+     [`src/routes/privacy/+page.svelte`](src/routes/privacy/+page.svelte).)
+   * **Auto-renew stays on.** The domain is paid by the year (it is the
+     one thing here that costs money). If it lapsed, whoever registered
+     it next would be where the site's sign-ins come back to. Should the
+     domain ever be given up on purpose: first take its addresses out of
+     Supabase's *Redirect URLs* and *Site URL* and out of Google's
+     *Authorized JavaScript origins*, and remove the custom domain under
+     *Settings → Pages*.
 
 3. **Accounts.** Making the database, its sign-in settings and the
    settings of the build: [docs/accounts-setup.md](docs/accounts-setup.md),

@@ -11,7 +11,7 @@
 
 import type { Session } from '@supabase/supabase-js';
 import { forgetDiary } from '#lib/food/local.ts';
-import { database, within } from './client.ts';
+import { database, KEPT_AS, within } from './client.ts';
 import { ACCOUNTS, type Way } from './config.ts';
 import type { Profile } from './types.ts';
 
@@ -52,6 +52,22 @@ async function forgetHere(): Promise<void> {
 	} catch {
 		// no storage: nothing was kept
 	}
+}
+
+/**
+ * Lets go of a sign-in that the service no longer has: the account was
+ * deleted, here or on another device. There is nothing left there to sign
+ * out of, and asking would only be refused (a "403" in the browser's
+ * console). So what this browser holds of the sign-in is taken away first;
+ * the library then finds nothing to ask about, and only says "signed out".
+ */
+async function letGo(db: { auth: { signOut(options: { scope: 'local' }): Promise<unknown> } }): Promise<void> {
+	try {
+		localStorage.removeItem(KEPT_AS);
+	} catch {
+		// no storage: nothing was kept
+	}
+	await db.auth.signOut({ scope: 'local' }).catch(() => {});
 }
 
 class Account {
@@ -132,7 +148,7 @@ class Account {
 			// while this one still held its sign-in. The sign-in service knows.
 			const { error: gone } = await db.auth.getUser();
 			if (gone) {
-				await db.auth.signOut({ scope: 'local' }).catch(() => {});
+				await letGo(db);
 				await this.#took(null);
 				return;
 			}
@@ -222,7 +238,7 @@ class Account {
 		const db = await database();
 		const { error } = await db.rpc('delete_my_account');
 		if (error) throw error;
-		await db.auth.signOut({ scope: 'local' }).catch(() => {});
+		await letGo(db);
 		await this.#took(null);
 	}
 }

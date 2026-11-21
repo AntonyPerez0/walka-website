@@ -5,6 +5,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { ACCOUNTS } from './config.ts';
 
+/** Under this name the sign-in is kept in this browser's local storage. */
+export const KEPT_AS = 'walka-account';
+
 let made: Promise<SupabaseClient> | null = null;
 
 export function database(): Promise<SupabaseClient> {
@@ -19,7 +22,7 @@ export function database(): Promise<SupabaseClient> {
 				persistSession: true,
 				autoRefreshToken: true,
 				// kept in this browser's local storage, under this name
-				storageKey: 'walka-account'
+				storageKey: KEPT_AS
 			}
 		})
 	);

@@ -12,7 +12,7 @@
 	// What part three says is taken from docs/data-model.md and from
 	// supabase/migrations: when a table or a rule changes there, it changes
 	// here, and the date below with it.
-	import { ACCOUNTS_REGION, CONTACT, MAIL_SENDER } from '$app/env/public';
+	import { ACCOUNTS_REGION, CONTACT, MAIL_SENDER, SITE_URL } from '$app/env/public';
 	import { resolve } from '$app/paths';
 	import { ACCOUNTS, WAY_NAMES, type Way } from '#lib/account/config.ts';
 	import Article from '#lib/components/Article.svelte';
@@ -26,6 +26,23 @@
 	const UPDATED = { iso: '2026-11-20', text: '20 November 2026' };
 
 	const GITHUB_PRIVACY = 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement';
+
+	// The site's own name, when it has one (walka.dev), and who keeps it. The
+	// build knows the address it is published at; under GitHub's own address
+	// (a copy of the site, a trial) there is no name of the site's own to speak
+	// of. WHO keeps the name is not something the build can know: if the name
+	// moves away from Cloudflare, or its "proxy" is ever switched on there
+	// (pages would then pass through Cloudflare), the paragraph that uses this
+	// is no longer true and has to be rewritten. The README says so too.
+	const NAME_KEPT_AT = 'Cloudflare';
+	const ownName = (() => {
+		try {
+			const host = new URL(SITE_URL).hostname;
+			return host.endsWith('.github.io') ? '' : host;
+		} catch {
+			return '';
+		}
+	})();
 	// what has changed on this page, and when
 	const HISTORY = `${LINKS.websiteRepo}/commits/HEAD/src/routes/privacy/+page.svelte`;
 
@@ -419,6 +436,13 @@
 			logs. The site's maker cannot see those logs and gets no visitor statistics. What GitHub does with them is in
 			<a href={GITHUB_PRIVACY}>GitHub's privacy statement</a>.
 		</p>
+		{#if ownName}
+			<p>
+				The site's name, <code>{ownName}</code>, is registered at {NAME_KEPT_AT}, whose name servers tell the internet
+				where the site is. That is all {NAME_KEPT_AT} does here. No page is fetched through it: your browser gets every
+				page from GitHub directly.
+			</p>
+		{/if}
 
 		<h3 id="in-your-browser">What is kept in your browser</h3>
 		{#if ACCOUNTS.on}

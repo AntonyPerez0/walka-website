@@ -131,18 +131,19 @@ cannot set them. Each has its reason next to it.
 - [ ] **Anonymous sign-ins: off. Manual linking: off. Phone: off.**
       *Sign In / Providers.* The site uses none of them.
 - [ ] **Where sign-in may come back to.** *URL Configuration.*
-      * *Site URL:* `https://antonyperez0.github.io/walka-website/account/`
+      * *Site URL:* `https://walka.dev/account/`
       * *Redirect URLs,* each written out in full, with the slash at the
         end and no `*`:
-        `https://antonyperez0.github.io/walka-website/account/`,
-        `https://antonyperez0.github.io/walka-website/account/walks/`,
-        `https://antonyperez0.github.io/walka-website/food/`
+        `https://walka.dev/account/`,
+        `https://walka.dev/account/walks/`,
+        `https://walka.dev/food/`
 
       Signing in through another site comes back to the page it was asked
       from, and these three are the pages that ask. No `localhost` and no
-      `127.0.0.1` here. When the site gets a domain, the same three
-      addresses are added for it (and the Site URL changed): see the
-      README, "What to do by hand".
+      `127.0.0.1` here. (Until 21 November 2026 these were the three
+      addresses under `https://antonyperez0.github.io/walka-website/`.
+      If the site ever moves again, the new three are added first and
+      the old taken out last: see the README, "What to do by hand".)
 - [ ] **The mail's words.** *Emails → Templates.* For **Magic Link** and
       for **Confirm signup**, each:
       * *Subject:* `Your Walka sign-in code: {{ .Token }}`
@@ -189,7 +190,11 @@ place, and nowhere else: not into this repository, not into GitHub.
 *OAuth2* → *Redirects* → **Add Redirect**: the address above → **Save
 Changes**. Under *Client information*, copy the **Client ID** and the
 **Client Secret**. In Supabase: *Sign In / Providers → Discord* → enable,
-paste both, **Save**.
+paste both, **Save**. Under *General Information*, give the *Terms of
+Service URL* (`https://walka.dev/terms/`) and the *Privacy Policy URL*
+(`https://walka.dev/privacy/`): Discord's own screen tells people that
+the developer's terms and privacy policy apply, and should say where
+they are.
 
 **GitHub.** <https://github.com/settings/developers> → **New OAuth App**.
 *Homepage URL:* the site's address. *Authorization callback URL:* the
@@ -206,7 +211,7 @@ make a project, then under *Google Auth Platform*:
 * *Data Access:* the scopes `openid`, `userinfo.email` and
   `userinfo.profile`, and no others.
 * *Clients* → create an OAuth client ID, type **Web application**.
-  *Authorized JavaScript origins:* `https://antonyperez0.github.io`.
+  *Authorized JavaScript origins:* `https://walka.dev`.
   *Authorized redirect URIs:* the address above. Copy the **Client ID**
   and the **Client Secret**.
 
@@ -423,10 +428,9 @@ were not as it says above, or are not in it:
   `graphql_public`. Take `graphql_public` out.
 * **Google** does not let an app be published until its *Branding* page
   names a home page, a privacy page and the terms: give it the site's
-  three addresses. Until Google has verified the app (it wants proof that
-  the site's address is yours, and takes its time), its own screen says
-  "to continue to `<project-ref>.supabase.co`", not "Walka". Signing in
-  works all the same.
+  three addresses. Until Google has verified the branding, its own screen
+  says "to continue to `<project-ref>.supabase.co`", not "Walka". Signing
+  in works all the same. (Verified since 21 November 2026: see below.)
 * **Two sites, one address.** A person whose Discord and GitHub accounts
   have the same e-mail address comes to ONE Walka account by either. A
   site with another address makes a second account.
@@ -443,9 +447,39 @@ were not as it says above, or are not in it:
   NEW file in `supabase/migrations/`, never a change to the first one.
 * **Google's verification** is for a site at an address of its own.
   `github.io` belongs to GitHub, so Google will not take it as yours.
-  When the site has its domain: verify the domain in Google Search
-  Console, put it on the app's *Branding* page, and ask for verification
-  there.
+
+## What the domain taught (21 November 2026)
+
+The site moved to `walka.dev` that day (the README, "What to do by hand",
+has the steps and what to keep as it is at Cloudflare). For the accounts:
+
+* **Supabase** holds the three `walka.dev` addresses as *Redirect URLs*
+  and `https://walka.dev/account/` as *Site URL*, and none of the old
+  ones.
+* **GitHub's OAuth app:** *Homepage URL* is `https://walka.dev/`. The
+  callback address did not change: it is Supabase's, not the site's.
+* **Google.** *Authorized JavaScript origins:* `https://walka.dev`. On
+  the *Branding* page the home page, the privacy page and the terms are
+  the three `walka.dev` addresses. The domain was proved in Google Search
+  Console (a "Domain" property, by a `TXT` record at Cloudflare - not by
+  letting Google into the Cloudflare account, which it offers). Then
+  *Verify branding*, and **Publish branding** within seven days, or the
+  verification lapses. Google did not ask about `supabase.co`. Its screen
+  now says "Choose an account to continue to Walka".
+  The list of *authorized domains* still shows `antonyperez0.github.io`
+  and the `supabase.co` address, and neither can be deleted there. The
+  second is in use (signing in comes back through it); the first does no
+  harm.
+* **Cloudflare's own sign-in** turns a remote-controlled browser away
+  ("There was a problem with verification"). It takes an ordinary browser
+  window, with the owner at the keyboard for the password.
+* **The ending matters at Cloudflare:** it does not sell every one
+  (`.gg`, for one, it does not).
+* **Deleting an account** used to leave a refused request in the
+  browser's console (`POST /auth/v1/logout`, 403): the page asked the
+  sign-in service to sign out of an account that was already gone. It no
+  longer asks (`letGo()` in
+  [`src/lib/account/account.svelte.ts`](../src/lib/account/account.svelte.ts)).
 
 ## What the first phone taught (21 November 2026)
 
