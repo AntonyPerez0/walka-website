@@ -749,3 +749,46 @@ html:not(.js) pre code {
 	border-radius: var(--radius);
 	box-shadow: 0 18px 44px -22px var(--shadow);
 }
+
+/* ---- app pages ---------------------------------------------------------------
+ *
+ * A person's own pages (the food diary, the stats, the walks, the account)
+ * look like one app on a phone, and when the diary is opened from the home
+ * screen: no site bar along the top, a bar of their own along the foot
+ * (AppNav.svelte), and of the site's foot only the line that says whose
+ * Walka is not - which every page keeps.
+ */
+@media (max-width: 40rem), (display-mode: standalone) {
+	.app-page {
+		--app-nav: calc(4rem + env(safe-area-inset-bottom));
+		padding-bottom: var(--app-nav);
+	}
+
+	.app-page > header.bar,
+	.app-page nav.tabs[aria-label='Your account'],
+	.app-page .app-head > .label {
+		display: none;
+	}
+
+	.app-page > footer.foot {
+		padding-block: 1rem 1.5rem;
+		background: none;
+	}
+
+	.app-page > footer.foot > .container > :not(.notice) {
+		display: none;
+	}
+
+	/* the top of a page sits close under the phone's own bar */
+	.app-page .app {
+		padding-top: max(0.5rem, env(safe-area-inset-top));
+	}
+
+	.app-page .app-head {
+		padding-top: 0.5rem;
+	}
+
+	.app-page .app-head h1 {
+		font-size: clamp(1.75rem, 1.5rem + 1.2vw, 2.25rem);
+	}
+}

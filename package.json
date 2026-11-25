@@ -14,15 +14,16 @@
 	},
 	"scripts": {
 		"images": "node scripts/images.mjs",
-		"dev": "npm run images && vite dev",
-		"build": "npm run images && vite build",
+		"dev": "npm run images && npm run tools && vite dev",
+		"build": "npm run images && npm run tools && vite build",
 		"preview": "node scripts/serve.mjs",
 		"check": "npm run images && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"verify": "node scripts/verify.mjs",
 		"test": "npm run check && npm run build && npm run verify",
-		"test:unit": "node --test tests/estimates.test.ts tests/import.test.ts tests/usda.test.ts tests/stats.test.ts tests/csv.test.ts",
+		"test:unit": "node --test tests/estimates.test.ts tests/import.test.ts tests/usda.test.ts tests/stats.test.ts tests/csv.test.ts tests/common.test.ts tests/label.test.ts",
 		"test:database": "node --test tests/database.test.ts",
-		"prepare": "svelte-kit sync || echo ''"
+		"prepare": "svelte-kit sync || echo ''",
+		"tools": "node scripts/food-tools.mjs"
 	},
 	"devDependencies": {
 		"@fontsource-variable/inter": "5.3.0",
@@ -31,9 +32,13 @@
 		"@sveltejs/adapter-static": "4.0.1",
 		"@sveltejs/kit": "3.4.0",
 		"@sveltejs/vite-plugin-svelte": "7.3.1",
+		"@tesseract.js-data/eng": "1.0.0",
+		"barcode-detector": "3.2.5",
+		"onnxruntime-web": "1.31.1",
 		"sharp": "0.35.5",
 		"svelte": "5.58.0",
 		"svelte-check": "4.7.8",
+		"tesseract.js": "7.0.0",
 		"typescript": "6.0.3",
 		"vite": "8.3.8"
 	}

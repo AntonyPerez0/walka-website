@@ -13,6 +13,7 @@
 	import { page } from '$app/state';
 	import Footer from '#lib/components/Footer.svelte';
 	import Header from '#lib/components/Header.svelte';
+	import AppNav from '#lib/components/account/AppNav.svelte';
 
 	let { children } = $props();
 
@@ -20,6 +21,12 @@
 	// diary is an app of its own there (it opens at the diary, without the
 	// browser's bars); every other page describes the site.
 	const manifest = $derived(page.route.id === '/(app)/food' ? 'food.webmanifest' : 'site.webmanifest');
+
+	// A person's own pages - the food diary, the stats, the walks, the account
+	// - look like one app on a phone, and when the diary is opened from the
+	// home screen: a bar along the foot instead of the site's bar and foot
+	// (base.css, "app pages"). A walker's public page stays a page of the site.
+	const appPage = $derived(Boolean(page.route.id?.startsWith('/(app)/') && page.route.id !== '/(app)/u'));
 
 	// A line of code or a table that is wider than the screen scrolls sideways
 	// inside its own box. Such a box is given a place in the Tab order, so
@@ -89,12 +96,15 @@
 	<link rel="manifest" href={asset(manifest)} />
 </svelte:head>
 
-<a class="skip" href="#main">Skip to the page</a>
-<Header />
-<main id="main" tabindex="-1">
-	{@render children()}
-</main>
-<Footer />
+<div class="site" class:app-page={appPage}>
+	<a class="skip" href="#main">Skip to the page</a>
+	<Header />
+	<main id="main" tabindex="-1">
+		{@render children()}
+	</main>
+	<Footer />
+	{#if appPage}<AppNav />{/if}
+</div>
 
 <style>
 	.skip {

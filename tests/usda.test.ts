@@ -196,3 +196,34 @@ test('the function file that Deno runs only hands the request over', () => {
 	assert.doesNotMatch(index, /console\./, 'nothing is written to a log');
 	assert.doesNotMatch(readFileSync(new URL('../supabase/functions/usda/handle.ts', import.meta.url), 'utf8'), /console\.|Deno\.\w/, 'no log, and nothing that only Deno has');
 });
+
+test('a barcode: the branded food whose barcode it is, tried as twelve and thirteen digits', async () => {
+	const cheese = JSON.stringify({
+		foods: [
+			{ fdcId: 1, description: 'OTHER', gtinUpc: '111111111111', foodNutrients: [{ nutrientId: 1008, unitName: 'KCAL', value: 100 }] },
+			{ fdcId: 2097395, description: 'CHEESE', brandOwner: 'SOME DAIRY', gtinUpc: '853910006170', servingSize: 28, servingSizeUnit: 'g', householdServingFullText: '1 OZ', foodNutrients: [{ nutrientId: 1008, unitName: 'KCAL', value: 393 }] }
+		]
+	});
+	const asked: string[] = [];
+	const fetcher = (async (input: RequestInfo | URL) => {
+		asked.push(String(input));
+		const query = new URL(String(input)).searchParams.get('query');
+		return new Response(query === '853910006170' ? cheese : '{"foods":[]}', { status: 200 });
+	}) as typeof fetch;
+	const ask13 = new Request('https://project.supabase.co/functions/v1/usda?gtin=0853910006170', { headers: { authorization: `Bearer ${token()}` } });
+	const answer = await handle(ask13, { USDA_API_KEY: KEY }, fetcher);
+	const body = await answer.json();
+	assert.equal(answer.status, 200);
+	assert.equal(body.found, true);
+	assert.equal(body.foods.length, 1);
+	assert.equal(body.foods[0].source_id, '2097395');
+	assert.equal(body.foods[0].kcal_100g, 393);
+	assert.equal(body.foods[0].serving_g, 28);
+	assert.equal(asked.length, 2, 'as read, then as twelve digits');
+	assert.ok(asked.every((url) => url.includes('dataType=Branded') && !url.includes(KEY)));
+
+	const none = await handle(new Request('https://project.supabase.co/functions/v1/usda?gtin=12345670', { headers: { authorization: `Bearer ${token()}` } }), { USDA_API_KEY: KEY }, fetcher);
+	assert.deepEqual(await none.json(), { foods: [], found: false });
+	const bad = await handle(new Request('https://project.supabase.co/functions/v1/usda?gtin=12ab', { headers: { authorization: `Bearer ${token()}` } }), { USDA_API_KEY: KEY }, fetcher);
+	assert.equal(bad.status, 400);
+});

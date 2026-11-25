@@ -4,6 +4,7 @@ node_modules
 /.svelte-kit
 /build
 /static/img
+/static/food-tools
 /src/lib/generated
 
 # OS
