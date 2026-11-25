@@ -30,6 +30,13 @@ export default defineConfig({
 			targets: Object.fromEntries(OLDEST.map(([name, , major, minor]) => [name, (major << 16) | (minor << 8)]))
 		}
 	},
+	// ONNX Runtime (the food diary's dish recogniser) in the build that takes
+	// its WebAssembly from where it is told - static/food-tools, fetched only
+	// when it is used - rather than one that puts 15 MB among the site's own
+	// scripts, which the diary keeps for working without a connection.
+	resolve: {
+		conditions: ['onnxruntime-web-use-extern-wasm', 'module', 'browser', 'development|production']
+	},
 	build: {
 		cssMinify: 'lightningcss',
 		// (the pass that makes the styles small takes its browsers from here,
@@ -63,7 +70,9 @@ export default defineConfig({
 				mode: 'hash',
 				directives: {
 					'default-src': ['self'],
-					'script-src': ['self'],
+					// WebAssembly, for the food diary's readers (barcodes, labels, dishes), which run on
+					// the phone. It lets a page compile WebAssembly from its own files, nothing more.
+					'script-src': ['self', 'wasm-unsafe-eval'],
 					'style-src': ['self', 'unsafe-inline'],
 					'img-src': ['self', 'data:'],
 					'font-src': ['self'],

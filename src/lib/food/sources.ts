@@ -256,3 +256,30 @@ export function inTurns<T>(first: T[], second: T[]): T[] {
 	}
 	return out;
 }
+
+/**
+ * A barcode in USDA's branded foods (about 450,000 US products), through the
+ * project's function - for a barcode Open Food Facts does not have, or has
+ * without its calories. Null: not there, or the function cannot be asked.
+ */
+export async function lookUpUsdaBarcode(code: string, project: Project, fetcher: typeof fetch = fetch): Promise<{ food: FoundFood | null; found: boolean } | null> {
+	if (!usdaThere || !project.token) return null;
+	const stop = new AbortController();
+	const timer = setTimeout(() => stop.abort(), 15_000);
+	try {
+		const answer = await fetcher(`${project.url}/functions/v1/usda?gtin=${encodeURIComponent(code)}`, {
+			headers: { apikey: project.key, authorization: `Bearer ${project.token}` },
+			signal: stop.signal
+		});
+		if (answer.status === 404 || answer.status === 503) usdaThere = false;
+		// (a function from before barcodes answers 400 to a request without words: it has no barcodes)
+		if (!answer.ok) return null;
+		const body = (await answer.json()) as { foods?: unknown[]; found?: boolean };
+		const food = Array.isArray(body.foods) && body.foods.length ? fromUsda(body.foods[0] as Partial<FoundFood>) : null;
+		return { food, found: Boolean(body.found) };
+	} catch {
+		return null;
+	} finally {
+		clearTimeout(timer);
+	}
+}

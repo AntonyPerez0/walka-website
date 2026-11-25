@@ -78,7 +78,9 @@ const ACCOUNT_PART = /\sid="your-account"/;
 // What each part of the policy may name besides the site itself.
 const POLICY = {
 	'default-src': [],
-	'script-src': [], // plus the hashes of SvelteKit's own start-up script
+	// plus the hashes of SvelteKit's own start-up script; and WebAssembly from the site's own files,
+	// for the food diary's readers (src/lib/food/readers.ts)
+	'script-src': ["'wasm-unsafe-eval'"],
 	'style-src': ["'unsafe-inline'"],
 	'img-src': ['data:'],
 	'font-src': [],

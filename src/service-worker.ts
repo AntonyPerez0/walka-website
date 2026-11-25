@@ -27,10 +27,13 @@ const OURS = 'walka-food-';
 type Named = string | { path: string };
 const here = (file: Named) => new URL(typeof file === 'string' ? file : file.path, self.location.href).href;
 
-const SCRIPTS_AND_STYLES = immutable.map(here);
+// (not WebAssembly: what the readers need is large, is fetched only when a reader is used, and is not kept here)
+const SCRIPTS_AND_STYLES = immutable.filter((file: Named) => !/\.wasm$/.test(typeof file === 'string' ? file : file.path)).map(here);
 const DIARY = here(prerendered.map((page: Named) => (typeof page === 'string' ? page : page.path)).find((path: string) => /^\/?food\/?(index\.html)?$/.test(path)) ?? 'food/');
 // of everything in static/: what a phone needs to show the diary as an app
-const ITS_OWN = assets.map(here).filter((address: string) => /\/(food\.webmanifest|icon-192\.png|icon-512\.png|icon-maskable-512\.png|favicon\.svg|favicon-32\.png)$/.test(address));
+// (and the list of common foods, which the search finds without a connection; the readers in
+// food-tools/ are large, are fetched only when first used, and are not kept here)
+const ITS_OWN = assets.map(here).filter((address: string) => /\/(food\.webmanifest|icon-192\.png|icon-512\.png|icon-maskable-512\.png|favicon\.svg|favicon-32\.png|food\/common-foods\.json)$/.test(address));
 
 const keep = new Set([...SCRIPTS_AND_STYLES, ...ITS_OWN]);
 

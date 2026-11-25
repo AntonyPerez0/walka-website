@@ -93,6 +93,7 @@ type Theirs = {
 	servingSize?: unknown;
 	servingSizeUnit?: unknown;
 	householdServingFullText?: unknown;
+	gtinUpc?: unknown;
 	foodNutrients?: Nutrient[];
 };
 
@@ -136,44 +137,75 @@ export function fromUsda(food: Theirs | null | undefined): UsdaFood | null {
 
 // ---- the function ------------------------------------------------------------------------
 
+/** A barcode without the zeros in front of it: "0853910006170" and "853910006170" are the same product. */
+const bare = (code: string) => code.replace(/^0+/, '');
+
+/**
+ * The ways USDA may have written a barcode down: as it was read, and - for
+ * the usual US products - as twelve digits (UPC-A) or thirteen (EAN-13, a
+ * zero in front). USDA finds a barcode only as it was written down.
+ */
+export function barcodeForms(code: string): string[] {
+	const forms = [code, bare(code).padStart(12, '0'), bare(code).padStart(13, '0'), bare(code)];
+	return [...new Set(forms)].filter((form) => form.length >= 8 && form.length <= 14).slice(0, 3);
+}
+
+type Asked = { foods: Theirs[] } | { error: Response };
+
+async function askUsda(query: string, kinds: string, size: number, key: string, fetcher: typeof fetch): Promise<Asked> {
+	let theirs: Response;
+	try {
+		// the key goes in a header: an address ends up in logs
+		theirs = await fetcher(`${USDA}?query=${encodeURIComponent(query)}&dataType=${kinds}&pageSize=${size}`, {
+			headers: { 'X-Api-Key': key, Accept: 'application/json' },
+			signal: AbortSignal.timeout(10_000)
+		});
+	} catch {
+		return { error: answer(502, { error: 'usda' }) };
+	}
+	// Their own words are not passed on: an answer of theirs may name the key.
+	if (theirs.status === 429) return { error: answer(429, { error: 'usda is busy' }) };
+	if (!theirs.ok) return { error: answer(502, { error: 'usda' }) };
+	try {
+		const body = (await theirs.json()) as { foods?: Theirs[] };
+		return { foods: Array.isArray(body?.foods) ? body.foods : [] };
+	} catch {
+		return { error: answer(502, { error: 'usda' }) };
+	}
+}
+
 export async function handle(request: Request, env: Env, fetcher: typeof fetch): Promise<Response> {
 	// a browser asks first whether it may ask
 	if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
 	if (request.method !== 'GET') return answer(405, { error: 'method' }, { Allow: 'GET, OPTIONS' });
 	if (!signedIn(request)) return answer(401, { error: 'sign in' });
 
-	const q = (new URL(request.url).searchParams.get('q') ?? '').trim();
-	const length = Array.from(q).length;
-	if (length < 2 || length > 80) return answer(400, { error: 'q' });
+	const params = new URL(request.url).searchParams;
+	const gtin = (params.get('gtin') ?? '').trim();
+	const q = (params.get('q') ?? '').trim();
+	if (gtin ? !/^\d{8,14}$/.test(gtin) : Array.from(q).length < 2 || Array.from(q).length > 80) return answer(400, { error: gtin ? 'gtin' : 'q' });
 
 	const key = (env.USDA_API_KEY ?? '').trim();
 	if (!key) return answer(503, { error: 'not set up' });
 
-	let theirs: Response;
-	try {
-		// the key goes in a header: an address ends up in logs
-		theirs = await fetcher(`${USDA}?query=${encodeURIComponent(q)}&dataType=Foundation,SR%20Legacy,Branded&pageSize=20`, {
-			headers: { 'X-Api-Key': key, Accept: 'application/json' },
-			signal: AbortSignal.timeout(10_000)
-		});
-	} catch {
-		return answer(502, { error: 'usda' });
+	// ---- one barcode: USDA's branded foods, the product whose barcode it is, or none
+	if (gtin) {
+		for (const form of barcodeForms(gtin)) {
+			const asked = await askUsda(form, 'Branded', 5, key, fetcher);
+			if ('error' in asked) return asked.error;
+			const match = asked.foods.find((food) => bare(String(food.gtinUpc ?? '')) === bare(gtin));
+			const ours = match ? fromUsda(match) : null;
+			if (match) return answer(200, { foods: ours ? [ours] : [], found: true }, { 'Cache-Control': 'private, max-age=86400' });
+		}
+		return answer(200, { foods: [], found: false }, { 'Cache-Control': 'private, max-age=3600' });
 	}
 
-	// Their own words are not passed on: an answer of theirs may name the key.
-	if (theirs.status === 429) return answer(429, { error: 'usda is busy' });
-	if (!theirs.ok) return answer(502, { error: 'usda' });
-
-	let body: { foods?: Theirs[] };
-	try {
-		body = await theirs.json();
-	} catch {
-		return answer(502, { error: 'usda' });
-	}
-
+	// ---- words
+	const asked = await askUsda(q, 'Foundation,SR%20Legacy,Branded', 20, key, fetcher);
+	if ('error' in asked) return asked.error;
 	const seen = new Set<string>();
 	const foods: UsdaFood[] = [];
-	for (const food of Array.isArray(body?.foods) ? body.foods : []) {
+	for (const food of asked.foods) {
 		const ours = fromUsda(food);
 		if (!ours || seen.has(ours.source_id)) continue;
 		seen.add(ours.source_id);

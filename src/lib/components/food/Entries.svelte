@@ -1,34 +1,76 @@
 <script lang="ts">
-	// What is written down for a day, meal by meal. A row opens the entry to
-	// change it; the button beside it deletes it (with "Undo", in the page).
-	// A day with nothing written down is just an empty day.
+	// What is written down for a day, meal by meal - all four meals, each
+	// with its own "+", so that adding to lunch is one tap. A row opens the
+	// entry to change it; the button beside it deletes it (with "Undo", in
+	// the page).
+	//
+	// A meal can be written down again from another day: on today, an empty
+	// meal offers "the same as yesterday"; on another day, a meal offers
+	// "copy to today".
 	import { count } from '#lib/account/format.ts';
 	import type { FoodEntry, Meal } from '#lib/account/types.ts';
 	import { MEAL_NAMES, MEALS, round1 } from '#lib/food/numbers.ts';
 	import { diary } from '#lib/food/store.svelte.ts';
 
-	let { entries, onedit }: { entries: FoodEntry[]; onedit: (entry: FoodEntry) => void } = $props();
+	let {
+		entries,
+		before,
+		today,
+		onedit,
+		onadd,
+		oncopy
+	}: {
+		entries: FoodEntry[];
+		/** the day before's entries, for "the same as yesterday" (only on today) */
+		before: FoodEntry[];
+		/** is the day shown today? */
+		today: boolean;
+		onedit: (entry: FoodEntry) => void;
+		/** "+" of a meal */
+		onadd: (meal: Meal) => void;
+		/** write these down again: on today */
+		oncopy: (rows: FoodEntry[], meal: Meal | null) => void;
+	} = $props();
 
+	const sum = (rows: FoodEntry[]) => rows.reduce((total, entry) => total + entry.kcal, 0);
 	const groups = $derived(
 		([...MEALS, null] as (Meal | null)[])
 			.map((meal) => {
 				const rows = entries.filter((entry) => entry.meal === meal);
-				return { meal, rows, kcal: rows.reduce((sum, entry) => sum + entry.kcal, 0) };
+				const yesterday = today && meal && !rows.length ? before.filter((entry) => entry.meal === meal) : [];
+				return { meal, rows, kcal: sum(rows), yesterday };
 			})
-			.filter((group) => group.rows.length)
+			// (the four meals always; entries with no meal named only when there are some)
+			.filter((group) => group.meal !== null || group.rows.length)
 	);
+	const items = (n: number) => (n === 1 ? 'one thing' : `${n} things`);
 </script>
 
-{#if !entries.length}
-	<p class="empty">Nothing written down for this day.</p>
-{:else}
-	<div class="meals">
+<div class="meals">
 		{#each groups as group (group.meal)}
-			<section>
+			{@const name = group.meal ? MEAL_NAMES[group.meal] : 'No meal named'}
+			<section aria-label={name}>
 				<header>
-					<h3>{group.meal ? MEAL_NAMES[group.meal] : 'No meal named'}</h3>
-					<p>{count(group.kcal)} kcal</p>
+					<h3>{name}</h3>
+					<p>{group.rows.length ? `${count(group.kcal)} kcal` : ''}</p>
+					{#if group.meal}
+						{@const meal = group.meal}
+						<button class="add" type="button" aria-label="Add to {name.toLowerCase()}" onclick={() => onadd(meal)}>
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13" /></svg>
+						</button>
+					{/if}
 				</header>
+				{#if group.yesterday.length}
+					<button class="again" type="button" onclick={() => oncopy(group.yesterday, group.meal)}>
+						The same as yesterday <span>{items(group.yesterday.length)}, about {count(sum(group.yesterday))} kcal</span>
+					</button>
+				{/if}
+				{#if group.rows.length && !today}
+					<button class="again" type="button" onclick={() => oncopy(group.rows, group.meal)}>
+						Copy to today <span>{items(group.rows.length)}, about {count(group.kcal)} kcal</span>
+					</button>
+				{/if}
+				{#if group.rows.length}
 				<ul class="rows">
 					{#each group.rows as entry (entry.id)}
 						{@const refused = diary.refusedBecause(entry.id)}
@@ -57,37 +99,87 @@
 						</li>
 					{/each}
 				</ul>
+				{/if}
 			</section>
 		{/each}
-	</div>
-{/if}
+</div>
 
 <style>
-	.empty {
-		padding-block: 0.5rem;
-		color: var(--ink-3);
-		font-size: var(--text-small);
-	}
-
 	.meals {
 		display: grid;
-		gap: 1.5rem;
+		gap: 0.75rem;
+	}
+
+	/* a meal: a card of its own, as in an app */
+	section {
+		padding: 0.35rem 1rem 0.5rem;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--surface);
 	}
 
 	header {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: center;
+		gap: 0.75rem;
+		min-height: 3rem;
+	}
+
+	section:has(.rows) header {
+		border-bottom: 1px solid var(--line);
+	}
+
+	/* the "+" of a meal: a round button, big enough for a thumb */
+	.add {
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		margin-right: -0.4rem;
+		border: 1px solid var(--line-strong);
+		border-radius: 50%;
+		background: var(--surface-2);
+		color: var(--accent);
+		cursor: pointer;
+	}
+
+	.add:hover {
+		border-color: var(--accent);
+	}
+
+	.add:focus-visible,
+	.again:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
+	}
+
+	/* "the same as yesterday", "copy to today": a quiet line that does it in one tap */
+	.again {
 		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 1rem;
-		padding-bottom: 0.35rem;
-		border-bottom: 1px solid var(--line-strong);
+		flex-wrap: wrap;
+		gap: 0 0.5rem;
+		width: 100%;
+		min-height: 2.75rem;
+		margin-block: 0.25rem;
+		padding: 0.5rem 0.75rem;
+		border: 1px dashed var(--line-strong);
+		border-radius: var(--radius-s);
+		background: none;
+		color: var(--accent);
+		font: 600 var(--text-small) / 1.4 var(--font-text);
+		text-align: left;
+		cursor: pointer;
+	}
+
+	.again span {
+		color: var(--ink-3);
+		font-weight: 500;
 	}
 
 	h3 {
-		font: 600 var(--text-label) / 1.4 var(--font-text);
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: var(--ink-3);
+		font: 600 1.0625rem / 1.3 var(--font-text);
+		color: var(--ink);
 	}
 
 	header p {

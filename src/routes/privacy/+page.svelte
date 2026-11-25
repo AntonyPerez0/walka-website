@@ -94,7 +94,8 @@
 		{ id: 'health', label: 'Body numbers and the food diary' },
 		{ id: 'where-it-is-kept', label: 'Where it is kept' },
 		{ id: 'signing-in', label: 'Signing in' },
-		{ id: 'other-services', label: 'Other services your browser talks to' },
+			{ id: 'camera', label: 'The camera, and photos of food' },
+			{ id: 'other-services', label: 'Other services your browser talks to' },
 		{ id: 'take-out-delete', label: 'Taking it out, and deleting it' },
 		{ id: 'adults', label: 'For adults only' },
 		{ id: 'estimates', label: 'Estimates, not advice' }
@@ -883,6 +884,28 @@
 			nothing about you - until the site's data is cleared in the browser's settings.
 		</p>
 
+		<h3 id="camera">The camera, and photos of food</h3>
+		<p>
+			The food diary can read a barcode with the camera, or from a photo; read the calories off a photo of a
+			nutrition label; and suggest what a dish is from a photo of it (experimental). All three happen on your phone:
+		</p>
+		<ul>
+			<li>
+				<strong>No picture leaves your phone,</strong> and none is kept. What goes on from there is a barcode's digits
+				(looked up as above), the numbers read off a label (which you check before anything is kept), or the name of a
+				dish (searched for as if you had typed it).
+			</li>
+			<li>
+				<strong>The readers come from this site.</strong> The first time one is used, your browser fetches it from
+				this site: about 1 MB for barcodes, 11 MB for labels, 49 MB for dishes. The dish recogniser is fetched only
+				after you press <em>Fetch it once</em>, and your browser then keeps it, with nothing about you in it.
+			</li>
+			<li>
+				<strong>The camera</strong> is on only while the barcode view is open, and goes off as soon as a barcode is
+				read, the view is closed or the page is hidden. Your browser asks you first whether this site may use it.
+			</li>
+		</ul>
+
 		<h3 id="other-services">Other services your browser talks to</h3>
 		<p>
 			A page that is not an account page asks no other company for anything: <a href="#this-website">part two</a>
@@ -934,8 +957,12 @@
 				<dd>
 					<p>
 						Where the food search shows foods from the U.S. Department of Agriculture's list, your browser does not ask
-						USDA itself: a small function at Supabase passes your search words on. USDA receives those words, and not
-						your IP address.
+						USDA itself: a small function at Supabase passes your search words on - or the digits of a barcode that
+						Open Food Facts does not have. USDA receives those words or digits, and not your IP address.
+					</p>
+					<p>
+						The common foods that appear as you type (apples, rice, milk) are USDA's too, but they are a list that
+						comes from this site itself: nobody is asked for them.
 					</p>
 				</dd>
 			</div>

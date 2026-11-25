@@ -95,6 +95,47 @@ result, which list it came from.
 Both are named with their terms on the site itself as well, in its terms
 of use under "The food lists".
 
+One list is in the published site: **USDA's common foods**
+(`static/food/common-foods.json`), about 7,400 plain foods - their USDA
+number, name, calories in 100 g and one serving - from FoodData Central's
+"SR Legacy" data (April 2018), which is in the public domain. It is made
+by `scripts/common-foods.mjs`, and the diary finds its foods as somebody
+types, without asking anybody. USDA is named as above wherever they are
+shown.
+
+## The food diary's readers
+
+Three readers that run on the phone, served by the site itself from
+`food-tools/` (`scripts/food-tools.mjs` puts them there from the packages
+below, at the versions fixed in `package-lock.json`). A browser fetches
+each only when the person first uses it.
+
+* **barcode-detector** - Copyright (c) 2023 Ze-Zheng Wu, MIT licence
+  (<https://github.com/Sec-ant/barcode-detector>), with **zxing-wasm** -
+  Copyright (c) 2023 Ze-Zheng Wu, MIT licence
+  (<https://github.com/Sec-ant/zxing-wasm>), which is built from
+  **zxing-cpp** - Copyright 2016 Nu-book Inc., Copyright 2016 ZXing
+  authors, Apache License 2.0 (<https://github.com/zxing-cpp/zxing-cpp>).
+  Reads barcodes where the browser cannot.
+* **tesseract.js** and **tesseract.js-core** - Copyright 2015 Jerome Wu,
+  Apache License 2.0 (<https://github.com/naptha/tesseract.js>), built
+  from **Tesseract OCR** - Apache License 2.0
+  (<https://github.com/tesseract-ocr/tesseract>), with the English data of
+  `@tesseract.js-data/eng` (from tesseract-ocr/tessdata, Apache License
+  2.0). Reads the text of a nutrition label.
+* **ONNX Runtime Web** (`onnxruntime-web`) - Copyright (c) Microsoft
+  Corporation, MIT licence (<https://github.com/microsoft/onnxruntime>).
+  Runs the dish recogniser.
+* **The dish recogniser**: `juan1211/pratos-convnext-tiny-food101` on
+  Hugging Face, revision `2f29e0eab1496f94cff2c54d1841cdce23dd23cb`,
+  published under the Apache License 2.0 - a ConvNeXt-tiny model
+  (Facebook AI Research, Apache License 2.0) fine-tuned on the Food-101
+  dataset (Bossard, Guillaumin and Van Gool, ETH Zurich, 2014). It is
+  fetched when the site is built and checked against its SHA-256; it is
+  not changed. The names of its 101 dishes are Food-101's.
+
+The Apache License 2.0 is at <https://www.apache.org/licenses/LICENSE-2.0>.
+
 ## Used to build the site, not part of it
 
 Vite (MIT), TypeScript (Apache License 2.0), svelte-check (MIT) and sharp

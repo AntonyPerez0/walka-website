@@ -275,6 +275,11 @@ The key is in Supabase and nowhere else: not in a file here, not in a
 GitHub variable. USDA switches off a key it finds in public. It allows
 1,000 requests an hour.
 
+Since 25 November 2026 the function also looks up barcodes in USDA's
+branded foods, for products Open Food Facts does not have. A function sent
+before then has no barcodes: send it again (step 3) to switch them on.
+Until then the diary simply does without.
+
 ## 5. Tell the build
 
 On GitHub, in this repository: **Settings → Secrets and variables →

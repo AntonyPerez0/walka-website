@@ -292,6 +292,15 @@ Put a picture in `src/images/` and use it by its name:
 versions at several widths in `static/img/` (not in git). `ThemedPicture`
 shows `<name>-dark` or `<name>-light`, whichever matches the page.
 
+They then run [`scripts/food-tools.mjs`](scripts/food-tools.mjs), which
+puts the food diary's three readers - barcodes, labels, dishes - into
+`static/food-tools/` (not in git), from `node_modules` and, for the dish
+recogniser, from Hugging Face at a fixed revision checked by its SHA-256.
+The site serves them itself; a phone fetches one only when it is used.
+The list of common foods, `static/food/common-foods.json`, is in git: it
+is made from USDA's public-domain data by
+[`scripts/common-foods.mjs`](scripts/common-foods.mjs) (the file says how).
+
 To renew the screenshots: run Walka's demo, open the dashboard at
 `127.0.0.1:8787`, and take them at twice the size they are shown at (the
 ones here are a 1440-wide window at 2x, and a 390-wide one at 3x for the

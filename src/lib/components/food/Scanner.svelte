@@ -1,13 +1,12 @@
 <script lang="ts" module>
-	// The browser's own barcode reader. Chrome on Android has it; Safari on
-	// an iPhone and Firefox do not, and there the button is simply not shown.
-	type Reader = { detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]> };
-	type ReaderMaker = new (options: { formats: string[] }) => Reader;
-
-	const maker = () => (globalThis as { BarcodeDetector?: ReaderMaker }).BarcodeDetector;
+	// The barcode reader: the browser's own where it has one (Chrome on
+	// Android), and on every other browser - Safari on an iPhone, Firefox -
+	// the one this site brings (src/lib/food/readers.ts). So scanning needs
+	// only a camera.
+	import { barcodeReader, hasCamera } from '#lib/food/readers.ts';
 
 	/** Can this browser read a barcode with the camera? */
-	export const canScan = () => typeof maker() === 'function' && Boolean(globalThis.navigator?.mediaDevices?.getUserMedia);
+	export const canScan = hasCamera;
 </script>
 
 <script lang="ts">
@@ -47,8 +46,6 @@
 		document.addEventListener('visibilitychange', hidden);
 
 		void (async () => {
-			const Reader = maker();
-			if (!Reader) return;
 			try {
 				stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
 			} catch (error) {
@@ -65,7 +62,14 @@
 			view.srcObject = stream;
 			await view.play().catch(() => {});
 			watching = true;
-			const reader = new Reader({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'itf'] });
+			let reader: Awaited<ReturnType<typeof barcodeReader>>;
+			try {
+				reader = await barcodeReader();
+			} catch {
+				off();
+				problem = 'The barcode reader could not be started. Type the digits instead.';
+				return;
+			}
 			const look = async () => {
 				if (over) return;
 				try {

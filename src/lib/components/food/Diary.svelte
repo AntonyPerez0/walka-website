@@ -15,7 +15,7 @@
 	import { dayBalance, resting, usualPace, walkedExtra, walkingTime } from '#lib/account/estimates.ts';
 	import { count, dayName, shiftDay } from '#lib/account/format.ts';
 	import type { FoodEntry, FoundFood, Meal } from '#lib/account/types.ts';
-	import { mealAt, veryLittle } from '#lib/food/numbers.ts';
+	import { kcalFor, MEAL_NAMES, mealAt, veryLittle } from '#lib/food/numbers.ts';
 	import { diary, type KeptFood } from '#lib/food/store.svelte.ts';
 	import AddFood from './AddFood.svelte';
 	import Amount from './Amount.svelte';
@@ -79,6 +79,7 @@
 	const isToday = $derived(diary.day === diary.today);
 	const dayTitle = $derived(isToday ? 'Today' : diary.day === shiftDay(diary.today, -1) ? 'Yesterday' : dayName(diary.day));
 	const dayEntries = $derived(diary.entriesOf(diary.day));
+	const dayBefore = $derived(isToday ? diary.entriesOf(shiftDay(diary.day, -1)) : []);
 
 	const eaten = $derived(Math.round(dayEntries.reduce((sum, row) => sum + row.kcal, 0)));
 	const walked = $derived(Math.round(diary.walks.filter((walk) => walk.local_day === diary.day).reduce((sum, walk) => sum + walkedExtra(walk, diary.body?.weight_kg), 0)));
@@ -167,6 +168,29 @@
 		home();
 	}
 
+	/** "+" beside a usual food: written down at once, with the amount of last time. */
+	function addAgain(food: KeptFood, grams: number) {
+		const kcal = kcalFor(food.kcal_100g, grams);
+		diary.addEntry({ meal: startMeal, food_id: food.id, name: food.name, brand: food.brand, grams, kcal });
+		lastMeal = startMeal;
+		say(`Written down: ${food.name}, about ${count(kcal)} kcal${startMeal ? `, for ${MEAL_NAMES[startMeal].toLowerCase()}` : ''}.`);
+		home();
+	}
+
+	/** "+" of a meal: adding, to that meal. */
+	function addTo(meal: Meal) {
+		lastMeal = meal;
+		go('add');
+	}
+
+	/** A meal of another day, written down again - on today. */
+	function copy(rows: FoodEntry[], meal: Meal | null) {
+		for (const row of rows) diary.addEntry({ meal, food_id: row.food_id, name: row.name, brand: row.brand, grams: row.grams, kcal: row.kcal }, diary.today);
+		const kcal = rows.reduce((sum, row) => sum + row.kcal, 0);
+		say(`Written down for today: ${rows.length === 1 ? rows[0].name : `${rows.length} things`}, about ${count(kcal)} kcal.`);
+		if (!isToday) diary.show(diary.today);
+	}
+
 	function addQuick(result: { name: string; kcal: number; meal: Meal | null }) {
 		diary.addEntry({ meal: result.meal, food_id: null, name: result.name, brand: null, grams: null, kcal: result.kcal });
 		lastMeal = result.meal;
@@ -202,10 +226,14 @@
 
 			<Tabs current="food" />
 		{:else}
-			<header class="app-head view-head">
-				<p><button class="plain-button" type="button" onclick={() => history.back()}>{view === 'amount' ? 'Back to the foods' : 'Back to the day'}</button></p>
-				<p class="label">Food diary · {onDay}</p>
-				<h1 tabindex="-1" bind:this={heading}>{view === 'add' ? 'Add food' : view === 'amount' ? 'How much?' : 'Change an entry'}</h1>
+			<header class="view-head">
+				<button class="icon-button" type="button" aria-label={view === 'amount' ? 'Back to the foods' : 'Back to the day'} onclick={() => history.back()}>
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg>
+				</button>
+				<div>
+					<h1 tabindex="-1" bind:this={heading}>{view === 'add' ? 'Add food' : view === 'amount' ? 'How much?' : 'Change an entry'}</h1>
+					<p class="label">{startMeal && view === 'add' ? `${MEAL_NAMES[startMeal]} · ` : ''}{onDay}</p>
+				</div>
 			</header>
 		{/if}
 
@@ -259,7 +287,7 @@
 				</aside>
 			{/if}
 
-			<Entries entries={dayEntries} onedit={edit} />
+			<Entries entries={dayEntries} before={dayBefore} today={isToday} onedit={edit} onadd={addTo} oncopy={copy} />
 
 			<Goal />
 
@@ -269,7 +297,7 @@
 		{#if view === 'add' || view === 'amount'}
 			<!-- (kept under "how much", so that Back finds the search as it was left) -->
 			<div class="view" hidden={view !== 'add'}>
-				<AddFood meal={startMeal} active={view === 'add'} onpick={pick} onquick={addQuick} />
+				<AddFood meal={startMeal} active={view === 'add'} onpick={pick} onagain={addAgain} onquick={addQuick} />
 			</div>
 		{/if}
 
@@ -331,9 +359,8 @@
 				{/if}
 			</div>
 			{#if view === 'day'}
-				<button class="button button--block" type="button" onclick={() => go('add')}>
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13" /></svg>
-					Add food
+				<button class="button add-food" type="button" aria-label="Add food" title="Add food" onclick={() => go('add')}>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13" /></svg>
 				</button>
 			{/if}
 		</div>
@@ -352,9 +379,26 @@
 		padding-bottom: 0;
 	}
 
+	/* a view on top of the day: back, and what it is, on one line */
 	.view-head {
-		padding-top: 0.5rem;
-		justify-items: start;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		gap: 0.25rem;
+		margin-left: -0.6rem;
+		padding-top: 0.75rem;
+	}
+
+	.view-head h1 {
+		font-size: clamp(1.625rem, 1.4rem + 1vw, 2.125rem);
+	}
+
+	.view-head .label {
+		margin-top: 0.15rem;
+	}
+
+	.view-head .icon-button {
+		color: var(--ink);
 	}
 
 	.view-head h1:focus,
@@ -449,13 +493,37 @@
 
 	.dock {
 		position: sticky;
-		bottom: 0;
+		bottom: var(--app-nav, 0px);
 		z-index: 2;
 		display: grid;
+		justify-items: end;
 		gap: 0.6rem;
 		margin-inline: calc(-1 * var(--gutter));
-		padding: 1.25rem var(--gutter) max(1rem, env(safe-area-inset-bottom));
-		background: linear-gradient(to top, var(--bg) 72%, transparent);
+		padding: 1rem var(--gutter) max(1rem, env(safe-area-inset-bottom));
+		pointer-events: none;
+	}
+
+	.dock > * {
+		pointer-events: auto;
+	}
+
+	.said {
+		justify-self: stretch;
+	}
+
+	/* the main button: round and raised, at the right, within reach of a thumb */
+	.add-food {
+		width: 3.75rem;
+		height: 3.75rem;
+		padding: 0;
+		border-radius: 50%;
+		clip-path: none;
+		box-shadow: 0 12px 28px -10px var(--shadow);
+	}
+
+	.add-food svg {
+		width: 1.6rem;
+		height: 1.6rem;
 	}
 
 	.said p {

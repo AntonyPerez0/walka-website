@@ -338,6 +338,11 @@
 						<p>Every one of those figures is an estimate, for interest only, and not medical advice. The food diary is not a diet plan, and it says nothing about what anyone should eat.</p>
 						<p class="further">More: <a href="{resolve('terms/')}#estimates">Estimates, not advice</a>.</p>
 					</Question>
+					<Question id="adding-food" q="How do I add food quickly? Can it read a barcode or a photo?">
+						<p>Press "+" beside a meal, or the round "+" at the foot, and start typing: your own foods and common foods appear as you type, without a connection; <em>Search</em> also asks Open Food Facts and USDA. Foods you have had before are listed first, with a "+" that writes them down again at once, with the amount of last time. An empty meal offers "the same as yesterday", and a meal of another day "copy to today".</p>
+						<p><strong>Scan</strong> reads a barcode with the camera, on any phone, and looks it up in Open Food Facts and then in USDA's branded foods. <strong>Label</strong> reads the calories off a photo of the nutrition table, for you to check. <strong>Dish</strong> (experimental) suggests from a photo what the dish is - it knows about 100 dishes - and searches for it; it cannot see how much is on the plate. All three happen on your phone, and no picture is sent anywhere.</p>
+						<p class="further">More: <a href="{resolve('privacy/')}#camera">The camera, and photos of food</a>.</p>
+					</Question>
 					<Question id="take-out-delete" q="How do I take my data out, or delete my account?">
 						<p>Both are on <a href={resolve('account/')}>your account page</a>, under <em>Your data</em>. <em>Save everything as a file</em> gives you one file with everything your account holds. <em>Delete my account...</em> deletes the account and everything in it, at once, and cannot be undone. The walks on your own computer, in Walka, are not touched.</p>
 						<p class="further">What is in the file, and the little that stays after deleting: <a href="{resolve('privacy/')}#take-out-delete">Taking it out, and deleting it</a>.</p>
