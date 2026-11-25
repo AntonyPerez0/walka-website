@@ -26,7 +26,7 @@ without them has neither, and says so. See
 | Safety | `/safety/` | Walka only listens to the treadmill; walking while you play is at your own risk; what Walka is and is not |
 | FAQ | `/faq/` | Short answers, with links to the long ones |
 | Downloads | `/downloads/` | The files, which treadmills work, is the download safe |
-| Privacy | `/privacy/` | What Walka and this site do with data: nothing is uploaded |
+| Privacy | `/privacy/` | What Walka and this site do with data: nothing is sent unless the person switches it on |
 | Terms | `/terms/` | The terms of the website, in plain words |
 | The account pages | `/account/`, `/account/walks/`, `/food/`, `/u/` | A person's account, their walks, the food diary, a walker's public page. Without accounts they say "not open yet". |
 

@@ -228,7 +228,8 @@
 <li><strong>Screen Recording</strong> - to see the strip the addon draws in the corner of the game. The dashboard says when this is what is missing. Open <strong>System Settings → Privacy &amp; Security → Screen &amp; System Audio Recording</strong> (<em>Screen Recording</em> on older versions), switch on <strong>Walka</strong>, then close Walka and open it again. Recent versions of macOS ask again every few weeks whether Walka may still do this: choose <strong>Allow</strong>.</li>
 </ul>
 <p>After you replace Walka with a newer version, macOS may ask both again: Walka is not signed with an Apple developer account, and to macOS a program like that which has changed is a new program. (If the switch for Walka is on but the dashboard still says the screen may not be recorded, switch it off and on again.)</p>
-<p>Both can be changed later in the same place in System Settings. Walka reads the top-left corner of the game window - and, until it has found the game for the first time, searches the screen for it. No picture is saved or sent anywhere. Nothing leaves your computer.</p>
+<p>Both can be changed later in the same place in System Settings. Walka reads the top-left corner of the game window - and, until it has found the game for the first time, searches the screen for it. No picture is saved or sent anywhere: no picture of your screen leaves your computer.</p>
+<p>Your settings and walks are in <code>~/Library/<wbr />Application Support/<wbr />Walka</code>. A sign-in to <a href="{resolve('how-it-works/')}#walka-account">your Walka account</a>, if you make one in Walka, is not in that folder: it is kept in your Mac&#39;s keychain. Without it Walka sends nothing.</p>
 <h3 id="before-the-window">A black window, and the dashboard in your browser?</h3>
 <p>Then you have version 0.7.0: the one before Walka had a window of its own. It works the same. What is different:</p>
 <ul>

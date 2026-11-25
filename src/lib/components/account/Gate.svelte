@@ -29,7 +29,7 @@
 				<h1>Accounts are not open yet</h1>
 				<p class="lede">
 					Walka's website will have accounts: to share your walking progress, and to keep a food diary next to your
-					walks. They will be opt-in. Walka itself works without one, and uploads nothing.
+					walks. They will be opt-in. Walka itself works in full without one.
 				</p>
 			</header>
 			<p><a class="plain-button" href={resolve('/')}>Back to the front page</a></p>

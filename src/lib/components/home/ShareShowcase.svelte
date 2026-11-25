@@ -58,7 +58,7 @@
 			</fieldset>
 
 			<p class="private">
-				Drawn on your computer. Nothing is uploaded and nothing is posted for you. The design is Walka's own: no game
+				Drawn on your computer. The picture is not uploaded and nothing is posted for you. The design is Walka's own: no game
 				artwork, logos or fonts are used.
 			</p>
 			<p><a class="more" href="{resolve('how-it-works/')}#share">What is on the picture</a></p>

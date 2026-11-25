@@ -113,9 +113,10 @@ under 18.5): this is a walking log, not a diet.
 
 ## Syncing
 
-Three kinds of program write to these tables: the website, and later the
-Walka desktop program and an Android app. They sign in to the same
-account and follow the same habits.
+Three kinds of program write to these tables: the website, the Walka
+desktop program (since version 0.8.0, 25 November 2026: walks only, one
+way, once the person has switched sending on) and, later, an Android app.
+They sign in to the same account and follow the same habits.
 
 Everything in this part was tried on 21 November 2026 with plain HTTP
 requests against a real copy of the database (PostgREST 16.5, and the
@@ -242,7 +243,8 @@ empty.
 
 `device` - "which installation sent it: a random id each one makes once,
 for information only" - is a column the website leaves empty. A program
-may fill it.
+may fill it; Walka 0.8.0 leaves it empty too. Every request Walka makes
+says `User-Agent: Walka/<version>` and nothing else about the computer.
 
 A record the database will never take is set aside and shown, not
 retried and not cut to fit: longer than two days from start to end, more
@@ -297,19 +299,31 @@ Keeping the sign-in:
 
 * The refresh token goes into the system's own store for secrets, never
   into a settings file, a log, or anything a page can read.
-* **Refresh in one place only**, shortly before the hour is up:
+* **Refresh only when a request is about to be made and the access token
+  has run out** (or the database answers 401 `PGRST303`), with
   `POST /auth/v1/token?grant_type=refresh_token {"refresh_token": ...}`.
+  There is no timer: Walka renews nothing while it has nothing to send.
   Every refresh gives a NEW refresh token; write it down before using
   the access token. An old one used again later answers 400
-  `refresh_token_already_used` and can end the whole sign-in.
-* The sign-in is over - stop sending, keep the walks on the computer,
-  ask the person to sign in again - when a refresh answers 400 with
-  `refresh_token_not_found` or `refresh_token_already_used`.
-  `GET /auth/v1/user` then says why: 403 `session_not_found` (signed
-  out) or 403 `user_not_found` (the account is deleted) - or still 200,
-  when the keys were used twice and the account is there. A push of walks
-  does NOT say it: a deleted account answers `23514` "Walka is for
-  adults.", the same as an account that has not taken the first step.
+  `refresh_token_already_used` and can end the whole sign-in. "Refresh
+  in one place" is not enough: two copies of Walka can run on one data
+  folder. So Walka reads the refresh token from the store immediately
+  before each refresh, writes the new one at once, and keeps none in
+  memory between refreshes.
+* The sign-in is over when a refresh answers 400 with
+  `refresh_token_not_found` or `refresh_token_already_used`: forget the
+  keys, stop sending, keep the walks on the computer. Do NOT ask the
+  person to sign in again - a person who has just deleted their account
+  would make a new one by doing so. Walka says, once: "Walka is no
+  longer signed in to your Walka account, and has stopped sending. You
+  signed out elsewhere, or the Walka account was deleted. Your walks on
+  this computer are untouched." `GET /auth/v1/user` could say why - 403
+  `session_not_found` (signed out) or 403 `user_not_found` (the account
+  is deleted), or still 200 when the keys were used twice and the
+  account is there - but Walka does not ask it after a refused refresh.
+  It asks it only when a push of walks answers `23514` "Walka is for
+  adults.", which a deleted account answers too, the same as an account
+  that has not taken the first step.
 * **Signing out is forgetting first.** The program throws away the keys
   it holds, in memory and in the store, and then tells the service:
   `POST /auth/v1/logout?scope=local` (204). An access token goes on
@@ -323,10 +337,12 @@ works for people only where the project has a mail service, and the live
 project has none: `/otp` answers there, but no mail a person could get
 is sent.
 
-Syncing from the desktop program will be a switch the person turns on.
-Until it exists, Walka uploads nothing, and the site says so. The brief
-for whoever builds it - what is decided, what is the owner's, and the
-order in which Walka's words and the website's have to change - is
+Sending from the desktop program is a switch the person turns on, in
+Walka, after one question; signing in alone sends nothing. It exists
+since Walka 0.8.0. What the website says of it is on the privacy page,
+"Sending your walks to your Walka account". The brief it was built from
+- what was decided, and the order in which Walka's words and the
+website's had to change - is
 [brief-walka-sends-walks.md](brief-walka-sends-walks.md).
 
 ## Changing the tables later
@@ -340,8 +356,12 @@ syncs: the column names and units (`distance_m` in metres, `seconds`,
 values of `origin`, the id made by the program, `deleted_at` as the
 marker. Programs name the columns they read and send, treat a value they
 do not know in `origin`, `session` or the `*_source` fields as "other",
-and read `schema_version()` when they start: it goes up only when
-something changes that an older program must know of.
+and read `schema_version()` before they write: it goes up only when
+something changes that an older program must know of. Walka reads it
+once in a run, just before the first walk of that run is sent - not at
+a start, and not at all while it has nothing to send - and sends
+nothing while it is higher than 1. Raising it stops every Walka in use
+from sending.
 
 Every table added later is closed until its migration opens it: it needs
 `enable row level security`, a policy and a grant of its own; every new

@@ -10,8 +10,9 @@
 
 	const FACTS = [
 		{
-			title: 'Nothing is uploaded.',
-			text: 'Walka keeps your walks, your weight and height and your heart rate on your own computer, and sends them nowhere.'
+			title: 'Nothing is sent unless you say so.',
+			text: 'Walka keeps your walks, your weight and height and your heart rate on your own computer. Only if you sign in to your Walka account in Walka and switch sending on do your walks go there - never the heart rate, the treadmill, your character or your body numbers.',
+			more: { label: 'What goes, and when', page: 'privacy/', hash: '#sending' }
 		},
 		{
 			title: 'It looks at one corner.',
@@ -31,7 +32,7 @@
 			<Ornament />
 			<p class="label">Privacy</p>
 			<h2>Stays on your computer.</h2>
-			<p class="lede">Walka uploads nothing. It needs no account, and there is no tracking and no advertising.</p>
+			<p class="lede">Walka needs no account, and there is no tracking and no advertising. Never signed in, it asks nobody.</p>
 		</header>
 
 		<ul class="facts">
@@ -50,7 +51,7 @@
 			{#if ACCOUNTS.on}
 				This site has accounts, for people who want to share their progress or keep a food diary:
 				<span class="together">opt-in</span>, private until you say otherwise, and yours to export or delete. Walka
-				itself needs none.
+				itself needs none, and sends your walks to one only if you switch that on.
 			{:else}
 				Accounts are planned, and not open yet - for people who want to share their progress:
 				<span class="together">opt-in</span>, private until you say otherwise, and yours to export or delete.

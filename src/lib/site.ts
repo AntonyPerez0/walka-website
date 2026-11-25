@@ -19,9 +19,10 @@ export const DOWNLOADS = {
 export const LINKS = {
 	repo: WALKA_REPO,
 	readme: `${WALKA_REPO}#readme`,
-	// two sections of the README, by their headings
+	// three sections of the README, by their headings
 	isThisAllowed: `${WALKA_REPO}/blob/HEAD/README.md#is-this-allowed`,
 	troubleshooting: `${WALKA_REPO}/blob/HEAD/README.md#troubleshooting`,
+	walkaAccount: `${WALKA_REPO}/blob/HEAD/README.md#your-walka-account-on-walkadev`,
 	releases: `${WALKA_REPO}/releases`,
 	latestRelease: `${WALKA_REPO}/releases/latest`,
 	issues: `${WALKA_REPO}/issues`,

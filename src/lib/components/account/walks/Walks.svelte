@@ -85,7 +85,9 @@
 		<header class="app-head">
 			<p class="label">Your account</p>
 			<h1>Your walks</h1>
-			<p class="lede">The walks kept in your account. Walka on your computer uploads nothing: they are here because you added them.</p>
+			<p class="lede">
+				The walks kept in your account: those Walka sent, if you switched sending on in Walka, and those you added here.
+			</p>
 		</header>
 
 		<Tabs current="walks" />
@@ -102,8 +104,9 @@
 				<header>
 					<h2>No walks here yet</h2>
 					<p>
-						Walka on your computer uploads nothing. Walks get here only when you add them: from the files Walka keeps, or by
-						hand. One day the desktop program will be able to send them itself, if you switch that on.
+						Walks get here in two ways. Walka sends them, once you sign in to this account in Walka (<em>Settings → Walka
+						account</em>) and switch sending on - it asks first. Or you add them here: from the files Walka keeps, or by
+						hand. Without that switch, Walka sends nothing.
 					</p>
 				</header>
 			</div>
@@ -143,8 +146,8 @@
 					</div>
 				{/if}
 				<p class="estimate">
-					Deleting a walk here does not touch Walka on your computer. A deleted walk stays deleted: it cannot be added again
-					from the same file.
+					Deleting a walk here does not touch Walka on your computer, and Walka does not send it again. A deleted walk stays
+				deleted: it cannot be added again from the same file.
 				</p>
 			</div>
 		{/if}
