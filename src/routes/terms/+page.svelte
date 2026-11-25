@@ -288,7 +288,8 @@
 		<ul>
 			<li>
 				<strong>A computer stays signed in</strong> until somebody signs out on it, in Walka, the account is deleted, or
-				the sign-in ends. <em>Sign out</em> on this website does not sign Walka out.
+				the sign-in ends - or you sign it out on <a href={resolve('account/')}>your account page</a>, which lists where
+				you are signed in. <em>Sign out</em> on this website signs out that browser only, not Walka.
 			</li>
 			<li>
 				<strong>Walka sends every walk recorded on that computer,</strong> whoever walked. On a computer or a pad that

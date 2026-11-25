@@ -320,6 +320,14 @@
 						<p><strong>Or you add them yourself,</strong> on your account&#39;s <a href={resolve('account/walks/')}>Walks page</a>, from Walka&#39;s own files. Walka keeps every finished walk as a file in the <code>sessions</code> folder inside its own folder: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. A TCX file downloaded from the dashboard works too.</p>
 						<p class="further">Which numbers of a walk are kept, and what stays on your computer: <a href="{resolve('privacy/')}#account-keeps">What is kept</a>.</p>
 					</Question>
+					<Question id="signed-in-where" q="Where am I signed in, and how do I sign Walka out from here?">
+						<p>Your <a href={resolve('account/')}>account page</a> lists every browser and every computer where Walka is signed in to your account - when each signed in, when it was last renewed, and the IP address. You can sign out one of them, every other one, or all of them. A Walka signed out there stops sending when it next renews its sign-in, within the hour, and says that it is no longer signed in. Nothing on that computer is deleted.</p>
+						<p>That is the way to deal with a computer that is lost, sold or shared. <em>Sign out</em> alone signs out the browser you press it in.</p>
+					</Question>
+					<Question id="my-stats" q="What can I see of my own walking?">
+						<p>Everything your account holds. <a href={resolve('account/stats/')}>Your stats</a> add it up: totals for today, this week, this month and all time; charts of time, distance, steps and calories by day, week and month; records and streaks; when and on which days you usually walk, your average speed and steps a minute, and walks in a game session against walks without. On <a href={resolve('account/walks/')}>your walks</a>, each walk shows all its numbers and whether each was measured or estimated. Calories are always estimates.</p>
+						<p>It is worked out in your own browser and shown to you alone: nothing of it is on your public page. Your walks can be downloaded as a spreadsheet, and deleted several at once or all together.</p>
+					</Question>
 					<Question id="who-sees-my-page" q="Who can see my page?">
 						<p>Nobody, until you switch it to public. Then anyone who knows or guesses its name can see the name you show, and in all: how many walks, how long and how far. The last twelve weeks day by day, your steps and your single walks are each a switch of their own, off at first.</p>
 						<p>Calories, your numbers and your food are never on your page, whatever is switched on. Switch the page off and it is gone at once.</p>

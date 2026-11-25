@@ -442,7 +442,10 @@
 			<li>
 				<strong>Staying signed in.</strong> A computer where Walka is signed in stays signed in until somebody signs out
 				on it, in Walka, the Walka account is deleted, or the sign-in ends. <em>Sign out</em> on this website does not
-				sign Walka out.
+				sign Walka out.{#if ACCOUNTS.on}
+					{' '}<a href={resolve('account/')}>Your account page</a> lists every browser and every Walka signed in to your
+					account, and can sign out one of them, every other one, or all of them; a Walka signed out there stops sending
+					when it next renews its sign-in, within the hour.{/if}
 			</li>
 			<li>
 				<strong>What else a request carries.</strong> Each one names Walka and its version (<code>Walka/0.8.0</code>,
@@ -857,7 +860,9 @@
 		</ul>
 		<p>
 			Of all that, this website reads your e-mail address, which it shows you on your account page, and the two dates,
-			which go into the file you can save.
+			which go into the file you can save. Your account page also lists your sessions - when each began and was last
+			renewed, the IP address and what it calls itself - so that you can see where you are signed in and end a sign-in
+			there. Only you see that list; it is read from the sign-in each time, and kept nowhere else.
 		</p>
 		<p id="account-browser">
 			<strong>What a signed-in browser keeps.</strong> The sign-in is kept in the browser's local storage, under names
@@ -980,7 +985,9 @@
 		<p>
 			<strong>Taking it out.</strong> <em>Save everything as a file</em> on <a href={resolve('account/')}>your account
 			page</a>. Your own browser reads your rows and saves them as one file, named <code>walka-account</code> and the
-			date, in a format other programs can read (JSON). Nothing is made ready on a server, and nothing is mailed.
+			date, in a format other programs can read (JSON). Nothing is made ready on a server, and nothing is mailed. Your
+			walks alone can also be saved as a spreadsheet (CSV), every number of every walk, from your account page or your
+			walks.
 		</p>
 		<p>
 			In the file: what the sign-in keeps that the site can read - your e-mail address, when the account was made, when
@@ -989,7 +996,8 @@
 			goal and the reports you sent.
 		</p>
 		<p>
-			<strong>Deleting one walk, food or diary entry.</strong> It is emptied at once, and what is left is a marker: of
+			<strong>Deleting one walk, food or diary entry</strong> - or many walks at once, or all of them, on your walks
+			page. It is emptied at once, and what is left is a marker: of
 			a walk, when it started and ended, its day, how far the clock was from world time, and how it got here; of a
 			diary entry, its day; of a food, where it came from
 			and its number there. The marker is kept so that another device of yours hears of the deletion and does not

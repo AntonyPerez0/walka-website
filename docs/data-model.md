@@ -9,7 +9,7 @@ files are the truth: this page explains them. `npm run test:database`
 tries every promise on this page against a real database
 ([`tests/database.test.ts`](../tests/database.test.ts)).
 
-## The five rules
+## The six rules
 
 1. **A row belongs to one person.** Only that person can read it, add it
    or change it. Row-level security says so on every table, and a visitor
@@ -27,9 +27,15 @@ tries every promise on this page against a real database
    at once.
 4. **Every row can be synced.** See [Syncing](#syncing).
 5. **Yours to take and to delete.** The website reads a person's own rows
-   and saves them as one file. `delete_my_account()` deletes the account
-   and every row, and the sign-in record with it. (What Supabase logs
-   about requests is not ours to delete, and runs out by itself.)
+   and saves them as one file (and the walks alone as a spreadsheet).
+   `delete_my_account()` deletes the account and every row, and the
+   sign-in record with it. (What Supabase logs about requests is not ours
+   to delete, and runs out by itself.)
+6. **Yours to see where you are signed in.** `my_sign_ins()` gives a
+   signed-in person their own sessions - each browser, and each computer
+   where Walka is signed in - and `end_sign_in(id)` ends one of their own
+   ([`20261125000000_sign_ins.sql`](../supabase/migrations/20261125000000_sign_ins.sql)).
+   Nothing new is kept for it.
 
 ## The tables
 
@@ -324,6 +330,12 @@ Keeping the sign-in:
   It asks it only when a push of walks answers `23514` "Walka is for
   adults.", which a deleted account answers too, the same as an account
   that has not taken the first step.
+* **Signed out from the website.** The account page can end one sign-in
+  (`end_sign_in(id)`, which deletes that session and its refresh tokens
+  with it), every other one (`POST /auth/v1/logout?scope=others`) or all
+  of them (`scope=global`). For Walka, the next refresh then answers
+  `refresh_token_not_found`, and the sign-in is over as above. An access
+  token it already holds works until it runs out.
 * **Signing out is forgetting first.** The program throws away the keys
   it holds, in memory and in the store, and then tells the service:
   `POST /auth/v1/logout?scope=local` (204). An access token goes on

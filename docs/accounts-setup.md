@@ -77,7 +77,12 @@ for about a week is paused; the job in step 6 keeps it awake.
 
 The tables and all their rules are one file:
 [`supabase/migrations/20261120000000_accounts.sql`](../supabase/migrations/20261120000000_accounts.sql).
-Run it once, in one of two ways.
+Run it once, in one of two ways. Then run every later file in that
+folder, oldest first, the same way: today there is one more,
+[`20261125000000_sign_ins.sql`](../supabase/migrations/20261125000000_sign_ins.sql),
+which lets the account page list where a person is signed in. Until it
+has run, that page says it cannot list them, and its buttons for
+signing out everywhere work all the same.
 
 **In the dashboard.** *SQL Editor* → a new query → paste the whole file →
 **Run**. It should end with "Success. No rows returned".

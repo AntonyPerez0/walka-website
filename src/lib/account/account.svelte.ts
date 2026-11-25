@@ -78,6 +78,9 @@ async function letGo(db: { auth: { signOut(options: { scope: 'local' }): Promise
 /** The sign-in service says that the account, or this sign-in, is not there (any more). */
 const saysGone = (error: unknown) => [401, 403, 404].includes((error as { status?: number })?.status ?? 0);
 
+/** One place where this account is signed in, as my_sign_ins() gives it. */
+export type SignIn = { id: string; began_at: string; renewed_at: string; user_agent: string | null; ip: string | null; this_one: boolean };
+
 class Account {
 	where = $state<Where>(ACCOUNTS.on ? 'starting' : 'off');
 	userId = $state<string | null>(null);
@@ -201,10 +204,40 @@ class Account {
 		if (error) throw error;
 	}
 
-	async signOut(): Promise<void> {
+	/**
+	 * Signs out. `local`: this browser only. `others`: every other browser and
+	 * every Walka signed in to this account, and this browser stays signed in.
+	 * `global`: all of them, this browser too. Walka hears of it when it next
+	 * renews its sign-in - within the hour - and says that it is no longer
+	 * signed in.
+	 */
+	async signOut(scope: 'local' | 'others' | 'global' = 'local'): Promise<void> {
 		const db = await database();
-		await db.auth.signOut({ scope: 'local' });
-		await this.#took(null);
+		const { error } = await db.auth.signOut({ scope });
+		if (error && scope !== 'local') throw error;
+		if (scope !== 'others') await this.#took(null);
+	}
+
+	/**
+	 * Where this account is signed in: each browser, and each computer where
+	 * Walka is signed in. Null when the database does not have that question
+	 * yet (supabase/migrations/20261125000000_sign_ins.sql was not applied).
+	 */
+	async signIns(): Promise<SignIn[] | null> {
+		const db = await database();
+		const { data, error } = await db.rpc('my_sign_ins');
+		if (error) {
+			if (error.code === 'PGRST202' || /could not find the function/i.test(error.message)) return null;
+			throw error;
+		}
+		return (data ?? []) as SignIn[];
+	}
+
+	/** Ends one sign-in of this account: a browser, or a computer where Walka is signed in. */
+	async endSignIn(id: string): Promise<void> {
+		const db = await database();
+		const { error } = await db.rpc('end_sign_in', { sign_in: id });
+		if (error) throw error;
 	}
 
 	/** The first step in: "I am 18 or older, and I have read the terms." Makes the profile row. */

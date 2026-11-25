@@ -1,5 +1,7 @@
 <script lang="ts">
-	// The walks, newest first, each with a button to delete it.
+	// The walks, newest first, each with a box to choose it (to delete many
+	// at once: Walks.svelte), all its numbers on request, and a button to
+	// delete it.
 	//
 	// Deleting cannot be taken back once the database has heard of it: it
 	// marks the row, and a marked row stays deleted. So "Undo" is built on
@@ -13,17 +15,21 @@
 	import { count, dayName, distance, duration, kcal } from '#lib/account/format.ts';
 	import type { Units, WalkOrigin } from '#lib/account/types.ts';
 	import { leavingKey, remove, removeWhileLeaving, type ListedWalk } from '#lib/account/walks.ts';
+	import WalkDetails from './WalkDetails.svelte';
 
 	let {
 		walks,
 		units,
 		leaving,
+		chosen,
 		ongone
 	}: {
 		walks: ListedWalk[];
 		units: Units;
 		/** The walks that are on their way out: this list fills it, the totals leave them out. */
 		leaving: SvelteSet<string>;
+		/** The walks that are ticked, to be deleted together. */
+		chosen: SvelteSet<string>;
 		/** The database has deleted this walk. */
 		ongone: (id: string) => void;
 	} = $props();
@@ -59,11 +65,12 @@
 	});
 	const name = (walk: ListedWalk) => `${dayName(walk.local_day)}${(perDay.get(walk.local_day) ?? 0) > 1 ? `, ${clock(walk)}` : ''}`;
 
-	const button = (id: string) => list?.querySelector<HTMLElement>(`[data-walk="${CSS.escape(id)}"] button`);
+	const button = (id: string) => list?.querySelector<HTMLElement>(`[data-walk="${CSS.escape(id)}"] .row-side button, [data-walk="${CSS.escape(id)}"] .gone-line button`);
 
 	async function drop(walk: ListedWalk) {
 		problem = '';
 		leaving.add(walk.id);
+		chosen.delete(walk.id);
 		waiting.set(
 			walk.id,
 			setTimeout(() => void send([walk.id]), UNDO_FOR)
@@ -99,7 +106,7 @@
 			const row = button(held)?.closest('li');
 			const rows = [...(list?.children ?? [])].filter((li) => !ids.includes((li as HTMLElement).dataset.walk ?? ''));
 			const after = rows.find((li) => row && row.compareDocumentPosition(li) & Node.DOCUMENT_POSITION_FOLLOWING);
-			next = (after ?? rows[rows.length - 1])?.querySelector('button') ?? null;
+			next = (after ?? rows[rows.length - 1])?.querySelector('.row-side button') ?? null;
 		}
 		for (const id of ids) sent.add(id);
 		if (held) void tick().then(() => (next ?? list)?.focus());
@@ -155,14 +162,23 @@
 			<!-- on its way to the database: nothing is shown -->
 		{:else if leaving.has(walk.id)}
 			<li class="gone" data-walk={walk.id}>
-				<p role="status">
+				<p class="gone-line" role="status">
 					<span id="gone-{walk.id}">The walk of {name(walk)} is deleted.</span>
 					<button class="link-button" type="button" aria-describedby="gone-{walk.id}" onclick={() => undo(walk.id)}>Undo</button>
 				</p>
 			</li>
 		{:else}
-			<li data-walk={walk.id}>
-				<span class="row-main">{dayName(walk.local_day)}</span>
+			<li data-walk={walk.id} class:chosen={chosen.has(walk.id)}>
+				<span class="row-tick">
+					<input
+						type="checkbox"
+						id="choose-{walk.id}"
+						aria-label="Choose the walk of {name(walk)}"
+						checked={chosen.has(walk.id)}
+						onchange={(event) => (event.currentTarget.checked ? chosen.add(walk.id) : chosen.delete(walk.id))}
+					/>
+				</span>
+				<span class="row-main"><label for="choose-{walk.id}">{dayName(walk.local_day)}</label></span>
 				<span class="row-sub">
 					<span>{clock(walk)}</span>
 					<span>{duration(walk.seconds)}</span>
@@ -171,6 +187,10 @@
 					{#if walk.kcal > 0}<span>an estimated {kcal(walk.kcal)}</span>{/if}
 					<span class="from">{FROM[walk.origin] ?? 'from elsewhere'}</span>
 				</span>
+				<details class="row-more">
+					<summary>All its numbers</summary>
+					<WalkDetails {walk} {units} />
+				</details>
 				<span class="row-side">
 					<button class="icon-button" type="button" aria-label="Delete the walk of {name(walk)}" onclick={() => drop(walk)}>
 						<!-- a bin, drawn for this list -->
@@ -194,6 +214,59 @@
 	.rows > li {
 		/* (the button is 2.75rem tall: the row keeps its height when "Undo" stands in for it) */
 		min-height: 4.5rem;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		column-gap: 0.85rem;
+	}
+
+	.rows > li.chosen {
+		background: var(--surface-2);
+		box-shadow: -0.75rem 0 0 var(--surface-2), 0.75rem 0 0 var(--surface-2);
+	}
+
+	/* the box to choose a walk: in a place as big as a finger */
+	.row-tick {
+		grid-row: 1 / span 2;
+		grid-column: 1;
+		display: grid;
+		place-items: center;
+		width: 2.25rem;
+		height: 2.75rem;
+		margin-left: -0.5rem;
+	}
+
+	.row-tick input {
+		width: 1.2rem;
+		height: 1.2rem;
+		margin: 0;
+		accent-color: var(--accent);
+		cursor: pointer;
+	}
+
+	.rows .row-main,
+	.rows .row-sub,
+	.row-more {
+		grid-column: 2;
+	}
+
+	.row-main label {
+		cursor: pointer;
+	}
+
+	.rows .row-side {
+		grid-column: 3;
+	}
+
+	.row-more {
+		grid-column: 2 / -1;
+	}
+
+	.row-more summary {
+		width: fit-content;
+		padding-block: 0.3rem;
+		color: var(--accent);
+		font-size: var(--text-fine);
+		font-weight: 600;
+		cursor: pointer;
 	}
 
 	/* The numbers of a walk, with a small dot between them. They wrap as
@@ -244,7 +317,12 @@
 			grid-row: 1;
 		}
 
-		.rows .row-sub {
+		.row-tick {
+			grid-row: 1;
+		}
+
+		.rows .row-sub,
+		.row-more {
 			grid-column: 1 / -1;
 		}
 	}
