@@ -52,3 +52,32 @@ export function shiftDay(day: string, by: number): string {
 	date.setDate(date.getDate() + by);
 	return localDay(date);
 }
+
+/** "Mon": the day of the week, short */
+export const weekdayShort = (day: string) => new Intl.DateTimeFormat('en-GB', { weekday: 'short' }).format(dayDate(day));
+
+/** "November 2026" from "2026-11" */
+export const monthName = (month: string) => new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric' }).format(dayDate(`${month}-15`));
+
+/** "Nov" from "2026-11" - with "’26" when it is not this year */
+export function monthShort(month: string): string {
+	const date = dayDate(`${month}-15`);
+	const name = new Intl.DateTimeFormat('en-GB', { month: 'short' }).format(date);
+	return date.getFullYear() === new Date().getFullYear() ? name : `${name} ’${String(date.getFullYear()).slice(2)}`;
+}
+
+/** "4.1 km/h", "2.6 mph": a speed given in metres a second */
+export function speed(metresPerSecond: number, units: Units): string {
+	const value = units === 'mi' ? (metresPerSecond * 3600) / 1609.344 : (metresPerSecond * 3600) / 1000;
+	return `${one.format(value)} ${units === 'mi' ? 'mph' : 'km/h'}`;
+}
+
+/** "14:38 min/km": how long one kilometre or mile takes at that speed */
+export function pace(metresPerSecond: number, units: Units): string {
+	if (!(metresPerSecond > 0)) return '-';
+	const seconds = Math.round((units === 'mi' ? 1609.344 : 1000) / metresPerSecond);
+	return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} min/${units}`;
+}
+
+/** "19:00" */
+export const hourName = (hour: number) => `${String(hour % 24).padStart(2, '0')}:00`;

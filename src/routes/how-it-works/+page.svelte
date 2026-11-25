@@ -22,7 +22,7 @@
 		{ id: 'numbers', label: 'The numbers' },
 		{ id: 'share', label: 'A picture to share' },
 		{ id: 'road-map', label: 'The road map' },
-		{ id: 'extras', label: 'Heart rate, other apps, other games' },
+		{ id: 'extras', label: 'Heart rate, other apps, your account, other games' },
 		{ id: 'read-more', label: 'Where to read more' }
 	];
 
@@ -254,8 +254,11 @@
 			<code class="long">WTF\<wbr />Account\<wbr />...\<wbr />SavedVariables\<wbr />Walka.lua</code>, which it only reads.
 		</p>
 		<p>
-			Nothing is uploaded. Your settings and walks are kept on your own computer, in <code>%APPDATA%\Walka</code> on
-			Windows and <code class="long">~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. The dashboard
+			Your settings and walks are kept on your own computer, in <code>%APPDATA%\Walka</code> on Windows and
+			<code class="long">~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. Nothing is uploaded unless you
+			sign in to <a href="#walka-account">your Walka account</a> in Walka and switch sending on yourself. A sign-in is
+			kept in Windows' Credential Manager or your Mac's keychain, never in a file; <code>walka-account.json</code>, beside
+			your walks, keeps that account's e-mail address and what became of each walk. The dashboard
 			is only reachable from the computer itself: it shows your walks, weight and height and has no password, so it is
 			not offered to other devices on your network.
 		</p>
@@ -727,8 +730,8 @@
 		<h3 id="private-by-default">Private by default</h3>
 		<ul>
 			<li>
-				The picture is drawn on your computer, from numbers that are already on it. Nothing is uploaded and
-				nothing is posted for you.
+				The picture is drawn on your computer, from numbers that are already on it. The picture is not uploaded
+				and nothing is posted for you.
 			</li>
 			<li>
 				The road is read from a file on your computer and goes no further than the page that draws it. On the picture it
@@ -806,7 +809,7 @@
 	</section>
 
 	<section id="extras" class="prose">
-		<h2>Heart rate, other apps, other games</h2>
+		<h2>Heart rate, other apps, your account, other games</h2>
 
 		<h3 id="heart-rate">Heart rate (optional)</h3>
 		<p>
@@ -835,6 +838,34 @@
 			/>
 			<figcaption>The dashboard's History view, with the demo character.</figcaption>
 		</figure>
+
+		<h3 id="walka-account">Your Walka account (on walka.dev)</h3>
+		<p>
+			Optional. Walka works in full without it, and if you never sign in it sends nothing and asks nobody. If you want
+			your walks in <a href={resolve('account/')}>your Walka account</a> on this website:
+		</p>
+		<ol>
+			<li>
+				On the dashboard, <em>Settings → Walka account</em>: sign in with Discord, GitHub or Google. Your own browser
+				opens; sign in there, then come back. Signing in sends nothing.
+			</li>
+			<li>
+				<em>Send my walks to my Walka account...</em> asks first. It names the account, says what goes and how many
+				walks, and lets you choose: all of them, or only walks from now on.
+			</li>
+		</ol>
+		<p>
+			From then on every walk recorded on that computer goes to that account, whoever walked: when Walka starts, and
+			after each walk is saved. Of each walk go its times and day, how long the belt moved, distance, steps and calories
+			(estimates), whether a game session was running, and how each number was come by. The samples, the heart rate,
+			the top speed, the treadmill's name, your character and your body numbers stay on your computer.
+		</p>
+		<p>
+			<em>Stop sending</em> or <em>Sign out</em>, in Walka, ends it at once and deletes nothing. Walka never changes
+			or deletes anything in your account, and nothing in the account changes a file on your computer. <em>Sign out</em>
+			on this website does not sign Walka out. The whole of it: <a href="{resolve('privacy/')}#sending">Privacy</a>, and
+			<a href={LINKS.walkaAccount}>Walka's README</a>.
+		</p>
 
 		<h3 id="no-game">Other games, or no game</h3>
 		<p>

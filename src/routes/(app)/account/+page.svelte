@@ -5,10 +5,13 @@
 	import Gate from '#lib/components/account/Gate.svelte';
 	import Tabs from '#lib/components/account/Tabs.svelte';
 	import Seo from '#lib/components/Seo.svelte';
-	import { account, say } from '#lib/account/account.svelte.ts';
+	import { onMount } from 'svelte';
+	import { account, say, type SignIn } from '#lib/account/account.svelte.ts';
 	import { database } from '#lib/account/client.ts';
+	import { walksCsv } from '#lib/account/csv.ts';
 	import { everything, save } from '#lib/account/export.ts';
-	import { localDay } from '#lib/account/format.ts';
+	import { count, localDay } from '#lib/account/format.ts';
+	import { everyWalk } from '#lib/account/walks.ts';
 	import type { Body, Units } from '#lib/account/types.ts';
 
 	// ---- the public page ------------------------------------------------
@@ -161,7 +164,94 @@
 	// copy holds something that was not sent yet, the page asks first.
 	let unsent = $state(0);
 
-	async function signOut(allTheSame = false) {
+	// ---- where this account is signed in -----------------------------------
+	/** Null: not asked yet, or the database has no such question (yet). */
+	let signIns = $state<SignIn[] | null>(null);
+	let listable = $state(true);
+	let signInsProblem = $state('');
+	let signInsBusy = $state('');
+	let endedElsewhere = $state('');
+
+	async function loadSignIns() {
+		signInsProblem = '';
+		try {
+			signIns = await account.signIns();
+			listable = signIns !== null;
+		} catch (error) {
+			signInsProblem = say(error);
+		}
+	}
+	onMount(() => {
+		// (the list is asked for once somebody is signed in and the page is theirs)
+		const wait = setInterval(() => {
+			if (account.where === 'in' && account.profile?.adult_confirmed_at) {
+				clearInterval(wait);
+				void loadSignIns();
+			}
+		}, 200);
+		return () => clearInterval(wait);
+	});
+
+	/** "Walka 0.8.0", "Firefox on Windows": what a sign-in's browser or program calls itself, in two or three words. */
+	function what(agent: string | null): { name: string; walka: boolean } {
+		const text = agent ?? '';
+		const walka = /^Walka\/([\w.+-]+)/.exec(text);
+		if (walka) return { name: `Walka ${walka[1]}, on a computer`, walka: true };
+		const browser = /Edg\//.test(text)
+			? 'Edge'
+			: /OPR\/|Opera/.test(text)
+				? 'Opera'
+				: /Firefox\//.test(text)
+					? 'Firefox'
+					: /Chrome\//.test(text)
+						? 'Chrome'
+						: /Safari\//.test(text)
+							? 'Safari'
+							: '';
+		const system = /iPhone|iPad/.test(text)
+			? 'an iPhone or iPad'
+			: /Android/.test(text)
+				? 'Android'
+				: /Windows/.test(text)
+					? 'Windows'
+					: /Mac OS X|Macintosh/.test(text)
+						? 'a Mac'
+						: /Linux/.test(text)
+							? 'Linux'
+							: '';
+		if (browser && system) return { name: `${browser} on ${system}`, walka: false };
+		return { name: browser || (system ? `A browser on ${system}` : 'Something that does not say what it is'), walka: false };
+	}
+
+	const when = (iso: string) => new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+
+	async function endOne(signIn: SignIn) {
+		signInsBusy = signIn.id;
+		signInsProblem = endedElsewhere = '';
+		try {
+			await account.endSignIn(signIn.id);
+			endedElsewhere = `${what(signIn.user_agent).name} is signed out.${what(signIn.user_agent).walka ? ' Walka stops sending when it next renews its sign-in, within the hour.' : ''}`;
+			await loadSignIns();
+		} catch (error) {
+			signInsProblem = say(error);
+		}
+		signInsBusy = '';
+	}
+
+	async function signOutElsewhere() {
+		signInsBusy = 'others';
+		signInsProblem = endedElsewhere = '';
+		try {
+			await account.signOut('others');
+			endedElsewhere = 'Every other browser, and every Walka, is signed out. Walka stops sending when it next renews its sign-in, within the hour.';
+			if (listable) await loadSignIns();
+		} catch (error) {
+			signInsProblem = say(error);
+		}
+		signInsBusy = '';
+	}
+
+	async function signOut(allTheSame = false, scope: 'local' | 'global' = 'local') {
 		dataProblem = '';
 		if (!allTheSame && account.profile?.body_food_consent_at && account.userId) {
 			try {
@@ -175,7 +265,18 @@
 			}
 		}
 		unsent = 0;
-		await account.signOut();
+		await account.signOut(scope);
+	}
+
+	async function takeWalks() {
+		dataBusy = true;
+		dataProblem = '';
+		try {
+			save(`walka-walks-${localDay()}.csv`, walksCsv(await everyWalk()), 'text/csv;charset=utf-8');
+		} catch (error) {
+			dataProblem = say(error);
+		}
+		dataBusy = false;
 	}
 
 	async function takeOut() {
@@ -382,13 +483,64 @@
 
 			<div class="panel">
 				<header>
+					<h2>Where you are signed in</h2>
+					<p>
+						Each browser, and each computer where Walka is signed in to this account. A computer stays signed in until
+						somebody signs out on it, in Walka - or until you sign it out here. <em>Sign out</em> below signs out this
+						browser only.
+					</p>
+				</header>
+				{#if listable && signIns}
+					<ul class="rows sign-ins">
+						{#each signIns as signIn (signIn.id)}
+							{@const it = what(signIn.user_agent)}
+							<li>
+								<span class="row-main">{it.name}{#if signIn.this_one}<span class="this-one">&nbsp;· this browser</span>{/if}</span>
+								<span class="row-sub">
+									Signed in {when(signIn.began_at)}; last renewed {when(signIn.renewed_at)}{#if signIn.ip}; from {signIn.ip}{/if}
+								</span>
+								<span class="row-side">
+									{#if !signIn.this_one}
+										<button class="plain-button" type="button" onclick={() => endOne(signIn)} disabled={!!signInsBusy}>
+											{signInsBusy === signIn.id ? 'Signing out...' : 'Sign out'}
+										</button>
+									{/if}
+								</span>
+							</li>
+						{/each}
+					</ul>
+				{:else if listable && !signInsProblem}
+					<p aria-busy="true">One moment.</p>
+				{/if}
+				{#if endedElsewhere}<p class="notice notice--ok" role="status">{endedElsewhere}</p>{/if}
+				{#if signInsProblem}<p class="notice notice--bad" role="alert">{signInsProblem}</p>{/if}
+				<div class="panel-foot">
+					<button class="plain-button" type="button" onclick={signOutElsewhere} disabled={!!signInsBusy}>
+						{signInsBusy === 'others' ? 'Signing out...' : 'Sign out everywhere else'}
+					</button>
+					<button class="plain-button" type="button" onclick={() => signOut(false, 'global')} disabled={!!signInsBusy}>Sign out everywhere</button>
+				</div>
+				<p class="estimate">
+					A Walka that is signed out stops sending when it next renews its sign-in, within the hour, and says that it is no
+					longer signed in. Nothing on your computer is deleted. {#if !listable}This site cannot list them yet: the
+						buttons work all the same.{/if}
+				</p>
+			</div>
+
+			<div class="panel">
+				<header>
 					<h2>Your data</h2>
 					<p>Everything in your account is yours to take and to delete.</p>
 				</header>
 				<div class="panel-foot">
 					<button class="plain-button" type="button" onclick={takeOut} disabled={dataBusy}>Save everything as a file</button>
+					<button class="plain-button" type="button" onclick={takeWalks} disabled={dataBusy}>Your walks as a spreadsheet (CSV)</button>
 					<button class="plain-button" type="button" onclick={() => signOut()}>Sign out</button>
 				</div>
+				<p class="estimate">
+					The file is in JSON, which other programs can read; the spreadsheet holds every number of every walk. To delete
+					many walks at once, or all of them, go to <a href={resolve('account/walks/')}>your walks</a>.
+				</p>
 				{#if unsent}
 					<p class="notice notice--bad" role="alert">
 						{unsent === 1 ? 'One thing in your food diary has' : `${unsent} things in your food diary have`} not been sent yet from this device. Signing
@@ -422,3 +574,27 @@
 		</div>
 	</section>
 </Gate>
+
+<style>
+	/* the browser this page is open in, said quietly after its name */
+	.this-one {
+		color: var(--ink-3);
+		font-weight: 400;
+	}
+
+	.sign-ins .row-sub {
+		overflow-wrap: anywhere;
+	}
+
+	/* on a phone the button goes under the words */
+	@media (max-width: 30rem) {
+		.sign-ins > li {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.sign-ins .row-side {
+			grid-row: auto;
+			grid-column: 1;
+		}
+	}
+</style>

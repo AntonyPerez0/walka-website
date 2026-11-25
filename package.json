@@ -20,7 +20,7 @@
 		"check": "npm run images && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"verify": "node scripts/verify.mjs",
 		"test": "npm run check && npm run build && npm run verify",
-		"test:unit": "node --test tests/estimates.test.ts tests/import.test.ts tests/usda.test.ts",
+		"test:unit": "node --test tests/estimates.test.ts tests/import.test.ts tests/usda.test.ts tests/stats.test.ts tests/csv.test.ts",
 		"test:database": "node --test tests/database.test.ts",
 		"prepare": "svelte-kit sync || echo ''"
 	},

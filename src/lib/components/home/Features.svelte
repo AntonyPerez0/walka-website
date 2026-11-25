@@ -44,7 +44,7 @@
 		{
 			icon: 'home',
 			title: 'Stays on your computer.',
-			text: "Nothing is uploaded. Walka never presses keys, moves the mouse or reads the game's memory - it looks at the top-left corner of the game window."
+			text: "Nothing is uploaded unless you sign in to your Walka account (on walka.dev) and switch sending on yourself. Walka never presses keys, moves the mouse or reads the game's memory - it looks at the top-left corner of the game window."
 		}
 	];
 </script>

@@ -17,7 +17,7 @@
 
 	// The date of the last change to the words of this page. It stands at the
 	// top and again under "Changes": change it whenever the text changes.
-	const UPDATED = { iso: '2026-11-20', text: '20 November 2026' };
+	const UPDATED = { iso: '2026-11-25', text: '25 November 2026' };
 
 	// The website's own files on GitHub.
 	const WEBSITE = {
@@ -280,6 +280,28 @@
 			Looking after that is yours to do: nobody here can do it for you.
 		</p>
 
+		<h3 id="walka-signed-in">Walka, signed in to your account</h3>
+		<p>
+			You can sign in to your account in Walka, the program, too, and switch on sending your walks to it. That is your
+			choice, made in Walka after one question; signing in alone sends nothing.
+		</p>
+		<ul>
+			<li>
+				<strong>A computer stays signed in</strong> until somebody signs out on it, in Walka, the account is deleted, or
+				the sign-in ends - or you sign it out on <a href={resolve('account/')}>your account page</a>, which lists where
+				you are signed in. <em>Sign out</em> on this website signs out that browser only, not Walka.
+			</li>
+			<li>
+				<strong>Walka sends every walk recorded on that computer,</strong> whoever walked. On a computer or a pad that
+				others use too, their walks go to your account as well: switch sending on only where the walks are yours, or
+				sign Walka out.
+			</li>
+			<li>
+				<strong>The sign-in Walka keeps is the whole account,</strong> not a key for walks alone. Whoever can use that
+				computer as you can use your account.
+			</li>
+		</ul>
+
 		<h3 id="names-and-your-page">Names, and your public page</h3>
 		<p>
 			Your account is private until you switch your page to public. A public page has a name in its address and a name
@@ -306,7 +328,7 @@
 		</p>
 		<p>
 			You answer for it. Put in your own walks and your own numbers, and nothing that is somebody else's to keep
-			private.
+			private - whether you add them here or Walka sends them.
 		</p>
 		<p>
 			One account has room for 20,000 walks, 5,000 foods and 20,000 diary entries, and every number has a range it
@@ -366,7 +388,7 @@
 		<p>This site has no accounts today. They are planned, and not open yet.</p>
 		<p>
 			If they are added, terms for them will be added here, and the
-			<a href={resolve('privacy/')}>privacy page</a> updated, before they open. Syncing and sharing will be opt-in, a
+			<a href={resolve('privacy/')}>privacy page</a> updated, before they open. Sharing will be opt-in, a
 			profile will be private until its owner makes it public, and you will be able to export and delete your account
 			and data yourself.
 		</p>

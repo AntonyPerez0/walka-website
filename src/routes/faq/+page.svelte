@@ -262,14 +262,13 @@
 			<h2>Your data</h2>
 			<div class="questions">
 				<Question id="uploads" q="Does Walka upload anything?">
-					<p>No. Nothing is uploaded. Walka runs on your computer: no picture of your screen is saved or sent anywhere, the Share picture is drawn on your computer, and the road your character travels never leaves your PC. Posting a picture or importing a walk somewhere else is something you do yourself, by hand.</p>
-					{#if ACCOUNTS.on}
-						<p>That goes for an account on this website too: a walk gets into one only when <a href="#add-walks">you add it there yourself</a>.</p>
-					{/if}
-					<p class="further">More: <a href="{resolve('privacy/')}#what-leaves">Privacy</a>.</p>
+					<p>Not unless you switch it on. Since version 0.8.0, Walka can send your walks to your Walka account on walka.dev - but only if you sign in to that account in Walka and switch sending on yourself, after one question. If you never sign in, Walka sends nothing and asks nobody.</p>
+					<p>With sending on, sixteen things of each walk go: a random number for the walk, that it came from Walka, its name on your computer (its local start time), when it started and ended, the day, how far your clock was from world time, how long the belt moved, distance, steps and calories (estimates), the calories on top of sitting, whether a walking session was running in the game, and how the steps, distance and calories were come by. Never the speed and heart-rate samples, the heart rate, the top speed, the treadmill&#39;s name, your character, or your weight, height, age and sex.</p>
+					<p>Everything else stays on your computer: no picture of your screen is saved or sent anywhere, the Share picture is drawn on your computer, and the road your character travels never leaves your PC. Posting a picture or importing a walk somewhere else is something you do yourself, by hand.</p>
+					<p class="further">More: <a href="{resolve('privacy/')}#sending">Sending your walks</a> and <a href="{resolve('privacy/')}#what-leaves">what leaves your computer</a>.</p>
 				</Question>
 				<Question id="what-it-keeps" q="What does it keep, and where?">
-					<p>Walka keeps your settings (with the weight and height you entered), your walks (with heart rate, if you use a sensor) and the journey numbers of your characters (with each character&#39;s name, without the realm), in a folder of its own: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. Versions after 0.7.0 also keep <code>walka.log</code> there: what Walka connected to and what went wrong. It can hold your treadmill&#39;s name and Bluetooth address, and it stays on your computer unless you send it to somebody.</p>
+					<p>Walka keeps your settings (with the weight and height you entered), your walks (with heart rate, if you use a sensor) and the journey numbers of your characters (with each character&#39;s name, without the realm), in a folder of its own: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. Versions after 0.7.0 also keep <code>walka.log</code> there: what Walka connected to and what went wrong. It can hold your treadmill&#39;s name and Bluetooth address, and it stays on your computer unless you send it to somebody. Once you have signed in to your Walka account in Walka, <code>walka-account.json</code> is there too - which account is signed in, with its e-mail address, whether sending is on, and what became of each walk - and the sign-in itself is kept in Windows&#39; Credential Manager or your Mac&#39;s keychain, never in a file.</p>
 					<p>In the game&#39;s folder it writes only into Walka&#39;s own addon folder - the addon, and <code>CompanionData.lua</code>, the file from which the game loads what the treadmill measured (your walks, with your body profile and the treadmill&#39;s name). What the addon itself records, the road included, is saved by the game with your other addon settings.</p>
 					<p>Walks shorter than 20 seconds are not kept, and a walk can be deleted on the dashboard&#39;s <em>History</em> page.</p>
 					<p class="further">More: <a href="{resolve('privacy/')}#what-it-keeps">Privacy</a>.</p>
@@ -288,8 +287,8 @@
 				</Question>
 				{#if !ACCOUNTS.on}
 					<Question id="accounts" q="Will there be accounts?">
-						<p>They are planned, and not open yet: later this website is to offer accounts, for sharing your walking progress with others and for keeping track of food. Walka today has no accounts and uploads nothing.</p>
-						<p>Syncing and sharing will be opt-in, a profile will be private until its owner makes it public, and you will be able to export and delete your account and your data yourself. The <a href="{resolve('privacy/')}#planned">privacy page</a> and the <a href="{resolve('terms/')}#accounts">terms</a> will be updated before any of it is switched on.</p>
+						<p>They are planned, and not open yet on this copy of the site: later it is to offer accounts, for sharing your walking progress with others and for keeping track of food. Walka sends walks only to a Walka account on walka.dev, and only if you switch that on.</p>
+						<p>Sharing will be opt-in, a profile will be private until its owner makes it public, and you will be able to export and delete your account and your data yourself. The <a href="{resolve('privacy/')}#planned">privacy page</a> and the <a href="{resolve('terms/')}#accounts">terms</a> will be updated before any of it is switched on.</p>
 					</Question>
 				{/if}
 			</div>
@@ -300,7 +299,7 @@
 				<h2>Accounts</h2>
 				<div class="questions">
 					<Question id="need-an-account" q="Do I need an account?">
-						<p>No. Walka works without one and uploads nothing, and every other page of this site is free to read. An account is only for the two things that need one: sharing your walking progress, and the food diary.</p>
+						<p>No. Walka works in full without one and, if you never sign in, sends nothing; every other page of this site is free to read. An account is only for the two things that need one: sharing your walking progress, and the food diary.</p>
 						<p class="further">More: <a href="{resolve('privacy/')}#your-account">Your account, if you make one</a>.</p>
 					</Question>
 					<Question id="account-for" q="What is an account for?">
@@ -317,9 +316,17 @@
 						<p class="further">What signing in keeps: <a href="{resolve('privacy/')}#signing-in">Signing in</a>.</p>
 					</Question>
 					<Question id="add-walks" q="How do my walks get into it?">
-						<p>You add them yourself, on your account&#39;s <a href={resolve('account/walks/')}>Walks page</a>, from Walka&#39;s own files. Walka keeps every finished walk as a file in the <code>sessions</code> folder inside its own folder: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. A TCX file downloaded from the dashboard works too.</p>
-						<p>Walka itself uploads nothing. One day the desktop program may be able to send your walks, if you switch that on; today it cannot.</p>
+						<p>In two ways. <strong>Walka sends them,</strong> if you want: in Walka, <em>Settings → Walka account</em>, sign in, then <em>Send my walks to my Walka account...</em>. It asks one question first - which account, what goes, how many walks, all of them or only walks from now on - and from then on sends each walk when it is saved, and at each start. Every walk recorded on that computer goes, whoever walked. <em>Stop sending</em> or <em>Sign out</em> in Walka ends it; neither deletes anything here. <em>Sign out</em> on this website does not sign Walka out.</p>
+						<p><strong>Or you add them yourself,</strong> on your account&#39;s <a href={resolve('account/walks/')}>Walks page</a>, from Walka&#39;s own files. Walka keeps every finished walk as a file in the <code>sessions</code> folder inside its own folder: <code class="cmd">%APPDATA%\Walka</code> on Windows, <code>~/Library/<wbr />Application Support/<wbr />Walka</code> on a Mac. A TCX file downloaded from the dashboard works too.</p>
 						<p class="further">Which numbers of a walk are kept, and what stays on your computer: <a href="{resolve('privacy/')}#account-keeps">What is kept</a>.</p>
+					</Question>
+					<Question id="signed-in-where" q="Where am I signed in, and how do I sign Walka out from here?">
+						<p>Your <a href={resolve('account/')}>account page</a> lists every browser and every computer where Walka is signed in to your account - when each signed in, when it was last renewed, and the IP address. You can sign out one of them, every other one, or all of them. A Walka signed out there stops sending when it next renews its sign-in, within the hour, and says that it is no longer signed in. Nothing on that computer is deleted.</p>
+						<p>That is the way to deal with a computer that is lost, sold or shared. <em>Sign out</em> alone signs out the browser you press it in.</p>
+					</Question>
+					<Question id="my-stats" q="What can I see of my own walking?">
+						<p>Everything your account holds. <a href={resolve('account/stats/')}>Your stats</a> add it up: totals for today, this week, this month and all time; charts of time, distance, steps and calories by day, week and month; records and streaks; when and on which days you usually walk, your average speed and steps a minute, and walks in a game session against walks without. On <a href={resolve('account/walks/')}>your walks</a>, each walk shows all its numbers and whether each was measured or estimated. Calories are always estimates.</p>
+						<p>It is worked out in your own browser and shown to you alone: nothing of it is on your public page. Your walks can be downloaded as a spreadsheet, and deleted several at once or all together.</p>
 					</Question>
 					<Question id="who-sees-my-page" q="Who can see my page?">
 						<p>Nobody, until you switch it to public. Then anyone who knows or guesses its name can see the name you show, and in all: how many walks, how long and how far. The last twelve weeks day by day, your steps and your single walks are each a switch of their own, off at first.</p>
@@ -370,7 +377,7 @@
 					<p class="further">More: <a href="{resolve('how-it-works/')}#heart-rate">Heart rate</a>.</p>
 				</Question>
 				<Question id="garmin-strava" q="Can I send walks to Garmin Connect or Strava?">
-					<p>Not automatically - Walka uploads nothing. Each walk can be downloaded as a <strong>TCX</strong> file (dashboard → <em>History</em> → a walk → <em>TCX</em>) and imported by hand: on connect.garmin.com, <em>Activities</em> → <em>Import</em>.</p>
+					<p>Not automatically: Walka sends walks only to your Walka account on walka.dev, and only if you switch that on. Each walk can be downloaded as a <strong>TCX</strong> file (dashboard → <em>History</em> → a walk → <em>TCX</em>) and imported by hand: on connect.garmin.com, <em>Activities</em> → <em>Import</em>.</p>
 					<p>Imported walks show time, distance, calories and heart rate; Garmin does not add their steps to your daily step total. The dashboard&#39;s <em>Download TCX</em> button says the file imports into Garmin Connect, Strava and most fitness sites; the README spells out the steps for Garmin only.</p>
 					<p class="further">More: <a href="{resolve('how-it-works/')}#tcx">Garmin Connect, Strava and others</a>.</p>
 				</Question>
@@ -392,7 +399,7 @@
 						<p class="further">More: <a href="{resolve('how-it-works/')}#on-the-picture">What is on it</a>.</p>
 					</Question>
 					<Question id="posted" q="Is anything posted for me?">
-						<p>No. The picture is drawn on your computer, from numbers that are already on it. Nothing is uploaded and nothing is posted for you: you choose where it goes.</p>
+						<p>No. The picture is drawn on your computer, from numbers that are already on it. The picture is not uploaded and nothing is posted for you: you choose where it goes.</p>
 						<p class="further">More: <a href="{resolve('how-it-works/')}#private-by-default">Private by default</a>.</p>
 					</Question>
 					<Question id="artwork" q="Does the picture use the game's artwork?">

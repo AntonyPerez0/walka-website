@@ -24,7 +24,7 @@
 
 	// The date of the last change to the words of this page. It stands at the
 	// top and again under "Changes": change it whenever the text changes.
-	const UPDATED = { iso: '2026-11-21', text: '21 November 2026' };
+	const UPDATED = { iso: '2026-11-25', text: '25 November 2026' };
 
 	const GITHUB_PRIVACY = 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement';
 
@@ -54,8 +54,8 @@
 	const otherNames = oneOf(otherSites.map((way) => WAY_NAMES[way]));
 
 	const DESCRIPTION = ACCOUNTS.on
-		? 'Walka uploads nothing. An account on this website is opt-in, private until you say otherwise, and yours to take out or delete. What is kept, where, and who sees it.'
-		: 'Walka uploads nothing, and this website has no accounts, no cookies, no analytics and no advertising. What is kept, where, and what is planned.';
+		? 'Walka sends nothing unless you switch sending on. An account here is opt-in, private until you say otherwise, and yours to take out or delete. What is kept, where, and who sees it.'
+		: 'Walka sends nothing unless you sign in to a Walka account and switch sending on. This website has no accounts, cookies, analytics or advertising. What is kept, where, and what is planned.';
 
 	// "The short version" stands above the article, so it is not in its list.
 	const SECTIONS = [
@@ -75,6 +75,7 @@
 		{ id: 'screen', label: 'What it looks at on your screen' },
 		{ id: 'share-picture', label: 'The Share picture' },
 		{ id: 'probe-report', label: 'The probe report' },
+		{ id: 'sending', label: 'Sending your walks to your Walka account' },
 		{ id: 'what-leaves', label: 'What leaves your computer' }
 	];
 
@@ -102,16 +103,17 @@
 
 <Seo title="Privacy" description={DESCRIPTION} />
 
-<PageHero label={ACCOUNTS.on ? 'Walka uploads nothing' : 'Nothing is uploaded'} title="Privacy">
+<PageHero label="Nothing is sent unless you say so" title="Privacy">
 	{#if ACCOUNTS.on}
 		<p>
-			Walka runs on your computer and uploads nothing. This website has no cookies and no analytics, and an account on
-			it only if you make one - the rest is below, in plain words.
+			Walka runs on your computer, and sends nothing unless you sign in to your Walka account in Walka and switch
+			sending on yourself. This website has no cookies and no analytics, and an account on it only if you make one - the
+			rest is below, in plain words.
 		</p>
 	{:else}
 		<p>
-			Walka runs on your computer and uploads nothing. This website has no accounts, no cookies and no analytics - the
-			rest is below, in plain words.
+			Walka runs on your computer, and sends nothing unless you sign in to a Walka account in Walka and switch sending on
+			yourself. This website has no accounts, no cookies and no analytics - the rest is below, in plain words.
 		</p>
 	{/if}
 	<p class="updated">Last updated: <time datetime={UPDATED.iso}>{UPDATED.text}</time></p>
@@ -127,8 +129,10 @@
 			{#if ACCOUNTS.on}
 				<ul class="points">
 					<li>
-						<strong>Walka uploads nothing.</strong> What it records stays on your computer. A walk gets into an account
-						only when you add it on this website yourself.
+						<strong>Walka sends nothing unless you switch it on.</strong> What it records stays on your computer -
+						unless you sign in to your Walka account in Walka and switch sending on, after one question. Then sixteen
+						things of each walk go to your account; the samples, the heart rate, the treadmill and your character
+						never do. You can also add walks on this website yourself.
 					</li>
 					<li>
 						<strong>An account is opt-in.</strong> Walka needs none, and neither do these pages. Without one, the site
@@ -150,7 +154,10 @@
 				</ul>
 			{:else}
 				<ul class="points">
-					<li><strong>Walka uploads nothing.</strong> What it records stays on your computer.</li>
+					<li>
+						<strong>Walka sends nothing unless you switch it on.</strong> What it records stays on your computer, unless
+						you sign in to a Walka account (on walka.dev) in Walka and switch sending on yourself.
+					</li>
 					<li><strong>This website has no accounts, no cookies, no analytics and no advertising.</strong></li>
 					<li>
 						<strong>GitHub hosts the site and the downloads.</strong> Opening a page asks no other company for anything.
@@ -196,7 +203,8 @@
 		<p class="lead">
 			Walka runs on your computer, in two pieces: the program you download and open, and the addon in the game. The
 			program listens to your walking pad over Bluetooth, and to a heart-rate sensor if you add one. Nothing is
-			uploaded - not to Walka's maker, not to anyone else.
+			uploaded unless you sign in to your Walka account in Walka and switch sending on yourself: then your walks go to
+			that account and nowhere else (<a href="#sending">what goes, and when</a>). Never signed in, Walka asks nobody.
 		</p>
 		<p>
 			Walka is experimental, and you use it at your own risk. It is not a safety device or a medical device. That is the
@@ -228,7 +236,29 @@
 						what went wrong. It can hold your treadmill's name and Bluetooth address, and it stays on your computer
 						unless you send it to somebody.
 					</p>
+					<p>
+						<strong><code>walka-account.json</code>,</strong> once you have signed in to your Walka account in Walka:
+						which Walka account is signed in (the address of its database, its e-mail address, its id there, and whether
+						you signed in with Discord, GitHub or Google), whether sending is on and what you chose when you switched it
+						on, and what became of each walk - sent, there already, or not taken, and why. While sending is on it also
+						holds a mark: a random text that is a key to nothing. The file stays when you sign out, with the e-mail
+						address in it.
+					</p>
 					<p>And a few small working files.</p>
+				</dd>
+			</div>
+			<div>
+				<dt>
+					<strong>Windows' Credential Manager,</strong>
+					<span>or your Mac's keychain</span>
+				</dt>
+				<dd>
+					<p>
+						<strong>The sign-in to your Walka account,</strong> if you signed in in Walka - never in a file of Walka's,
+						and never in <code>walka.log</code>. While sending is on, the mark beside it. Signing out in Walka removes
+						both; deleting Walka does not. The sign-in is the whole account, not a key for walks alone: whoever has it
+						can read everything in your account, make your page public and delete the account.
+					</p>
 				</dd>
 			</div>
 			<div>
@@ -273,7 +303,9 @@
 			saved settings, is not removed by this.
 		</p>
 		<p>
-			Walka puts none of this anywhere else, so there is nobody to ask for a copy or a deletion: the files are yours.
+			Unless you switch sending on, Walka puts none of this anywhere else, so there is nobody to ask for a copy or a
+			deletion: the files are yours. What sending puts into your Walka account is under
+			<a href="#sending">Sending your walks</a>.
 		</p>
 
 		<h3 id="dashboard">The dashboard</h3>
@@ -283,8 +315,9 @@
 			offered to other devices on your network.
 		</p>
 		<p>
-			The page loads nothing from anywhere else. In its own words: &quot;Runs on this computer. Nothing is
-			uploaded.&quot;
+			The page loads nothing from anywhere else. In its own words, while sending is off: &quot;Runs on this computer.
+			Nothing is uploaded.&quot; While it is on: &quot;Runs on this computer. Your walks are sent to your Walka
+			account.&quot;
 		</p>
 		<p>
 			Walka's own window is drawn with what your system already has for showing pages inside programs: <em>Microsoft
@@ -330,8 +363,8 @@
 		</p>
 		<ul>
 			<li>
-				The picture is drawn on your computer, from numbers that are already on it. Nothing is uploaded and
-				nothing is posted for you.
+				The picture is drawn on your computer, from numbers that are already on it. The picture is not uploaded
+				and nothing is posted for you.
 			</li>
 			<li>
 				Your character's name, and the small line with your weight and average pace, are <strong>off</strong> until you
@@ -363,25 +396,95 @@
 			window.
 		</p>
 
+		<h3 id="sending">Sending your walks to your Walka account</h3>
+		<p>
+			Since version 0.8.0 (25 November 2026), Walka can send your walks to your Walka account on walka.dev. It is
+			optional and off until you switch it on. If you never sign in, Walka sends nothing and asks nobody.
+		</p>
+		<ul>
+			<li>
+				<strong>Two steps, both yours.</strong> In Walka, <em>Settings → Walka account</em>: sign in with Discord,
+				GitHub or Google, in your own browser. Signing in sends no walk. Then <em>Send my walks to my Walka
+				account...</em>, which asks one question first: it names the Walka account, says what goes and how many walks,
+				and lets you choose all of them or only walks from now on. Until the account has taken its first step on
+				<a href={resolve('account/')}>walka.dev/account/</a> (<em>I am 18 or older</em>), sending cannot be switched on.
+			</li>
+			<li>
+				<strong>What goes, of each walk - sixteen things:</strong> a random number made for the walk; that it came from
+				Walka; the walk's name on your computer, which is its local start time; when it started and when it ended; the
+				calendar day; how far your computer's clock was from world time; how long the belt moved; the distance, the steps
+				and the calories (estimates); how many of the calories were on top of sitting; whether a walking session was
+				running in the game; and how the steps, the distance and the calories were come by (for the calories: from speed
+				or from heart rate - the word, not the heart rate).
+			</li>
+			<li>
+				<strong>What never goes:</strong> the speed and heart-rate samples, the heart rate, the top speed, the
+				treadmill's name, your character (its name, its realm and its road), and your weight, height, age and sex. A walk
+				made with the simulated treadmill is never sent.
+			</li>
+			<li>
+				<strong>When.</strong> When Walka starts, and after each walk is saved, without asking again. If your page on
+				walka.dev is public, a walk shows on it as soon as it is sent.
+			</li>
+			<li>
+				<strong>Whose walks.</strong> Every walk recorded on that computer goes to the one Walka account that is signed
+				in, whoever walked.
+			</li>
+			<li>
+				<strong>One way only.</strong> Walka never changes or deletes anything in your Walka account, and nothing in the
+				account changes or deletes a file on your computer. A walk you delete in Walka stays in the account until you
+				delete it there; a walk you delete in the account stays on your computer and is not sent again.
+			</li>
+			<li>
+				<strong>To stop:</strong> <em>Stop sending</em> or <em>Sign out</em>, in Walka. Either takes effect at once,
+				and neither deletes anything in your account.
+			</li>
+			<li>
+				<strong>Staying signed in.</strong> A computer where Walka is signed in stays signed in until somebody signs out
+				on it, in Walka, the Walka account is deleted, or the sign-in ends. <em>Sign out</em> on this website does not
+				sign Walka out.{#if ACCOUNTS.on}
+					{' '}<a href={resolve('account/')}>Your account page</a> lists every browser and every Walka signed in to your
+					account, and can sign out one of them, every other one, or all of them; a Walka signed out there stops sending
+					when it next renews its sign-in, within the hour.{/if}
+			</li>
+			<li>
+				<strong>What else a request carries.</strong> Each one names Walka and its version (<code>Walka/0.8.0</code>,
+				say) and nothing else about your computer - but, like anything asked over the internet, it arrives with your IP
+				address. Walka's requests reach the database through Cloudflare, as a browser's do.
+			</li>
+			<li>
+				<strong>What the sign-in keeps of it.</strong> For each computer where Walka is signed in, a session: when it
+				began, when it was last renewed, the IP address and the name <code>Walka/</code> and its version; each renewal is
+				noted in its log. Discord, GitHub or Google learn of each sign-in made from Walka. And signing in from Walka
+				makes a sign-in record for a person who has none, as signing in here does.
+			</li>
+		</ul>
+		<p>
+			Where Walka keeps the sign-in, and what <code>walka-account.json</code> holds, is above, under
+			<a href="#what-it-keeps">What it keeps</a>. Walka's own words are in its README:
+			<a href={LINKS.walkaAccount}>Your Walka account (on walka.dev)</a>.
+		</p>
+
 		<h3 id="what-leaves">What leaves your computer</h3>
 		{#if ACCOUNTS.on}
 			<p>
-				Only what you take out yourself: a Share picture you post, a walk you download as a TCX file and import
-				somewhere by hand, a walk you add to <a href="#your-account">an account on this website</a>, a probe report or
-				a <code>walka.log</code> you attach to an issue (the log can hold your treadmill's name and Bluetooth address).
-				From then on it is with the place you gave it to, under that place's rules.
+				Only what you send yourself: your walks, if you <a href="#sending">switch sending on</a>; a Share picture you
+				post, a walk you download as a TCX file and import somewhere by hand, a walk you add to
+				<a href="#your-account">an account on this website</a>, a probe report or a <code>walka.log</code> you attach
+				to an issue (the log can hold your treadmill's name and Bluetooth address). From then on it is with the place
+				you gave it to, under that place's rules.
 			</p>
 		{:else}
 			<p>
-				Only what you take out yourself: a Share picture you post, a walk you download as a TCX file and import somewhere
-				by hand, a probe report or a <code>walka.log</code> you attach to an issue (the log can hold your treadmill's name and
-				Bluetooth address). From then on it is with the place you gave it to, under that
-				place's rules.
+				Only what you send yourself: your walks, if you <a href="#sending">switch sending on</a>; a Share picture you
+				post, a walk you download as a TCX file and import somewhere by hand, a probe report or a <code>walka.log</code>
+				you attach to an issue (the log can hold your treadmill's name and Bluetooth address). From then on it is with the
+				place you gave it to, under that place's rules.
 			</p>
 		{/if}
 		<p>
-			If you find a way to read what Walka stores from outside the computer, or to make Walka send anything anywhere,
-			that is a security problem. Please <a href={LINKS.reportVulnerability}>report it in private</a>.
+			If you find a way to read what Walka stores from outside the computer, to make Walka send what you did not switch
+			on, or to send anything anywhere but to the Walka account you signed in to, that is a security problem. Please <a href={LINKS.reportVulnerability}>report it in private</a>.
 		</p>
 	</section>
 
@@ -504,9 +607,9 @@
 			the other pages of this site. An account exists only if you make one. It holds what you put into it, and the record of your signing in.
 		</p>
 		<p>
-			Walka, the program, still uploads nothing. A walk gets into an account when you add it on this website yourself.
-			Later the desktop program may be able to send your walks itself; that will be a switch you turn on, and until it
-			exists Walka uploads nothing.
+			A walk gets into your account in two ways: Walka sends it, if you signed in to your account in Walka and switched
+			sending on (<a href="#sending">what goes, and when</a>), or you add it on this website yourself. Without that
+			switch, Walka sends nothing.
 		</p>
 		<p>
 			The accounts are run by the site's owner: the one maintainer who makes Walka and this website. There is no
@@ -560,12 +663,13 @@
 					</p>
 					<p>
 						Each walk also carries how far your clock was from world time (UTC) when it started, where the file or your
-						browser says so. A program that sends walks may add a random number that tells one installation from
-						another.
+						browser says so. A program that sends walks could add a random number that tells one installation from
+						another; Walka does not.
 					</p>
 					<p>
 						<strong>Left on your computer,</strong> because nothing here needs them: the second-by-second samples, the
-						heart rate, the top speed, the treadmill's name and your character.
+						heart rate, the top speed, the treadmill's name, your character, and the weight, height, age and sex you
+						entered in Walka.
 					</p>
 				</dd>
 			</div>
@@ -745,8 +849,9 @@
 		<ul>
 			<li>your e-mail address, when the account was made, and when you last signed in;</li>
 			<li>
-				for each browser you are signed in on, a session: when it began, when it was last renewed, the IP address it
-				came from and what the browser calls itself;
+				for each browser you are signed in on, and each computer where Walka is signed in, a session: when it began,
+				when it was last renewed, the IP address it came from and what the browser calls itself (Walka calls itself
+				<code>Walka/</code> and its version);
 			</li>
 			<li>
 				a log of what it did for you - a code sent, a sign-in, a session renewed - with your e-mail address and the
@@ -755,7 +860,9 @@
 		</ul>
 		<p>
 			Of all that, this website reads your e-mail address, which it shows you on your account page, and the two dates,
-			which go into the file you can save.
+			which go into the file you can save. Your account page also lists your sessions - when each began and was last
+			renewed, the IP address and what it calls itself - so that you can see where you are signed in and end a sign-in
+			there. Only you see that list; it is read from the sign-in each time, and kept nowhere else.
 		</p>
 		<p id="account-browser">
 			<strong>What a signed-in browser keeps.</strong> The sign-in is kept in the browser's local storage, under names
@@ -787,7 +894,8 @@
 				<dt><strong>Supabase</strong></dt>
 				<dd>
 					<p>
-						Every account page asks the database, and so does a walker's public page. With each request Supabase
+						Every account page asks the database, and so does a walker's public page - and Walka, if you switched
+						sending on. With each request Supabase
 						receives your IP address and your browser's details, as any host does, and it keeps a log of requests for a
 						time.
 					</p>
@@ -798,7 +906,8 @@
 					<p>
 						Those requests do not go to Supabase directly. They reach it through the network of Cloudflare, a
 						company Supabase uses for that and names in its <a href={SUPABASE.others}>list of sub-processors</a>. So
-						Cloudflare carries every request to the database and the sign-in, your IP address with it.{#if otherSites.length}
+						Cloudflare carries every request to the database and the sign-in, Walka's among them, your IP address
+						with it.{#if otherSites.length}
 							{' '}On the way to another site's sign-in and back, your browser is at Supabase's own address for a
 							moment; Cloudflare may set a short-lived cookie of its own there, which it uses to tell browsers from
 							programs. It is kept under Supabase's address, not this site's: no page of this site can read it, and
@@ -876,7 +985,9 @@
 		<p>
 			<strong>Taking it out.</strong> <em>Save everything as a file</em> on <a href={resolve('account/')}>your account
 			page</a>. Your own browser reads your rows and saves them as one file, named <code>walka-account</code> and the
-			date, in a format other programs can read (JSON). Nothing is made ready on a server, and nothing is mailed.
+			date, in a format other programs can read (JSON). Nothing is made ready on a server, and nothing is mailed. Your
+			walks alone can also be saved as a spreadsheet (CSV), every number of every walk, from your account page or your
+			walks.
 		</p>
 		<p>
 			In the file: what the sign-in keeps that the site can read - your e-mail address, when the account was made, when
@@ -885,18 +996,19 @@
 			goal and the reports you sent.
 		</p>
 		<p>
-			<strong>Deleting one walk, food or diary entry.</strong> It is emptied at once, and what is left is a marker: of
+			<strong>Deleting one walk, food or diary entry</strong> - or many walks at once, or all of them, on your walks
+			page. It is emptied at once, and what is left is a marker: of
 			a walk, when it started and ended, its day, how far the clock was from world time, and how it got here; of a
 			diary entry, its day; of a food, where it came from
 			and its number there. The marker is kept so that another device of yours hears of the deletion and does not
-			bring the entry back. Markers are in the file you can save, and they go when the account goes.
+				bring the entry back: a walk Walka sent, deleted here, is not sent again. Markers are in the file you can save, and they go when the account goes.
 		</p>
 		<p>
 			<strong>Deleting the account.</strong> <em>Delete my account...</em> on your account page. At once, and for
 			good, this deletes everything in your account - your page, your numbers, your walks here, your food diary, the
 			markers - and the sign-in record with it: your e-mail address, your sessions and whatever the sign-in noted about you in the database. It
 			cannot be undone, and there is nobody who could bring it back. The walks on your own computer, in Walka, are not
-			touched.
+				touched. A Walka that was signed in to the account stops sending, and says that it is no longer signed in.
 		</p>
 		<p><strong>What stays,</strong> and for how long:</p>
 		<ul>
@@ -945,8 +1057,8 @@
 		<div class="not-built">
 			<Callout kind="note" title="Not open yet">
 				<p>
-					Nothing in this section exists today. There are no accounts and nothing to sign up for, and Walka uploads
-					nothing.
+					Nothing in this section exists on this copy of the site: it has no accounts and nothing to sign up for.
+					Walka sends walks only to a Walka account on walka.dev, and only if you switch that on.
 				</p>
 			</Callout>
 		</div>
@@ -960,7 +1072,7 @@
 		</ul>
 		<p>If they are built, this is what will hold:</p>
 		<ul>
-			<li><strong>Opt-in.</strong> Nothing will be synced or shared until you turn it on.</li>
+			<li><strong>Opt-in.</strong> Nothing will be shared until you turn it on.</li>
 			<li><strong>Private by default.</strong> A profile will be private until you make it public.</li>
 			<li>
 				<strong>Yours to take and to delete.</strong> You will be able to export your data, and delete your account and
@@ -1009,7 +1121,8 @@
 			</p>
 			<p>
 				Without an account, the site's owner holds no data about you to show, correct or delete. Walka's files are on
-				your own computer, and the pages of this website collect nothing.
+				your own computer, and the pages of this website collect nothing. Walka puts walks into an account only if you
+				switched sending on.
 			</p>
 			<p>
 				With an account, you do most of it yourself, on <a href={resolve('account/')}>your account page</a>, at any time
@@ -1036,7 +1149,7 @@
 		{:else}
 			<p>
 				Depending on where you live, the law may give you rights over data that is held about you: to see it, to have it
-				corrected, to have it deleted. Today the site's maker holds no data about you to show, correct or delete. Walka's
+				corrected, to have it deleted. This copy of the site holds no data about you to show, correct or delete. Walka's
 				files are on your own computer, and this website collects nothing.
 			</p>
 		{/if}
@@ -1068,14 +1181,16 @@
 				There is no company behind it. An issue or a report is written with a GitHub account and kept by GitHub.
 			</p>
 			<p>
-				Walka sends nothing about you to its maker. What reaches the maker is what you put on GitHub yourself, what you
-				write to the address above, and what you put into an account.
+				Walka sends nothing about you to its maker, except your walks to your own account if you switch sending on.
+				What reaches the maker is what you put on GitHub yourself, what you write to the address above, and what you
+				or Walka put into your account.
 			</p>
 		{:else}
 			<p>
 				Walka is a hobby project with one maintainer. There is no company behind it, and no published contact e-mail. An
-				issue or a report is written with a GitHub account and kept by GitHub. Neither Walka nor this website sends
-				anything about you to Walka's maker: what reaches the maker is what you put on GitHub yourself.
+				issue or a report is written with a GitHub account and kept by GitHub. This website sends nothing about you to
+				Walka's maker, and Walka sends nothing unless you <a href="#sending">switch sending on</a>: what reaches the
+				maker otherwise is what you put on GitHub yourself.
 			</p>
 		{/if}
 	</section>

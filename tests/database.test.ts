@@ -250,3 +250,60 @@ test('a visitor reaches three functions and nothing else; a table added later is
 	assert.match(open, /\bf\b/);
 	assert.ok(stack().PUBLISHABLE_KEY.startsWith('sb_publishable_'));
 });
+
+test('many walks are deleted at once - one\'s own, and nobody else\'s', async () => {
+	const a = await signIn('many');
+	const b = await signIn('bystander');
+	await open(a);
+	await open(b);
+	const ids = [crypto.randomUUID(), crypto.randomUUID(), crypto.randomUUID()];
+	const theirs = crypto.randomUUID();
+	for (const [n, id] of ids.entries()) assert.equal((await ask('POST', '/rest/v1/walks', { ...walk(daysAgo(n + 1)), id }, a.token)).status, 201);
+	assert.equal((await ask('POST', '/rest/v1/walks', { ...walk(daysAgo(1)), id: theirs }, b.token)).status, 201);
+	const marked = await ask('PATCH', `/rest/v1/walks?id=in.(${ids[0]},${ids[1]},${theirs})&deleted_at=is.null&select=id`, { deleted_at: new Date().toISOString() }, a.token);
+	assert.equal(marked.status, 200);
+	assert.deepEqual(marked.body.map((row: { id: string }) => row.id).sort(), [ids[0], ids[1]].sort(), 'the other person\'s walk is not among them');
+	assert.equal(await admin(`select count(*) from public.walks where id = '${theirs}' and deleted_at is null`), '1');
+	assert.equal(await admin(`select count(*) from public.walks where id = '${ids[2]}' and deleted_at is null`), '1', 'one not asked for stays');
+	const again = await ask('PATCH', `/rest/v1/walks?id=in.(${ids[0]})&deleted_at=is.null&select=id`, { deleted_at: new Date().toISOString() }, a.token);
+	assert.deepEqual(again.body, [], 'deleted already: not counted twice');
+});
+
+test('a person sees where they are signed in, and can end a sign-in - their own only', async () => {
+	// one person, signed in twice (as two browsers, or a browser and Walka)
+	const email = `twice-${Date.now()}@example.com`;
+	const signInOnce = async (before?: string) => {
+		await ask('POST', '/auth/v1/otp', { email, create_user: true });
+		let code = '';
+		for (let tries = 0; tries < 40 && (!code || code === before); tries++) {
+			code = (await mailFor(email)).code;
+			if (code === before) await new Promise((done) => setTimeout(done, 250));
+		}
+		const session = await ask('POST', '/auth/v1/verify', { type: 'email', email, token: code }, undefined, { 'user-agent': before ? 'Walka/0.8.0' : 'TestBrowser/1' });
+		assert.equal(session.status, 200, JSON.stringify(session.body));
+		return { code, token: session.body.access_token as string, refresh: session.body.refresh_token as string };
+	};
+	const first = await signInOnce();
+	const second = await signInOnce(first.code);
+	const stranger = await signIn('stranger');
+
+	assert.notEqual((await ask('POST', '/rest/v1/rpc/my_sign_ins', {})).status, 200, 'not for a visitor');
+	const mine = await ask('POST', '/rest/v1/rpc/my_sign_ins', {}, second.token);
+	assert.equal(mine.status, 200);
+	assert.equal(mine.body.length, 2);
+	assert.equal(mine.body.filter((one: { this_one: boolean }) => one.this_one).length, 1, 'the one asking is marked');
+	assert.ok(mine.body.some((one: { user_agent: string }) => one.user_agent === 'Walka/0.8.0'), 'what it calls itself');
+	assert.ok(mine.body.every((one: { began_at: string; renewed_at: string }) => !Number.isNaN(Date.parse(one.began_at)) && !Number.isNaN(Date.parse(one.renewed_at))));
+	const theirs = await ask('POST', '/rest/v1/rpc/my_sign_ins', {}, stranger.token);
+	assert.equal(theirs.body.length, 1, 'another person sees only their own');
+
+	const firstId = mine.body.find((one: { this_one: boolean }) => !one.this_one).id;
+	assert.equal((await ask('POST', '/rest/v1/rpc/end_sign_in', { sign_in: firstId }, stranger.token)).body, false, 'nobody ends another person\'s sign-in');
+	assert.equal((await ask('POST', '/rest/v1/rpc/end_sign_in', { sign_in: firstId })).status === 200, false, 'nor a visitor');
+	assert.equal((await ask('POST', '/rest/v1/rpc/end_sign_in', { sign_in: firstId }, second.token)).body, true);
+	assert.equal((await ask('POST', '/rest/v1/rpc/my_sign_ins', {}, second.token)).body.length, 1);
+	const renewed = await ask('POST', '/auth/v1/token?grant_type=refresh_token', { refresh_token: first.refresh });
+	assert.equal(renewed.status, 400, 'the ended sign-in cannot be renewed: Walka says it is no longer signed in');
+	assert.match(String(renewed.body.error_code ?? renewed.body.code), /refresh_token_not_found|session_not_found/);
+	assert.equal((await ask('POST', '/rest/v1/rpc/schema_version', {})).body, 1, 'and the schema version is what every Walka knows');
+});

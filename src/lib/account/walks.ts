@@ -73,16 +73,20 @@ export async function list(before?: string): Promise<{ walks: ListedWalk[]; more
 /** What the totals are added up from: a walk's day and its numbers. */
 export type Counted = Pick<Walk, 'id' | 'local_day' | 'seconds' | 'distance_m' | 'steps' | 'kcal'>;
 
-/** Every walk of the account that is not deleted, as few numbers each, fetched a thousand at a time. */
-export async function everyWalk(): Promise<Counted[]> {
+/**
+ * Every walk of the account that is not deleted, with every number the list
+ * shows, fetched a thousand at a time: what the totals, the stats page and
+ * the spreadsheet file are made from.
+ */
+export async function everyWalk(): Promise<ListedWalk[]> {
 	const db = await database();
-	const all: Counted[] = [];
+	const all: ListedWalk[] = [];
 	for (let from = 0; from < MOST; from += THOUSAND) {
 		const { data, error } = await within(
 			WAIT,
 			db
 				.from('walks')
-				.select('id,local_day,seconds,distance_m,steps,kcal')
+				.select(LISTED)
 				.is('deleted_at', null)
 				// (an order that is the same every time, so that no page of it skips a row)
 				.order('started_at', { ascending: false })
@@ -90,7 +94,7 @@ export async function everyWalk(): Promise<Counted[]> {
 				.range(from, from + THOUSAND - 1)
 		);
 		if (error) throw error;
-		all.push(...((data ?? []) as Counted[]));
+		all.push(...((data ?? []) as ListedWalk[]));
 		if (!data || data.length < THOUSAND) break;
 	}
 	return all;
@@ -352,6 +356,29 @@ export async function remove(id: string): Promise<void> {
 	const db = await database();
 	const { error } = await within(WAIT, db.from('walks').update({ deleted_at: new Date().toISOString() }).eq('id', id).is('deleted_at', null));
 	if (error) throw error;
+}
+
+/** Walks are deleted this many at a time: a list of ids in one address. */
+const DELETE_AT_ONCE = 100;
+
+/**
+ * Deletes many walks: marks them, a hundred at a time. There is no "Undo":
+ * the page asks first. Says how many were deleted now (one that was deleted
+ * already, on another device, does not count), and calls `done` after each
+ * hundred so that the page can say how far it is.
+ */
+export async function removeMany(ids: string[], done: (deleted: number) => void = () => {}): Promise<number> {
+	const db = await database();
+	const when = new Date().toISOString();
+	let deleted = 0;
+	for (let from = 0; from < ids.length; from += DELETE_AT_ONCE) {
+		const some = ids.slice(from, from + DELETE_AT_ONCE);
+		const { data, error } = await within(WAIT, db.from('walks').update({ deleted_at: when }).in('id', some).is('deleted_at', null).select('id'));
+		if (error) throw error;
+		deleted += data?.length ?? 0;
+		done(deleted);
+	}
+	return deleted;
 }
 
 /**
